@@ -40,6 +40,13 @@ Copy `.env.example` to `.env.local` and fill the Supabase values to connect real
 - `licenses`: what each org bought. Writable only by the billing webhook (service role).
 - RLS everywhere; Profit tables additionally require a valid license (`has_product_access`).
 
+## Supabase project
+
+- Project `stayflow` (ref `eigsajmshgrmnhascghr`, region `us-east-1`). One project for every customer; tenants are isolated by RLS.
+- Migrations `0001`-`0005` are applied. Keep `supabase/migrations` in sync with the remote.
+- `supabase/tests/rls_isolation.sql` checks tenant isolation and license gating (14 checks, rolls itself back). Run it after any policy change.
+- Keys are not committed. Get the URL and publishable key from the Supabase dashboard (Settings > API) and put them in `apps/profit/.env.local`.
+
 ## Roadmap
 
 1. Base + **Profit** (this commit) 
