@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { PRODUCT_BRAND } from "@stayflow/ui";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const brand = PRODUCT_BRAND.profit;
@@ -25,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body className="font-sans">
-        {children}
+        <Providers>{children}</Providers>
         <RegisterServiceWorker />
       </body>
     </html>

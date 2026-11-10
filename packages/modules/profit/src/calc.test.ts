@@ -8,7 +8,7 @@ import {
   projectNet,
   suggestedNightlyRate,
 } from "./calc";
-import { parseMoney } from "./money";
+import { formatMoney, formatMoneyExact, parseMoney } from "./money";
 import type { Expense, Income } from "./types";
 
 const incomes: Income[] = [
@@ -93,6 +93,10 @@ describe("misc", () => {
     const hist = monthlyComparison(incomes, expenses);
     expect(projectNet(hist, 2)).toHaveLength(2);
     expect(projectNet([], 2)).toEqual([0, 0]);
+  });
+  it("rounds summaries but keeps cents on entries", () => {
+    expect(formatMoney(125_050, "EUR")).toBe("€1,251");
+    expect(formatMoneyExact(125_050, "EUR")).toBe("€1,250.50");
   });
   it("parses money input", () => {
     expect(parseMoney("1,250.50")).toBe(125_050);
