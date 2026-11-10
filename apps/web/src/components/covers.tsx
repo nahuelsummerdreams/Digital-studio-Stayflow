@@ -29,14 +29,14 @@ const gold = "hsl(42 70% 58%)";
 
 function Seal({ text, hue }: { text: string; hue: number }) {
   return (
-    <span className="absolute right-[0.7em] top-[0.7em] z-10 flex h-[3.1em] w-[3.1em] -rotate-12 flex-col items-center justify-center rounded-full text-center font-extrabold leading-none text-[#2b1f05] shadow-[0_0_1.2em_hsl(var(--hue)_90%_60%/0.6)]" style={{ background: `radial-gradient(circle at 30% 25%, #fff0b3, ${gold} 55%, #a87a1c)`, fontSize: "0.56em", ["--hue" as string]: hue }}>
+    <span className="absolute right-[0.7em] top-[0.7em] z-10 flex h-[3.1em] w-[3.1em] -rotate-12 flex-col items-center justify-center rounded-full text-center font-extrabold leading-none text-white" style={{ background: `radial-gradient(circle at 30% 25%, hsl(${hue} 100% 70%), hsl(${hue} 100% 48%) 60%, hsl(${hue} 100% 34%))`, border: "0.12em solid #fff", boxShadow: `0 0 1em hsl(${hue} 100% 60%), 0 0 0.3em #fff`, textShadow: "0 0.06em 0.1em rgb(0 0 0 / 0.6)", fontSize: "0.56em" }}>
       <span className="px-[0.3em] tracking-wide">{text.split("|").map((l, i) => <span key={i} className="block">{l}</span>)}</span>
     </span>
   );
 }
 
-function Strip({ text }: { text: string }) {
-  return <p className="absolute inset-x-[0.8em] bottom-[0.8em] z-10 rounded-[0.3em] py-[0.4em] text-center text-[0.46em] font-extrabold tracking-[0.18em] text-[#2b1f05]" style={{ background: `linear-gradient(90deg, #a87a1c, ${gold}, #a87a1c)` }}>{text}</p>;
+function Strip({ text, hue }: { text: string; hue: number }) {
+  return <p className="absolute inset-x-[0.8em] bottom-[0.8em] z-10 rounded-[0.3em] py-[0.4em] text-center text-[0.46em] font-extrabold tracking-[0.18em] text-white" style={{ background: "rgb(0 0 0 / 0.72)", border: `0.1em solid hsl(${hue} 100% 62%)`, textShadow: `0 0 0.5em hsl(${hue} 100% 60%)`, boxShadow: `0 0 0.7em hsl(${hue} 100% 55% / 0.7)` }}>{text}</p>;
 }
 
 function Brand() {
@@ -89,10 +89,11 @@ export function ProductCover({ id, size = "md" }: { id: ProductId; size?: BoxSiz
           )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/15 via-transparent to-transparent" />
         </div>
+        <div aria-hidden className="absolute inset-x-[0.45em] bottom-[1.9em] z-[5] h-[5.2em]" style={{ background: "linear-gradient(0deg, rgb(0 0 0 / 0.82), rgb(0 0 0 / 0.55) 55%, transparent)" }} />
         <div className="absolute inset-x-[0.9em] bottom-[2.7em] z-10">
-          <h4 className="font-display font-extrabold uppercase leading-[0.95] tracking-tight" style={{ fontSize: WORD[id].length <= 5 ? "3.1em" : WORD[id].length <= 7 ? "2.45em" : WORD[id].length <= 9 ? "2em" : "1.62em", color: `hsl(${hue} 100% 72%)`, textShadow: `0 0 0.25em hsl(${hue} 100% 62%), 0 0 0.7em hsl(${hue} 100% 55% / 0.9), 0 0.05em 0.2em rgb(0 0 0 / 0.6)` }}>{WORD[id]}</h4>
+          <h4 className="font-display font-extrabold uppercase leading-[0.95] tracking-tight" style={{ fontSize: WORD[id].length <= 5 ? "3.1em" : WORD[id].length <= 7 ? "2.45em" : WORD[id].length <= 9 ? "2em" : "1.62em", color: "#fff", textShadow: `0 0 0.18em hsl(${hue} 100% 62%), 0 0 0.55em hsl(${hue} 100% 55%), 0 0.06em 0.12em rgb(0 0 0 / 0.8)` }}>{WORD[id]}</h4>
         </div>
-        <Strip text={KEYWORDS[id]} />
+        <Strip text={KEYWORDS[id]} hue={hue} />
       </div>
     </ProductBox>
   );
@@ -110,8 +111,8 @@ export function PackCover({ id, size = "md" }: { id: PackId; size?: BoxSize }) {
         <PhotoBg src={`/packs/${id === "essential" ? "essential" : id}.jpg`} hue={hue} dim={0.2} />
         <Brand />
         <Seal hue={hue} text="−30%" />
-        <div className="absolute left-[0.9em] top-[2.8em] z-10 max-w-[8.4em]">
-          <h4 className={`font-display ${many ? (id === "pro" ? "text-[1.2em]" : "text-[1.4em]") : "text-[1.9em]"} font-extrabold uppercase leading-[0.98] tracking-tight`} style={{ color: `hsl(${hue} 100% 74%)`, textShadow: `0 0 0.25em hsl(${hue} 100% 62%), 0 0 0.7em hsl(${hue} 100% 55% / 0.9)` }}>{c.name.replace("Anfitrión Premium", "").trim()}</h4>
+        <div className="absolute left-[0.9em] top-[2.7em] z-10 max-w-[8.6em] rounded-[0.35em] px-[0.5em] py-[0.3em]" style={{ background: "linear-gradient(90deg, rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.35))" }}>
+          <h4 className={`font-display ${many ? (id === "pro" ? "text-[1.2em]" : "text-[1.4em]") : "text-[1.9em]"} font-extrabold uppercase leading-[0.98] tracking-tight`} style={{ color: "#fff", textShadow: `0 0 0.18em hsl(${hue} 100% 62%), 0 0 0.55em hsl(${hue} 100% 55%), 0 0.06em 0.12em rgb(0 0 0 / 0.8)` }}>{c.name.replace("Anfitrión Premium", "").trim()}</h4>
         </div>
         <div className="absolute bottom-[2.4em] left-1/2 z-10 grid w-[88%] -translate-x-1/2 grid-cols-3 gap-[0.35em]">
           {apps.map((a) => (
@@ -120,7 +121,7 @@ export function PackCover({ id, size = "md" }: { id: PackId; size?: BoxSize }) {
             </span>
           ))}
         </div>
-        <Strip text="30% DE DESCUENTO · PAGO ÚNICO" />
+        <Strip text="30% DE DESCUENTO · PAGO ÚNICO" hue={hue} />
       </div>
     </ProductBox>
   );

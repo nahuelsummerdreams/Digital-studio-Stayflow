@@ -96,8 +96,8 @@
   font-weight: 800;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: hsl(var(--hue) 100% 94%);
-  text-shadow: 0 0 0.6em hsl(var(--hue) 100% 70%);
+  color: #fff;
+  text-shadow: 0 0 0.4em hsl(var(--hue) 100% 60%), 0 0.05em 0.1em rgb(0 0 0 / 0.7);
 }
 .pbox-top {
   left: 0;
