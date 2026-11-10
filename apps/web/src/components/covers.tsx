@@ -16,7 +16,7 @@ const WORD: Record<ProductId, string> = { host: "HOST", guest: "GUEST", ai: "AI"
 const KEYWORDS: Record<ProductId, string> = {
   host: "RESERVAS · CRONOGRAMA · TAREAS",
   guest: "GUÍA · QR · CHECK-IN",
-  ai: "RESPUESTAS · PLANTILLAS",
+  ai: "AGENTES · RESPUESTAS",
   profit: "INGRESOS · GASTOS · GANANCIA",
   operations: "LIMPIEZA · CHECKLISTS",
   listing: "TÍTULOS · TEXTOS · IDEAS",
@@ -53,7 +53,7 @@ function PhotoBg({ src, hue, dim = 0 }: { src: string; hue: number; dim?: number
   return (
     <>
       <Image src={src} alt="" fill sizes="320px" className="object-cover" />
-      <div className="absolute inset-0 mix-blend-color" style={{ background: `hsl(${hue} 100% 50% / ${0.55 + dim})` }} />
+      <div className="absolute inset-0 mix-blend-color" style={{ background: `hsl(${hue} 100% 50% / ${0.3 + dim})` }} />
       <div className="absolute inset-0" style={{ background: `linear-gradient(180deg, hsl(${hue} 100% 55% / ${0.18 + dim}) 0%, hsl(${hue} 100% 18% / ${0.4 + dim}) 52%, hsl(${hue} 95% 5% / 0.95) 100%)` }} />
       {/* Neon frame */}
       <div className="absolute inset-[0.4em] rounded-[0.35em]" style={{ border: `0.1em solid hsl(${hue} 100% 68%)`, boxShadow: `0 0 0.7em hsl(${hue} 100% 58% / 0.85), inset 0 0 0.9em hsl(${hue} 100% 58% / 0.55)` }} />

@@ -517,7 +517,7 @@ export const es = {
       description:
         "Reservas, cronograma, huéspedes, tareas y ganancias en un solo panel. Sin dobles reservas, sin olvidos y sin mensualidades. Apps desde USD 19 en pago único y 30% de descuento al combinarlas.",
     },
-    nav: { system: "Sistema", schedule: "Cronograma", price: "Precios", faq: "Preguntas", login: "Entrar", buy: "Ver precios", by: "por" },
+    nav: { system: "Sistema", schedule: "Cronograma", agents: "Agentes", price: "Precios", faq: "Preguntas", login: "Entrar", buy: "Ver precios", by: "por" },
     hero: {
       eyebrow: "Para anfitriones que ya no quieren apagar incendios",
       title: "¿Tu Airbnb te está consumiendo",
