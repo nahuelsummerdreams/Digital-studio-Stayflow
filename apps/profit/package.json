@@ -13,6 +13,7 @@
     "@stayflow/i18n": "workspace:*",
     "@stayflow/licensing": "workspace:*",
     "@stayflow/module-profit": "workspace:*",
+    "@stayflow/shell": "workspace:*",
     "@stayflow/ui": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",

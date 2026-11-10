@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
-import { buttonClass, cardClass, errorClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
+import { StudioSeal, buttonClass, cardClass, errorClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
 
 /** Sign in / create account. One Stayflow account works in every app. */
@@ -90,6 +90,8 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
       >
         {signup ? t("auth.haveAccount") : t("auth.newHere")}
       </button>
+
+      <StudioSeal className="mt-14" />
     </main>
   );
 }

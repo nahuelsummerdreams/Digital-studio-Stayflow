@@ -13,12 +13,12 @@
   --accent-2: 34 211 166;
   --on-accent: 255 255 255;
 }
-:root[data-theme="green"] {
+[data-theme="green"] {
   --accent: 57 255 136;
   --accent-2: 182 255 60;
   --on-accent: 4 19 10;
 }
-:root[data-theme="coral"] {
+[data-theme="coral"] {
   --accent: 255 56 92;
   --accent-2: 255 138 92;
   --on-accent: 255 255 255;
@@ -60,7 +60,7 @@ body {
   background-clip: text;
   color: transparent;
 }
-:root[data-theme="coral"] .text-money {
+:is([data-theme="coral"]) .text-money {
   background: none;
   color: rgb(var(--fg));
 }
