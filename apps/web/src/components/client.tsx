@@ -274,3 +274,22 @@ export function GetHostButton({ className = "", where = "hero" }: { className?: 
     </button>
   );
 }
+
+/** Ad-landing CTA: puts one product in the cart and opens it. */
+export function GetProductButton({ id, label, where, className = "" }: { id: ProductId; label: string; where: string; className?: string }) {
+  const { add, setOpen } = useCart();
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        add(id);
+        setOpen(true);
+        track("select_promotion", { where, item_id: id });
+      }}
+      className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}
+    >
+      {label}
+      <Icon name="arrow" className="h-4 w-4" />
+    </button>
+  );
+}

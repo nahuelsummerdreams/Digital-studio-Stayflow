@@ -8,6 +8,7 @@ import "./globals.css";
 import "./boxes.css";
 import { CartDrawer, CartProvider } from "@/components/cart";
 import { CartBar } from "@/components/client";
+import { ConsentBanner } from "@/components/consent";
 import { Celebration, CursorGlow, ScrollProgress } from "@/components/effects";
 import { MessagesProvider } from "@/i18n/client";
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <CartDrawer />
             <CartBar />
             <Celebration />
+            <ConsentBanner />
           </CartProvider>
         </MessagesProvider>
       </body>

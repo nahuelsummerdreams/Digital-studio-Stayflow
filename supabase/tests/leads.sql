@@ -1,5 +1,5 @@
 -- Leads: visitors can add one but never read, change or delete. Bad emails are rejected.
--- Rolls itself back. Success = "ALL 5 LEAD CHECKS PASSED". Any "FAIL n" is a real problem.
+-- Rolls itself back. Success = "ALL 6 LEAD CHECKS PASSED". Any "FAIL n" is a real problem.
 do $$
 declare n int;
 begin
@@ -27,6 +27,12 @@ begin
     raise exception 'FAIL 5: unknown source accepted';
   exception when check_violation then null; end;
 
+  insert into public.leads (email, source) values ('ad@test.invalid', 'ad-guest');
+  begin
+    insert into public.leads (email, source) values ('ad2@test.invalid', 'ad-Guest; drop');
+    raise exception 'FAIL 6: malformed ad source accepted';
+  exception when check_violation then null; end;
+
   reset role;
-  raise exception 'ALL 5 LEAD CHECKS PASSED - rolled back on purpose';
+  raise exception 'ALL 6 LEAD CHECKS PASSED - rolled back on purpose';
 end $$;

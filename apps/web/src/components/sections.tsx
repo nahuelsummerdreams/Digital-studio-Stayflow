@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
 import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
+import { CookieSettings } from "./consent";
 import { Motes, Tilt } from "./effects";
 import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
@@ -298,7 +299,15 @@ export function Footer() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-8 w-auto" />
         </div>
-        <p className="text-xs text-muted">© {new Date().getFullYear()} Digital Studio. {t("landing.footer.rights")}</p>
+        <div className="flex flex-col gap-2 sm:items-end">
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted">
+            <a href="/privacidad" className="underline-offset-4 transition hover:text-fg hover:underline">Privacidad</a>
+            <a href="/terminos" className="underline-offset-4 transition hover:text-fg hover:underline">Términos</a>
+            <a href="/reembolsos" className="underline-offset-4 transition hover:text-fg hover:underline">Reembolsos</a>
+            <CookieSettings />
+          </nav>
+          <p className="text-xs text-muted">© {new Date().getFullYear()} Digital Studio. {t("landing.footer.rights")}</p>
+        </div>
       </div>
     </footer>
   );
