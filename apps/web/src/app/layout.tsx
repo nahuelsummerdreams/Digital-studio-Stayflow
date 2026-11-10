@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { DEFAULT_THEME, THEME_INIT_SCRIPT } from "@stayflow/ui";
 import { t } from "@/lib/t";
+import "@stayflow/ui/fonts";
 import "@stayflow/ui/theme.css";
 import "./globals.css";
 

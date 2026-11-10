@@ -1,4 +1,4 @@
-import { ThemeSwitcher, buttonClass } from "@stayflow/ui";
+import { BrandMark, ThemeSwitcher, buttonClass } from "@stayflow/ui";
 import { APP_URL, t } from "@/lib/t";
 
 const LINKS = [
@@ -11,23 +11,15 @@ const LINKS = [
 export function Wordmark() {
   return (
     <span className="flex items-center gap-2.5">
-      <svg aria-hidden width="22" height="22" viewBox="0 0 512 512" className="text-accent">
-        <path
-          d="M70 340c70 0 70-130 186-130s116 130 186 130"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="56"
-          strokeLinecap="round"
-        />
-      </svg>
-      <span className="text-lg font-bold tracking-tight">Stayflow</span>
+      <BrandMark className="h-8 w-8" />
+      <span className="font-display text-lg tracking-tight">Stayflow</span>
     </span>
   );
 }
 
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-line/60 bg-bg/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-line/50 bg-bg/60 backdrop-blur-2xl">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
         <a href="#top" aria-label="Stayflow">
           <Wordmark />

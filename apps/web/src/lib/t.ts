@@ -3,5 +3,9 @@ import { translate, type MessageKey, type Vars } from "@stayflow/i18n/core";
 /** Server-side translator for the landing (Spanish for now, English later). */
 export const t = (key: MessageKey, vars?: Vars): string => translate("es", key, vars);
 
-/** Where "start free trial" sends people: the Stayflow Profit app. */
-export const APP_URL = process.env.NEXT_PUBLIC_PROFIT_URL ?? "http://localhost:3001";
+/** Where each app lives. Defaults are the published addresses; override with env for local work. */
+export const PROFIT_URL = process.env.NEXT_PUBLIC_PROFIT_URL ?? "https://stayflow-profit.vercel.app";
+export const HOST_URL = process.env.NEXT_PUBLIC_HOST_URL ?? "https://stayflow-host.vercel.app";
+export const GUEST_URL = process.env.NEXT_PUBLIC_GUEST_URL ?? "https://stayflow-guest-eight.vercel.app";
+/** Where "start free trial" sends people. */
+export const APP_URL = PROFIT_URL;

@@ -1,3 +1,4 @@
+import { Sparkline } from "@stayflow/ui";
 import { t } from "@/lib/t";
 
 /** A faithful, static picture of the Profit overview. Numbers are illustrative and labelled as such. */
@@ -10,9 +11,9 @@ export function ProductPreview() {
     </span>
   );
   return (
-    <div className="relative">
-      <div aria-hidden className="absolute -inset-8 rounded-[48px] bg-accent/15 blur-3xl" />
-      <div className="relative rounded-[28px] border border-line bg-surface p-5 shadow-[0_40px_120px_-40px_rgb(var(--accent)/0.55)] lg:[transform:perspective(1400px)_rotateY(-6deg)_rotateX(2deg)]">
+    <div className="float relative">
+      <div aria-hidden className="absolute -inset-10 rounded-[56px] bg-accent/20 blur-3xl" />
+      <div className="fx-card fx-hero relative rounded-[28px] p-5 transition-transform duration-700 ease-out lg:[transform:perspective(1400px)_rotateY(-6deg)_rotateX(2deg)] lg:hover:[transform:perspective(1400px)_rotateY(-2deg)_rotateX(1deg)]">
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-accent">Stayflow Profit</span>
           <span aria-hidden className="flex gap-1.5">
@@ -35,6 +36,7 @@ export function ProductPreview() {
           <p className="mt-2 text-xs font-medium text-success">
             +25,1 % <span className="font-normal text-muted">{t("overview.vsPrevious")}</span>
           </p>
+          <Sparkline values={[2529, 2622, 3130, 2152, 2883, 3410, 4120]} className="mt-3 h-10 w-full" />
         </div>
 
         <div className="mt-3 grid grid-cols-2 gap-3">

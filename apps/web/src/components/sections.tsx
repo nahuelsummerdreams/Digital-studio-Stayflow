@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import { PLANS, PLAN_LIMITS, PLAN_PRICE_USD, type PlanKey } from "@stayflow/licensing";
-import { buttonClass } from "@stayflow/ui";
-import { APP_URL, t } from "@/lib/t";
+import { Icon, buttonClass } from "@stayflow/ui";
+import { APP_URL, GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
 import { ProductPreview } from "./ProductPreview";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
 
 function Head({ eyebrow, title, body, center = false }: { eyebrow: string; title: string; body?: string; center?: boolean }) {
   return (
-    <div className={center ? "mx-auto max-w-2xl text-center" : "max-w-xl"}>
+    <div className={`reveal ${center ? "mx-auto max-w-2xl text-center" : "max-w-xl"}`}>
       <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{eyebrow}</p>
       <h2 className="font-display mt-4 text-3xl leading-tight md:text-5xl">{title}</h2>
       {body && <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">{body}</p>}
@@ -25,8 +25,8 @@ export function Hero() {
         style={{ background: "radial-gradient(60% 60% at 50% 0%, rgb(var(--accent) / 0.22), transparent 70%)" }}
       />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pb-28 md:pt-24 lg:grid-cols-[1.05fr_0.95fr]">
-        <div>
-          <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1.5 text-xs text-muted">
+        <div className="anim-stagger">
+          <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1.5 text-xs text-muted backdrop-blur">
             <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
             {t("landing.hero.eyebrow")}
           </p>
@@ -71,7 +71,7 @@ export function Reveal() {
     <section id="producto" className="border-y border-line/60 bg-surface/30">
       <div className={`${SECTION} grid items-center gap-14 md:grid-cols-2`}>
         <Head eyebrow={t("landing.reveal.eyebrow")} title={t("landing.reveal.title")} body={t("landing.reveal.body")} />
-        <div className="rounded-3xl border border-line bg-surface p-6 md:p-8">
+        <div className="reveal fx-card rounded-3xl p-6 md:p-8">
           <ul className="space-y-6">
             {rows.map((r) => (
               <li key={r.label}>
@@ -102,7 +102,7 @@ export function Features() {
       <Head eyebrow={t("landing.features.eyebrow")} title={t("landing.features.title")} />
       <div className="mt-14 grid gap-4 md:grid-cols-2">
         {items.map((f) => (
-          <article key={f.n} className="group rounded-3xl border border-line bg-surface p-7 transition hover:border-accent/50">
+          <article key={f.n} className="reveal fx-card group rounded-3xl p-7">
             <p className="font-display text-sm text-accent">{f.n}</p>
             <h3 className="font-display mt-5 text-xl leading-snug">{f.title}</h3>
             <p className="mt-3 leading-relaxed text-muted">{f.body}</p>
@@ -114,10 +114,10 @@ export function Features() {
 }
 
 export function Apps() {
-  const apps = [
-    { name: "Stayflow Profit", body: t("landing.apps.profit"), live: true },
-    { name: "Stayflow Guest", body: t("landing.apps.guest"), live: false },
-    { name: "Stayflow Host", body: t("landing.apps.host"), live: false },
+  const apps: { name: string; body: string; live: boolean; href?: string }[] = [
+    { name: "Stayflow Host", body: t("landing.apps.host"), live: true, href: HOST_URL },
+    { name: "Stayflow Profit", body: t("landing.apps.profit"), live: true, href: PROFIT_URL },
+    { name: "Stayflow Guest", body: t("landing.apps.guest"), live: true, href: GUEST_URL },
     { name: "Stayflow AI", body: t("landing.apps.ai"), live: false },
     { name: "Stayflow Operations", body: t("landing.apps.operations"), live: false },
   ];
@@ -127,10 +127,7 @@ export function Apps() {
         <Head eyebrow={t("landing.apps.eyebrow")} title={t("landing.apps.title")} body={t("landing.apps.body")} />
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {apps.map((a) => (
-            <article
-              key={a.name}
-              className={`rounded-3xl border p-7 ${a.live ? "border-accent/60 bg-surface shadow-[0_0_60px_-30px_rgb(var(--accent)/0.8)]" : "border-line bg-surface/60"}`}
-            >
+            <article key={a.name} className={`reveal fx-card rounded-3xl p-7 ${a.live ? "fx-hero" : "opacity-80"}`}>
               <span
                 className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-medium ${
                   a.live ? "bg-accent text-onaccent" : "border border-line text-muted"
@@ -140,9 +137,15 @@ export function Apps() {
               </span>
               <h3 className="font-display mt-5 text-lg">{a.name}</h3>
               <p className={`mt-2 text-sm leading-relaxed ${a.live ? "text-fg/80" : "text-muted"}`}>{a.body}</p>
+              {a.href && (
+                <a href={a.href} target="_blank" rel="noopener noreferrer" className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                  {t("landing.apps.open")}
+                  <Icon name="arrow" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
+              )}
             </article>
           ))}
-          <article className="rounded-3xl border border-dashed border-line p-7">
+          <article className="reveal rounded-3xl border border-dashed border-line p-7">
             <h3 className="font-display text-lg">Stayflow Suite</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{t("landing.apps.suite")}</p>
           </article>
@@ -163,14 +166,14 @@ export function Steps() {
       <Head eyebrow={t("landing.steps.eyebrow")} title={t("landing.steps.title")} />
       <ol className="mt-14 grid gap-10 md:grid-cols-3">
         {steps.map((s) => (
-          <li key={s.n}>
+          <li key={s.n} className="reveal">
             <span className="font-display text-6xl text-gradient">{s.n}</span>
             <h3 className="font-display mt-4 text-xl">{s.title}</h3>
             <p className="mt-2 leading-relaxed text-muted">{s.body}</p>
           </li>
         ))}
       </ol>
-      <p className="mt-12 inline-block rounded-2xl border border-line bg-surface px-5 py-4 text-sm text-muted">
+      <p className="fx-card mt-12 inline-block rounded-2xl px-5 py-4 text-sm text-muted">
         {t("landing.steps.install")}
       </p>
     </section>
@@ -202,9 +205,7 @@ export function Pricing() {
             return (
               <article
                 key={plan}
-                className={`relative flex flex-col rounded-3xl border p-8 ${
-                  featured ? "border-accent bg-surface shadow-[0_0_80px_-30px_rgb(var(--accent)/0.9)]" : "border-line bg-surface/70"
-                }`}
+                className={`reveal fx-card relative flex flex-col rounded-3xl p-8 ${featured ? "fx-hero" : ""}`}
               >
                 {featured && (
                   <span className="absolute -top-3 left-8 rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent">
@@ -286,7 +287,7 @@ export function Faq() {
 export function FinalCta() {
   return (
     <section className="mx-auto max-w-6xl px-5 pb-20 md:pb-28">
-      <div className="relative overflow-hidden rounded-[32px] border border-line bg-surface px-6 py-16 text-center md:px-16 md:py-24">
+      <div className="reveal fx-card fx-hero relative overflow-hidden rounded-[32px] px-6 py-16 text-center md:px-16 md:py-24">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0"

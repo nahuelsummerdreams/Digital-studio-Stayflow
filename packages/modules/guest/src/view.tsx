@@ -7,7 +7,7 @@ import type { PublicGuide } from "./types";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-card border border-line bg-surface p-6">
+    <section className="fx-card rounded-card p-6">
       <h2 className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{title}</h2>
       <div className="mt-3">{children}</div>
     </section>

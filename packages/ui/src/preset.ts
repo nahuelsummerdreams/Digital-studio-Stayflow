@@ -1,4 +1,4 @@
-/** Tailwind preset shared by every Stayflow app. Colors read the theme variables in themes.ts. */
+/** Tailwind preset shared by every Stayflow app. Colors read the theme variables in theme.css. */
 const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
 
 export const stayflowPreset = {
@@ -18,10 +18,10 @@ export const stayflowPreset = {
         success: token("success"),
       },
       fontFamily: {
-        sans: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
-        display: ["ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        sans: ['"Inter Variable"', "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        display: ['"Plus Jakarta Sans Variable"', '"Inter Variable"', "ui-sans-serif", "system-ui", "sans-serif"],
       },
-      borderRadius: { card: "20px" },
+      borderRadius: { card: "22px" },
     },
   },
 };

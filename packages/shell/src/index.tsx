@@ -6,7 +6,7 @@ import { useMemo, type ReactNode } from "react";
 import { AccountProvider, AuthScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { Icon, PRODUCT_BRAND, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { BrandMark, FxProvider, Icon, PRODUCT_BRAND, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
 
 function MissingConfig() {
   const t = useT();
@@ -23,6 +23,7 @@ export function StayflowProviders({ url, anonKey, children }: { url?: string; an
   const client = useMemo(() => (url && anonKey ? createStayflowClient(url, anonKey) : null), [url, anonKey]);
   return (
     <I18nProvider>
+      <FxProvider />
       {client ? <AccountProvider client={client}>{children}</AccountProvider> : <MissingConfig />}
     </I18nProvider>
   );
@@ -81,10 +82,13 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
   return (
     <div className="lg:grid lg:min-h-screen lg:grid-cols-[17rem_1fr]">
       {/* Desktop: fixed side menu. This is how a host uses the installed app. */}
-      <aside className="sticky top-0 hidden h-screen flex-col border-r border-line bg-surface/40 px-5 py-8 lg:flex">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{brand.name}</p>
-          <p className="font-display mt-2 truncate text-xl leading-tight">{org.name}</p>
+      <aside className="sticky top-0 hidden h-screen flex-col border-r border-line/70 bg-surface/30 px-5 py-8 backdrop-blur-xl lg:flex">
+        <div className="flex items-center gap-3">
+          <BrandMark />
+          <div className="min-w-0">
+            <p className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name}</p>
+            <p className="font-display truncate text-lg leading-tight">{org.name}</p>
+          </div>
         </div>
         <nav className="mt-10 flex flex-col gap-1" aria-label={t("common.sections")}>
           {nav.map((n) => {
@@ -94,11 +98,14 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
                 key={n.href}
                 href={n.href}
                 aria-current={active ? "page" : undefined}
-                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                  active ? "bg-accent/15 text-accent" : "text-muted hover:bg-surface hover:text-fg"
+                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
+                  active ? "bg-accent/12 text-accent" : "text-muted hover:translate-x-0.5 hover:bg-surface/80 hover:text-fg"
                 }`}
               >
-                {n.icon && <Icon name={n.icon} />}
+                {active && (
+                  <span aria-hidden className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-accent shadow-[0_0_14px_rgb(var(--accent))]" />
+                )}
+                {n.icon && <Icon name={n.icon} className="h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110" />}
                 {n.label}
               </Link>
             );
@@ -117,9 +124,12 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
         <div className="mx-auto max-w-5xl">
           {/* Phone and small tablet: header + tabs. */}
           <header className="flex items-start justify-between gap-4 lg:hidden">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{brand.name}</p>
-              <h1 className="font-display mt-2 text-3xl leading-tight">{org.name}</h1>
+            <div className="flex items-center gap-3">
+              <BrandMark />
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name}</p>
+                <h1 className="font-display text-2xl leading-tight">{org.name}</h1>
+              </div>
             </div>
             <div className="mt-1 flex flex-col items-end gap-3">
               <ThemeSwitcher />
@@ -135,7 +145,7 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
             </p>
           )}
 
-          <nav className="mt-6 flex flex-wrap gap-1 rounded-xl border border-line bg-surface p-1 lg:hidden" aria-label={t("common.sections")}>
+          <nav className="fx-card mt-6 flex flex-wrap gap-1 rounded-xl p-1 lg:hidden" aria-label={t("common.sections")}>
             {nav.map((n) => {
               const active = isActive(n.href);
               return (
@@ -154,15 +164,18 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
           </nav>
 
           {current && (
-            <div className="mt-4 hidden lg:block">
-              <h1 className="font-display text-3xl">{current.label}</h1>
+            <div className="anim-in mt-4 hidden lg:block">
+              <h1 className="font-display text-[2rem] leading-tight">{current.label}</h1>
               {current.description && <p className="mt-1.5 text-sm text-muted">{current.description}</p>}
             </div>
           )}
 
-          <div className="mt-6">{children}</div>
+          {/* Re-keyed by route so every screen change plays the entrance animation. */}
+          <div key={pathname} className="anim-in mt-6">
+            {children}
+          </div>
 
-          <footer className="mt-10 rounded-card border border-line bg-surface px-6 py-5 lg:hidden">
+          <footer className="fx-card mt-10 rounded-card px-6 py-5 lg:hidden">
             <StudioSeal className="justify-between" />
           </footer>
         </div>

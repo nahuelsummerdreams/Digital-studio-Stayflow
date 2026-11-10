@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n, type TFn } from "@stayflow/i18n";
-import { Skeleton, activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
+import { AnimatedNumber, Skeleton, Sparkline, activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
 import { monthlyComparison, netProfit, profitByProperty } from "../calc";
 import { formatMonth, formatMonthShort, formatPct, formatSignedPct } from "../format";
 import { formatMoney } from "../money";
@@ -29,6 +29,8 @@ const PERIOD_KEY = {
 function Kpi({
   label,
   value,
+  format,
+  trend,
   sub,
   delta,
   upIsGood = true,
@@ -39,7 +41,9 @@ function Kpi({
   className = "",
 }: {
   label: string;
-  value: string;
+  value: number;
+  format: (n: number) => string;
+  trend?: number[];
   sub?: ReactNode;
   delta?: number | null;
   upIsGood?: boolean;
@@ -51,11 +55,12 @@ function Kpi({
 }) {
   const good = delta !== null && delta !== undefined && (upIsGood ? delta >= 0 : delta <= 0);
   return (
-    <article
-      className={`rounded-card border p-4 sm:p-5 ${className} ${hero ? "border-accent/40 bg-surface shadow-[0_0_70px_-35px_rgb(var(--accent)/0.9)]" : "border-line bg-surface"}`}
-    >
+    <article className={`fx-card overflow-hidden rounded-card p-4 sm:p-5 ${hero ? "fx-hero" : ""} ${className}`}>
       <p className="text-sm text-muted">{label}</p>
-      <p className={`font-display mt-2 text-2xl sm:text-3xl xl:text-4xl ${negative ? "text-danger" : hero ? "text-money" : ""}`}>{value}</p>
+      <p className={`font-display tabular mt-2 text-2xl sm:text-3xl xl:text-4xl ${negative ? "text-danger" : hero ? "text-money" : ""}`}>
+        <AnimatedNumber value={value} format={format} />
+      </p>
+      {trend && trend.length > 1 && <Sparkline values={trend} className="mt-3 h-9 w-full" />}
       {delta !== null && delta !== undefined && (
         <p className={`mt-2 text-sm font-medium ${good ? "text-success" : "text-danger"}`}>
           {formatSignedPct(delta, locale)} <span className="font-normal text-muted">{vs}</span>
@@ -86,14 +91,19 @@ function MonthlyChart({ months, money, locale, t }: { months: MonthSummary[]; mo
         </p>
       </div>
       <div role="img" aria-label={t("overview.chartLabel")} className="mt-6 flex h-52 items-end gap-2 sm:gap-4">
-        {months.map((m) => (
+        {months.map((m, i) => (
           <div key={m.month} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end gap-2" title={`${formatMonth(m.month, locale)}: ${money(m.net)}`}>
             <div className="flex h-full w-full items-end justify-center gap-1">
               <div
-                className="w-full max-w-7 rounded-t-md"
-                style={{ height: h(m.revenue), background: "linear-gradient(180deg, rgb(var(--accent)), rgb(var(--accent-2) / 0.65))" }}
+                className="bar-grow w-full max-w-7 rounded-t-md"
+                style={{
+                  height: h(m.revenue),
+                  background: "linear-gradient(180deg, rgb(var(--accent)), rgb(var(--accent-2) / 0.65))",
+                  boxShadow: "0 0 24px -6px rgb(var(--accent) / 0.55)",
+                  animationDelay: `${i * 70}ms`,
+                }}
               />
-              <div className="w-full max-w-7 rounded-t-md bg-danger/70" style={{ height: h(m.expenses) }} />
+              <div className="bar-grow w-full max-w-7 rounded-t-md bg-danger/70" style={{ height: h(m.expenses), animationDelay: `${i * 70 + 60}ms` }} />
             </div>
             <span className="text-xs text-muted">{formatMonthShort(m.month, locale)}</span>
           </div>
@@ -168,8 +178,8 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
   const showChart = months.length > 1;
 
   return (
-    <div className="space-y-6">
-      <div role="group" aria-label={t("overview.periodLabel")} className="flex w-full gap-1 overflow-x-auto rounded-xl border border-line bg-surface p-1 lg:w-fit">
+    <div className="anim-stagger space-y-6">
+      <div role="group" aria-label={t("overview.periodLabel")} className="fx-card flex w-full gap-1 overflow-x-auto rounded-xl p-1 lg:w-fit">
         {PERIODS.map((p) => (
           <button
             key={p}
@@ -184,13 +194,14 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
       </div>
 
       <section aria-label={t("overview.netProfit")} className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <Kpi hero className="col-span-2 xl:col-span-1" negative={net < 0} label={t("overview.netProfit")} value={money(net)} delta={dNet} locale={locale} vs={t("overview.vsShort")} />
-        <Kpi label={t("overview.revenue")} value={money(revenue)} delta={dRevenue} locale={locale} vs={t("overview.vsShort")} />
-        <Kpi label={t("overview.spent")} value={money(spent)} delta={dSpent} upIsGood={false} locale={locale} vs={t("overview.vsShort")} />
+        <Kpi hero className="col-span-2 xl:col-span-1" negative={net < 0} label={t("overview.netProfit")} value={net} format={money} trend={months.map((m) => m.net)} delta={dNet} locale={locale} vs={t("overview.vsShort")} />
+        <Kpi label={t("overview.revenue")} value={revenue} format={money} trend={months.map((m) => m.revenue)} delta={dRevenue} locale={locale} vs={t("overview.vsShort")} />
+        <Kpi label={t("overview.spent")} value={spent} format={money} delta={dSpent} upIsGood={false} locale={locale} vs={t("overview.vsShort")} />
         <Kpi
           className="col-span-2 xl:col-span-1"
           label={t("overview.nightsSold")}
-          value={String(nights)}
+          value={nights}
+          format={(n) => String(Math.round(n))}
           sub={nights > 0 ? t("overview.perNight", { amount: money(Math.round(net / nights)) }) : undefined}
           locale={locale}
           vs={t("overview.vsShort")}
@@ -220,10 +231,12 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
                     </div>
                     <div className="mt-2 h-1.5 rounded-full bg-bg" aria-hidden>
                       <div
-                        className="h-full rounded-full"
+                        className="h-full origin-left rounded-full"
                         style={{
                           width: `${Math.max(0, (p.net / bestNet) * 100)}%`,
                           background: "linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)))",
+                          boxShadow: "0 0 14px rgb(var(--accent) / 0.6)",
+                          animation: "grow-x 1s var(--ease) both",
                         }}
                       />
                     </div>

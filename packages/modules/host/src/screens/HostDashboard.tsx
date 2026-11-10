@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useI18n } from "@stayflow/i18n";
 import { formatMoney } from "@stayflow/money";
-import { EmptyState, Icon, Skeleton, cardClass, type IconName } from "@stayflow/ui";
+import { AnimatedNumber, EmptyState, Icon, Skeleton, cardClass, type IconName } from "@stayflow/ui";
 import { firstOfMonth, firstOfNextMonth, localToday } from "../dates";
 import { shortDate } from "../format";
 import { bookedRevenue, movementsOn, occupancyPct, upcomingArrivals } from "../logic";
@@ -21,11 +21,13 @@ interface Props {
   onGoProperties: () => void;
 }
 
-function Kpi({ label, value, hero = false, sub }: { label: string; value: string; hero?: boolean; sub?: string }) {
+function Kpi({ label, value, format, hero = false, sub }: { label: string; value: number; format: (n: number) => string; hero?: boolean; sub?: string }) {
   return (
-    <article className={`rounded-card border p-4 sm:p-5 ${hero ? "border-accent/40 bg-surface shadow-[0_0_70px_-35px_rgb(var(--accent)/0.9)]" : "border-line bg-surface"}`}>
+    <article className={`fx-card rounded-card p-4 sm:p-5 ${hero ? "fx-hero" : ""}`}>
       <p className="text-sm text-muted">{label}</p>
-      <p className={`font-display mt-2 text-2xl sm:text-3xl xl:text-4xl ${hero ? "text-money" : ""}`}>{value}</p>
+      <p className={`font-display tabular mt-2 text-2xl sm:text-3xl xl:text-4xl ${hero ? "text-money" : ""}`}>
+        <AnimatedNumber value={value} format={format} />
+      </p>
       {sub && <p className="mt-2 text-sm text-muted">{sub}</p>}
     </article>
   );
@@ -34,7 +36,7 @@ function Kpi({ label, value, hero = false, sub }: { label: string; value: string
 function Tool({ icon, name, body, href, label }: { icon: IconName; name: string; body: string; href?: string; label: string }) {
   const content: ReactNode = (
     <>
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent"><Icon name={icon} className="h-5 w-5" /></span>
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent transition-transform duration-300 group-hover:scale-110"><Icon name={icon} className="h-5 w-5" /></span>
       <span className="min-w-0 flex-1">
         <span className="block font-medium">{name}</span>
         <span className="mt-0.5 block text-sm text-muted">{body}</span>
@@ -42,7 +44,7 @@ function Tool({ icon, name, body, href, label }: { icon: IconName; name: string;
       {href && <span className="flex items-center gap-1 text-sm font-medium text-accent">{label}<Icon name="arrow" className="h-4 w-4" /></span>}
     </>
   );
-  const cls = "flex items-center gap-4 rounded-2xl border border-line bg-bg/40 p-4 transition hover:border-accent/50";
+  const cls = "group flex items-center gap-4 rounded-2xl border border-line bg-bg/40 p-4 transition duration-300 hover:-translate-y-0.5 hover:border-accent/50 hover:bg-bg/60";
   return href ? <a href={href} target="_blank" rel="noopener noreferrer" className={cls}>{content}</a> : <div className={cls}>{content}</div>;
 }
 
@@ -81,12 +83,12 @@ export function HostDashboard({ currency, properties, bookings, tasks, loading, 
   const nothingToday = arrivals.length === 0 && departures.length === 0;
 
   return (
-    <div className="space-y-6">
+    <div className="anim-stagger space-y-6">
       <section className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <Kpi hero label={t("host.occupancy")} value={`${String(occupancy).replace(".", ",")} %`} />
-        <Kpi label={t("host.arrivalsWeek")} value={String(week.length)} />
-        <Kpi label={t("host.monthRevenue")} value={formatMoney(revenue, currency, locale)} />
-        <Kpi label={t("host.pendingTasks")} value={String(pending.length)} />
+        <Kpi hero label={t("host.occupancy")} value={occupancy} format={(n) => `${n.toFixed(1).replace(".", ",")} %`} />
+        <Kpi label={t("host.arrivalsWeek")} value={week.length} format={(n) => String(Math.round(n))} />
+        <Kpi label={t("host.monthRevenue")} value={revenue} format={(n) => formatMoney(n, currency, locale)} />
+        <Kpi label={t("host.pendingTasks")} value={pending.length} format={(n) => String(Math.round(n))} />
       </section>
 
       <div className="grid gap-4 lg:grid-cols-3">

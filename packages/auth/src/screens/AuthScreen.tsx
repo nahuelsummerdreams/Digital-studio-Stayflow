@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
-import { StudioSeal, buttonClass, cardClass, errorClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
+import { BrandMark, StudioSeal, buttonClass, cardClass, errorClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
 
 /** Sign in / create account. One Stayflow account works in every app. */
@@ -44,11 +44,14 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
 
   const signup = mode === "signup";
   return (
-    <main className="mx-auto max-w-md px-5 pb-16 pt-14">
-      <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{productName}</p>
-      <h1 className="mt-3 font-display text-4xl leading-tight">{tagline}</h1>
+    <main className="anim-stagger mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-14">
+      <div className="flex items-center gap-3">
+        <BrandMark className="h-11 w-11" />
+        <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{productName}</p>
+      </div>
+      <h1 className="mt-6 font-display text-[2.5rem] leading-[1.08]">{tagline}</h1>
 
-      <form onSubmit={submit} className={`${cardClass} mt-8 space-y-4`}>
+      <form onSubmit={submit} className={`${cardClass} fx-hero mt-8 space-y-4`}>
         <h2 className="text-sm font-medium">{signup ? t("auth.signUpTitle") : t("auth.signInTitle")}</h2>
         {signup && (
           <label className={labelClass}>

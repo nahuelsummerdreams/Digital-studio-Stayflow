@@ -7,3 +7,7 @@ export { DigitalStudioLogo } from "./DigitalStudioLogo";
 export { StudioSeal } from "./StudioSeal";
 export { Icon, type IconName } from "./Icon";
 export { EmptyState, Skeleton } from "./Feedback";
+export { AnimatedNumber } from "./AnimatedNumber";
+export { Sparkline } from "./Sparkline";
+export { FxProvider } from "./FxProvider";
+export { BrandMark } from "./BrandMark";

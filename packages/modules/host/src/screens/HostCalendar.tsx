@@ -15,9 +15,9 @@ interface Props {
 }
 
 const BAR: Record<BookingStatus, string> = {
-  confirmed: "bg-accent text-onaccent",
-  checked_in: "bg-success text-bg",
-  checked_out: "bg-line text-muted",
+  confirmed: "bg-gradient-to-r from-accent to-accent/80 text-onaccent shadow-[0_8px_20px_-8px_rgb(var(--accent)/0.8)]",
+  checked_in: "bg-gradient-to-r from-success to-success/80 text-bg shadow-[0_8px_20px_-8px_rgb(var(--success)/0.8)]",
+  checked_out: "bg-line/80 text-muted",
   canceled: "",
 };
 
@@ -52,7 +52,7 @@ export function HostCalendar({ properties, bookings, loading }: Props) {
         </div>
       </div>
 
-      <div className={`${cardClass} overflow-x-auto !p-0`} role="group" aria-label={t("host.calLabel", { month: title })}>
+      <div className={`${cardClass} anim-in overflow-x-auto !p-0`} role="group" aria-label={t("host.calLabel", { month: title })}>
         <div style={{ minWidth: `${11 * 16 + days * 28}px` }}>
           <div className="grid border-b border-line" style={grid}>
             <div />
@@ -89,7 +89,7 @@ export function HostCalendar({ properties, bookings, loading }: Props) {
                       key={s.bookingId}
                       title={b ? `${b.guestName} · ${shortDate(b.checkIn, locale)} → ${shortDate(b.checkOut, locale)}` : s.guestName}
                       style={{ gridColumn: `${s.startDay + 1} / span ${s.span}`, gridRow: 1 }}
-                      className={`z-10 m-1.5 flex items-center overflow-hidden px-2.5 text-xs font-medium ${BAR[s.status]} ${s.startsBefore ? "rounded-l-none" : "rounded-l-lg"} ${s.endsAfter ? "rounded-r-none" : "rounded-r-lg"}`}
+                      className={`z-10 m-1.5 flex items-center overflow-hidden px-2.5 text-xs font-medium transition-transform duration-300 hover:scale-[1.03] ${BAR[s.status]} ${s.startsBefore ? "rounded-l-none" : "rounded-l-lg"} ${s.endsAfter ? "rounded-r-none" : "rounded-r-lg"}`}
                     >
                       <span className="truncate">{s.guestName}</span>
                     </div>

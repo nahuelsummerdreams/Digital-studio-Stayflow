@@ -1,10 +1,14 @@
-/* Shared by every Stayflow app. One source of truth for the dark base and the three accents. */
+/*
+ * Stayflow design system. One source of truth for every app.
+ * Base is always dark; a theme only swaps the accent. Effects use the accent, so they follow the theme.
+ * All motion is switched off by `prefers-reduced-motion`.
+ */
 :root {
   color-scheme: dark;
-  --bg: 6 10 19;
-  --surface: 13 19 33;
+  --bg: 5 8 16;
+  --surface: 12 18 32;
   --surface-2: 19 27 46;
-  --line: 32 42 68;
+  --line: 30 40 66;
   --fg: 240 244 250;
   --muted: 139 151 173;
   --danger: 255 107 129;
@@ -12,6 +16,7 @@
   --accent: 47 123 255;
   --accent-2: 34 211 166;
   --on-accent: 255 255 255;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 [data-theme="green"] {
   --accent: 57 255 136;
@@ -28,32 +33,61 @@ html {
   background: rgb(var(--bg));
   scroll-behavior: smooth;
 }
+
 body {
+  position: relative;
+  isolation: isolate;
   min-height: 100vh;
   color: rgb(var(--fg));
+  background: rgb(var(--bg));
+  font-feature-settings: "cv11", "ss03";
   -webkit-font-smoothing: antialiased;
-  /* One soft glow in the accent color; the rest stays quiet. */
-  background:
-    radial-gradient(900px 480px at 85% -8%, rgb(var(--accent) / 0.16), transparent 62%),
-    rgb(var(--bg));
-  background-repeat: no-repeat;
+  text-rendering: optimizeLegibility;
 }
 
+/* ---------------------------------------------------------------- atmosphere */
+/* Slow aurora in the accent colors. Cheap: three gradients moved with transform only. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -25%;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(42% 36% at 18% 8%, rgb(var(--accent) / 0.2), transparent 70%),
+    radial-gradient(36% 32% at 86% 2%, rgb(var(--accent-2) / 0.13), transparent 70%),
+    radial-gradient(34% 30% at 62% 104%, rgb(var(--accent) / 0.09), transparent 70%);
+  animation: aurora 28s ease-in-out infinite alternate;
+  will-change: transform;
+}
+/* Film grain: removes the "flat digital" look of big dark gradients. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------------------------------------------------------------- type */
 .font-display {
   font-weight: 700;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.03em;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
 }
 
-/* Decorative accent gradient for headlines. */
 .text-gradient {
   background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-
-/* Positive money figures. In the coral theme the accent is too close to the loss color,
-   so gains stay neutral there: red must only ever mean "you lost money". */
+/* Positive money. In coral the accent is too close to the loss color, so gains stay neutral:
+   red must only ever mean "you lost money". */
 .text-money {
   background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
   -webkit-background-clip: text;
@@ -65,21 +99,229 @@ body {
   color: rgb(var(--fg));
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+/* ---------------------------------------------------------------- surfaces */
+/* Glass card with an inner highlight and a spotlight that follows the pointer (see FxProvider). */
+.fx-card {
+  position: relative;
+  border: 1px solid rgb(var(--line));
+  background: linear-gradient(180deg, rgb(var(--surface) / 0.92), rgb(var(--surface) / 0.72));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.045),
+    0 18px 40px -26px rgb(0 0 0 / 0.75);
+  -webkit-backdrop-filter: blur(14px) saturate(125%);
+  backdrop-filter: blur(14px) saturate(125%);
+  transition:
+    border-color 0.3s var(--ease),
+    box-shadow 0.3s var(--ease),
+    transform 0.3s var(--ease);
+}
+.fx-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 0%), rgb(var(--accent) / 0.11), transparent 45%);
+  transition: opacity 0.35s var(--ease);
+}
+@media (hover: hover) {
+  .fx-card:hover {
+    border-color: rgb(var(--accent) / 0.38);
   }
-  * {
-    transition: none !important;
+  .fx-card:hover::before {
+    opacity: 1;
   }
 }
 
-/* Keyboard focus must always be visible. */
+/* Luminous gradient border for the one card that matters on a screen. */
+.fx-hero {
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    0 0 80px -36px rgb(var(--accent) / 0.85),
+    0 18px 40px -26px rgb(0 0 0 / 0.75);
+}
+.fx-hero::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgb(var(--accent) / 0.85), transparent 38%, transparent 62%, rgb(var(--accent-2) / 0.6));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Primary button: gradient, glow, and a sheen that sweeps on hover. */
+.fx-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, rgb(var(--accent)), rgb(var(--accent) / 0.82));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    0 0 0 1px rgb(var(--accent) / 0.55),
+    0 10px 28px -10px rgb(var(--accent) / 0.75);
+  transition:
+    transform 0.2s var(--ease),
+    box-shadow 0.3s var(--ease),
+    filter 0.2s;
+}
+.fx-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.32) 50%, transparent 65%);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .fx-btn:hover:not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.3),
+      0 0 0 1px rgb(var(--accent) / 0.7),
+      0 14px 34px -10px rgb(var(--accent) / 0.95);
+  }
+  .fx-btn:hover:not(:disabled)::after {
+    transform: translateX(120%);
+    transition: transform 0.7s var(--ease);
+  }
+}
+.fx-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* ---------------------------------------------------------------- loading */
+.skeleton {
+  background: linear-gradient(90deg, rgb(var(--line) / 0.3) 25%, rgb(var(--line) / 0.62) 50%, rgb(var(--line) / 0.3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.7s linear infinite;
+}
+
+/* ---------------------------------------------------------------- motion */
+@keyframes aurora {
+  to {
+    transform: translate3d(3%, 4%, 0) scale(1.1);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes bar-grow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(var(--accent) / 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgb(var(--accent) / 0);
+  }
+}
+@keyframes float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Whole page content enters softly; direct children cascade. */
+.anim-in {
+  animation: fade-up 0.6s var(--ease) both;
+}
+.anim-stagger > * {
+  animation: fade-up 0.6s var(--ease) both;
+}
+.anim-stagger > *:nth-child(1) { animation-delay: 0.03s; }
+.anim-stagger > *:nth-child(2) { animation-delay: 0.09s; }
+.anim-stagger > *:nth-child(3) { animation-delay: 0.15s; }
+.anim-stagger > *:nth-child(4) { animation-delay: 0.21s; }
+.anim-stagger > *:nth-child(5) { animation-delay: 0.27s; }
+.anim-stagger > *:nth-child(6) { animation-delay: 0.33s; }
+.anim-stagger > *:nth-child(7) { animation-delay: 0.39s; }
+.anim-stagger > *:nth-child(8) { animation-delay: 0.45s; }
+
+.bar-grow {
+  transform-origin: bottom;
+  animation: bar-grow 0.9s var(--ease) both;
+}
+.float {
+  animation: float 7s ease-in-out infinite;
+}
+.pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+/* Scroll reveal for the public site. Pure CSS, so it needs no JavaScript and degrades to "visible". */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: fade-up linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+/* Smooth accent change when the user switches theme (View Transitions API, where available). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+}
+
+/* ---------------------------------------------------------------- accessibility */
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible,
 input:focus-visible,
-select:focus-visible {
+select:focus-visible,
+textarea:focus-visible {
   outline: 2px solid rgb(var(--accent));
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+  }
+  body::before {
+    animation: none;
+  }
 }

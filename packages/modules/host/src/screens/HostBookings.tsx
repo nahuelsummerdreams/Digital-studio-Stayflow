@@ -208,7 +208,7 @@ export function HostBookings({ client, orgId, currency, properties, onGoProperti
       </form>
 
       <section className="space-y-4">
-        <div role="group" aria-label={t("host.listTitle")} className="flex gap-1 overflow-x-auto rounded-xl border border-line bg-surface p-1">
+        <div role="group" aria-label={t("host.listTitle")} className="flex gap-1 overflow-x-auto fx-card rounded-xl p-1">
           {FILTERS.map((f) => (
             <button
               key={f}

@@ -15,8 +15,14 @@ export function ThemeSwitcher() {
   }, []);
 
   function choose(id: ThemeId) {
-    setTheme(id);
-    document.documentElement.setAttribute("data-theme", id);
+    const apply = () => {
+      setTheme(id);
+      document.documentElement.setAttribute("data-theme", id);
+    };
+    // Cross-fade the whole accent change where the browser supports it.
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+    if (doc.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) doc.startViewTransition(apply);
+    else apply();
     try {
       localStorage.setItem(THEME_STORAGE_KEY, id);
     } catch {
