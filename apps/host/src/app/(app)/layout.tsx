@@ -5,6 +5,7 @@ import { useAccount } from "@stayflow/auth";
 import { useT } from "@stayflow/i18n";
 import { HostDataProvider, alertText, guestsDirectory, hostAlerts, localToday, useHostData } from "@stayflow/module-host";
 import { AppShell, StayflowProviders, type SearchItem, type ShellAlert } from "@stayflow/shell";
+import { AssistantChat } from "@/components/AssistantChat";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 
 function Frame({ children }: { children: ReactNode }) {
@@ -60,6 +61,7 @@ function WithData({ children }: { children: ReactNode }) {
   return (
     <HostDataProvider client={client} orgId={org?.id ?? ""}>
       <Frame>{children}</Frame>
+      <AssistantChat />
     </HostDataProvider>
   );
 }

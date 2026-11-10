@@ -9,3 +9,4 @@ export { HostCalendar } from "./screens/HostCalendar";
 export { HostGuests } from "./screens/HostGuests";
 export { HostTasks } from "./screens/HostTasks";
 export * from "./insights";
+export * from "./assistant";

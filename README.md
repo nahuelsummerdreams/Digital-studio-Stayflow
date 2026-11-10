@@ -87,3 +87,18 @@ The landing reads `NEXT_PUBLIC_PROFIT_URL` (see `apps/web/.env.example`) to know
 3. **Guest** (QR guides), then **Host**
 4. AI, Listing, Operations
 5. **Suite** + desktop installers (Tauri wrapper around the same web apps)
+
+## Asistente (chat con IA) en Stayflow Host
+
+Un chat flotante dentro de Host que responde con los datos de la cuenta (reservas, fechas libres, tareas, ocupación).
+Solo lee: no crea ni cambia nada. Corre en el servidor (`apps/host/src/app/api/assistant/route.ts`), consulta Supabase con la
+sesión del propio anfitrión (así valen las mismas reglas de seguridad) y llama al modelo con herramientas de solo lectura
+(`packages/modules/host/src/assistant.ts`, con pruebas). Cada organización tiene un tope diario (migración `0012_assistant.sql`).
+
+Variables de entorno del proyecto `stayflow-host` en Vercel:
+
+| Variable | Para qué |
+|---|---|
+| `ANTHROPIC_API_KEY` | Clave del proveedor de IA. Sin ella el chat avisa que no está activado. Nunca va en el navegador. |
+| `ASSISTANT_MODEL` | Opcional. Por defecto `claude-haiku-5-5` (el más económico). |
+| `ASSISTANT_DAILY_CAP` | Opcional. Preguntas por organización y por día. Por defecto 40. |
