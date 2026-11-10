@@ -63,6 +63,61 @@ importers:
         specifier: ^5.6.0
         version: 5.9.3
 
+  apps/host:
+    dependencies:
+      '@stayflow/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@stayflow/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@stayflow/licensing':
+        specifier: workspace:*
+        version: link:../../packages/licensing
+      '@stayflow/module-host':
+        specifier: workspace:*
+        version: link:../../packages/modules/host
+      '@stayflow/money':
+        specifier: workspace:*
+        version: link:../../packages/money
+      '@stayflow/shell':
+        specifier: workspace:*
+        version: link:../../packages/shell
+      '@stayflow/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      next:
+        specifier: ^15.1.0
+        version: 15.5.29(@types/node@22.20.5)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.1(react@19.3.1)
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.20.5
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.3.0(@types/react@19.3.0)
+      autoprefixer:
+        specifier: ^10.4.20
+        version: 10.6.2(postcss@8.5.32)
+      postcss:
+        specifier: ^8.4.47
+        version: 8.5.32
+      tailwindcss:
+        specifier: ^3.4.14
+        version: 3.4.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+
   apps/profit:
     dependencies:
       '@stayflow/auth':
@@ -238,11 +293,14 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.20.5)
 
-  packages/modules/profit:
+  packages/modules/host:
     dependencies:
       '@stayflow/i18n':
         specifier: workspace:*
         version: link:../../i18n
+      '@stayflow/money':
+        specifier: workspace:*
+        version: link:../../money
       '@stayflow/ui':
         specifier: workspace:*
         version: link:../../ui
@@ -256,6 +314,43 @@ importers:
       react:
         specifier: ^19.0.0
         version: 19.3.1
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.20.5)
+
+  packages/modules/profit:
+    dependencies:
+      '@stayflow/i18n':
+        specifier: workspace:*
+        version: link:../../i18n
+      '@stayflow/money':
+        specifier: workspace:*
+        version: link:../../money
+      '@stayflow/ui':
+        specifier: workspace:*
+        version: link:../../ui
+      '@supabase/supabase-js':
+        specifier: ^2.45.0
+        version: 2.119.0
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.3.0
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.20.5)
+
+  packages/money:
+    devDependencies:
       typescript:
         specifier: ^5.6.0
         version: 5.9.3

@@ -11,8 +11,8 @@ function Nav({ children }: { children: ReactNode }) {
     <AppShell
       product="guest"
       nav={[
-        { href: "/", label: t("nav.guides") },
-        { href: "/properties", label: t("nav.properties") },
+        { href: "/", label: t("nav.guides"), icon: "qr", description: t("navDesc.guides") },
+        { href: "/properties", label: t("nav.properties"), icon: "building", description: t("navDesc.properties") },
       ]}
     >
       {children}

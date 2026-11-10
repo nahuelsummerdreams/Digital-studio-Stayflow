@@ -1,5 +1,5 @@
-/** All money values are integer minor units (cents). Never floats. */
-export type Minor = number;
+import type { Minor } from "@stayflow/money";
+export type { Minor };
 
 export interface Income {
   propertyId: string;

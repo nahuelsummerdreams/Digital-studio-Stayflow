@@ -9,6 +9,7 @@ apps/
   web/           Landing page (static, Spanish)       http://localhost:3000
   profit/        Stayflow Profit (PWA)                http://localhost:3001
   guest/         Stayflow Guest (PWA + public /g/<link>)  http://localhost:3002
+  host/          Stayflow Host (bookings, calendar, guests, tasks)  http://localhost:3003
   guest/ host/   next
   suite/         loads every module (built last)
 packages/
@@ -32,6 +33,12 @@ Profit alone and Profit inside the Suite run the same code; the license decides 
 3. `apps/<name>`: copy `apps/guest`, set `product="<name>"` in `AppShell`, list its nav items.
 Sign-in, trial, license check, theme switcher and the Digital Studio seal come from `@stayflow/shell`.
 
+## Host bookings
+
+A property cannot be double-booked: the database refuses overlapping stays (exclusion constraint), while a check-out
+day may equal the next check-in day and canceled stays free their dates. `record_booking_income(booking)` turns a booking
+into a Profit income entry exactly once (needs both Host and Profit access).
+
 ## Guest guides (public access)
 
 Guests are not signed in, so the guide tables are never public. The only public door is the SQL function
@@ -53,6 +60,7 @@ pnpm typecheck
 pnpm dev:profit    # http://localhost:3001
 pnpm dev:web       # http://localhost:3000 (landing)
 pnpm dev:guest     # http://localhost:3002
+pnpm dev:host      # http://localhost:3003
 ```
 
 Copy `.env.example` to `.env.local` and fill the Supabase values to connect real data.
@@ -68,8 +76,8 @@ The landing reads `NEXT_PUBLIC_PROFIT_URL` (see `apps/web/.env.example`) to know
 ## Supabase project
 
 - Project `stayflow` (ref `eigsajmshgrmnhascghr`, region `us-east-1`). One project for every customer; tenants are isolated by RLS.
-- Migrations `0001`-`0008` are applied. Keep `supabase/migrations` in sync with the remote.
-- `supabase/tests/rls_isolation.sql` (14 checks) and `supabase/tests/recurring_expenses.sql` (9) and `supabase/tests/guest_guides.sql` (16) roll themselves back. Run them after any policy or function change.
+- Migrations `0001`-`0009` are applied. Keep `supabase/migrations` in sync with the remote.
+- `supabase/tests/rls_isolation.sql` (14 checks) and `supabase/tests/recurring_expenses.sql` (9) and `supabase/tests/guest_guides.sql` (16) and `supabase/tests/host_bookings.sql` (17) roll themselves back. Run them after any policy or function change.
 - Keys are not committed. Get the URL and publishable key from the Supabase dashboard (Settings > API) and put them in `apps/profit/.env.local`.
 
 ## Roadmap

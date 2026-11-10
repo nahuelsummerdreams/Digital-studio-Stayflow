@@ -9,6 +9,7 @@
     "dev:profit": "pnpm --filter @stayflow/app-profit dev",
     "dev:web": "pnpm --filter @stayflow/web dev",
     "dev:guest": "pnpm --filter @stayflow/app-guest dev",
+    "dev:host": "pnpm --filter @stayflow/app-host dev",
     "build": "pnpm -r build",
     "test": "pnpm -r --if-present test",
     "typecheck": "pnpm -r --if-present typecheck"

@@ -15,6 +15,7 @@ const BY_CODE: Record<string, MessageKey> = {
   over_email_send_rate_limit: "errors.rateLimit",
   over_request_rate_limit: "errors.rateLimit",
   "42501": "errors.noPermission", // Postgres insufficient_privilege (RLS, license gate)
+  "23P01": "errors.bookingOverlap", // Postgres exclusion_violation: two stays on the same dates
 };
 
 /** Maps any thrown value (Supabase auth/PostgREST/network) to a translatable message key. */

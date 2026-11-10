@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useT } from "@stayflow/i18n";
-import { buttonClass, cardClass, errorClass, ghostButtonClass } from "@stayflow/ui";
+import { EmptyState, Skeleton, buttonClass, cardClass, errorClass, ghostButtonClass } from "@stayflow/ui";
 import { createGuide, loadGuideSummaries, type GuideSummary } from "../data";
 import { completeness } from "../helpers";
 
@@ -58,14 +58,17 @@ export function GuestHome({ client, orgId, properties, onOpen, onGoProperties }:
       {error && <p role="alert" className={errorClass}>{error}</p>}
 
       {properties.length === 0 ? (
-        <section className={cardClass}>
-          <p className="text-sm text-muted">{t("guest.needProperty")}</p>
-          <button type="button" className={`${buttonClass} mt-4`} onClick={onGoProperties}>
+        <EmptyState icon="building" title={t("guest.needProperty")} body={t("guest.homeIntro")}>
+          <button type="button" className={buttonClass} onClick={onGoProperties}>
             {t("guest.goProperties")}
           </button>
-        </section>
+        </EmptyState>
       ) : loading ? (
-        <p className="text-sm text-muted">{t("common.loading")}</p>
+        <div className="space-y-3" aria-busy="true">
+          {[0, 1].map((i) => (
+            <Skeleton key={i} className="h-20 rounded-card" />
+          ))}
+        </div>
       ) : (
         <ul className="space-y-3">
           {properties.map((p) => {

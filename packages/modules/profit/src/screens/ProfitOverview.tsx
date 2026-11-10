@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n, type TFn } from "@stayflow/i18n";
-import { activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
+import { Skeleton, activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
 import { monthlyComparison, netProfit, profitByProperty } from "../calc";
 import { formatMonth, formatMonthShort, formatPct, formatSignedPct } from "../format";
 import { formatMoney } from "../money";
@@ -123,7 +123,19 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
   const [period, setPeriod] = useState<Period>("this_month");
   const range = useMemo(() => periodRange(period, localToday()), [period]);
 
-  if (loading) return <p className="text-sm text-muted">{t("overview.loading")}</p>;
+  if (loading) {
+    return (
+      <div className="space-y-6" aria-busy="true" aria-label={t("overview.loading")}>
+        <Skeleton className="h-11 w-full lg:w-96" />
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-28 rounded-card" />
+          ))}
+        </div>
+        <Skeleton className="h-64 rounded-card" />
+      </div>
+    );
+  }
   if (error) return <p role="alert" className={errorClass}>{t("entries.loadError")}</p>;
 
   const incomes = ledger.incomes.filter((i) => inRange(i.date, range.current));

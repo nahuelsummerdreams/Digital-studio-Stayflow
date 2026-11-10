@@ -6,7 +6,7 @@ import { useMemo, type ReactNode } from "react";
 import { AccountProvider, AuthScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { PRODUCT_BRAND, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass } from "@stayflow/ui";
+import { Icon, PRODUCT_BRAND, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
 
 function MissingConfig() {
   const t = useT();
@@ -31,6 +31,9 @@ export function StayflowProviders({ url, anonKey, children }: { url?: string; an
 export interface NavItem {
   href: string;
   label: string;
+  icon?: IconName;
+  /** One line under the page title on desktop. */
+  description?: string;
 }
 
 /**
@@ -43,7 +46,19 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
   const pathname = usePathname();
   const brand = PRODUCT_BRAND[product];
 
-  if (loading) return <p className="px-5 pt-14 text-center text-sm text-muted">{t("common.loading")}</p>;
+  if (loading) {
+    return (
+      <main className="mx-auto max-w-5xl px-5 pt-14" aria-busy="true" aria-label={t("common.loading")}>
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="mt-4 h-10 w-64" />
+        <div className="mt-10 grid grid-cols-2 gap-4 xl:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-32 rounded-card" />
+          ))}
+        </div>
+      </main>
+    );
+  }
   if (!session) return <AuthScreen productName={brand.name} tagline={brand.tagline} />;
   if (error) {
     return (
@@ -79,10 +94,11 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
                 key={n.href}
                 href={n.href}
                 aria-current={active ? "page" : undefined}
-                className={`rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                   active ? "bg-accent/15 text-accent" : "text-muted hover:bg-surface hover:text-fg"
                 }`}
               >
+                {n.icon && <Icon name={n.icon} />}
                 {n.label}
               </Link>
             );
@@ -137,7 +153,12 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
             })}
           </nav>
 
-          {current && <h1 className="font-display mt-4 hidden text-3xl lg:block">{current.label}</h1>}
+          {current && (
+            <div className="mt-4 hidden lg:block">
+              <h1 className="font-display text-3xl">{current.label}</h1>
+              {current.description && <p className="mt-1.5 text-sm text-muted">{current.description}</p>}
+            </div>
+          )}
 
           <div className="mt-6">{children}</div>
 
