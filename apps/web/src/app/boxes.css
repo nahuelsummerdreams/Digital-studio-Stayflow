@@ -25,8 +25,8 @@
   --w: 208px;
   --h: 288px;
   --d: 30px;
-  --ry: -26deg;
-  --rx: 5deg;
+  --ry: -28deg;
+  --rx: -13deg;
   --gx: 30%;
   --gy: 20%;
   position: relative;
@@ -46,14 +46,14 @@
 .pbox-front {
   inset: 0;
   transform: translateZ(calc(var(--d) / 2));
-  border-radius: 3px 8px 8px 3px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
 }
 .pbox-back {
   inset: 0;
   transform: translateZ(calc(var(--d) / -2)) rotateY(180deg);
-  background: hsl(var(--hue) 40% 10%);
+  background: hsl(var(--hue) 100% 22%);
   border-radius: 8px 3px 3px 8px;
 }
 .pbox-spine {
@@ -62,7 +62,7 @@
   width: var(--d);
   left: calc((var(--w) - var(--d)) / 2);
   transform: rotateY(-90deg) translateZ(calc(var(--w) / 2));
-  background: linear-gradient(90deg, hsl(var(--hue) 70% 16%), hsl(var(--hue) 70% 26%) 50%, hsl(var(--hue) 70% 14%));
+  background: linear-gradient(90deg, hsl(var(--hue) 100% 30%), hsl(var(--hue) 100% 46%) 50%, hsl(var(--hue) 100% 26%));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,12 +78,26 @@
   color: hsl(var(--hue) 90% 80%);
 }
 .pbox-pages {
-  top: 3px;
-  bottom: 3px;
+  top: 0;
+  height: 100%;
   width: var(--d);
   left: calc((var(--w) - var(--d)) / 2);
-  transform: rotateY(90deg) translateZ(calc(var(--w) / 2 - 1px));
-  background: repeating-linear-gradient(90deg, #f1ede4 0 1px, #cfc8b8 1px 2px);
+  transform: rotateY(90deg) translateZ(calc(var(--w) / 2));
+  background: linear-gradient(90deg, hsl(var(--hue) 100% 32%), hsl(var(--hue) 100% 52%) 55%, hsl(var(--hue) 100% 28%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+.pbox-pages span {
+  writing-mode: vertical-rl;
+  white-space: nowrap;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--hue) 100% 94%);
+  text-shadow: 0 0 0.6em hsl(var(--hue) 100% 70%);
 }
 .pbox-top {
   left: 0;
@@ -91,7 +105,19 @@
   height: var(--d);
   top: calc((var(--h) - var(--d)) / 2);
   transform: rotateX(90deg) translateZ(calc(var(--h) / 2));
-  background: hsl(var(--hue) 60% 22%);
+  background: linear-gradient(180deg, hsl(var(--hue) 100% 64%), hsl(var(--hue) 100% 42%));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+.pbox-top span {
+  font-weight: 800;
+  letter-spacing: 0.34em;
+  color: hsl(var(--hue) 100% 96%);
+  text-shadow: 0 0 0.6em hsl(var(--hue) 100% 70%);
+  text-transform: uppercase;
 }
 .pbox-glare {
   position: absolute;
@@ -124,12 +150,12 @@
   position: absolute;
   left: 50%;
   bottom: 0.4rem;
-  width: 78%;
-  height: 7rem;
+  width: 96%;
+  height: 8rem;
   transform: translateX(-50%);
   border-radius: 50%;
-  background: radial-gradient(closest-side, hsl(var(--hue) 90% 55% / 0.35), transparent);
-  filter: blur(14px);
+  background: radial-gradient(closest-side, hsl(var(--hue) 100% 58% / 0.8), transparent);
+  filter: blur(16px);
   pointer-events: none;
 }
 
@@ -196,4 +222,18 @@
 }
 .ticker {
   animation: ticker 40s linear infinite;
+}
+
+/* A halo of light behind each pack so it glows against the dark card. */
+.pbox-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 135%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -52%);
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, hsl(var(--hue) 100% 58% / 0.42), transparent 72%);
+  filter: blur(10px);
+  pointer-events: none;
 }

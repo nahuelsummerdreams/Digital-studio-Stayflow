@@ -35,8 +35,8 @@ export function ProductBox({
     const r = el.parentElement!.getBoundingClientRect();
     const x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
     const y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-    el.style.setProperty("--ry", `${(-26 + (x - 0.5) * 58).toFixed(1)}deg`);
-    el.style.setProperty("--rx", `${(5 - (y - 0.5) * 30).toFixed(1)}deg`);
+    el.style.setProperty("--ry", `${(-28 + (x - 0.5) * 64).toFixed(1)}deg`);
+    el.style.setProperty("--rx", `${(-13 - (y - 0.5) * 34).toFixed(1)}deg`);
     el.style.setProperty("--gx", `${(x * 100).toFixed(0)}%`);
     el.style.setProperty("--gy", `${(y * 100).toFixed(0)}%`);
     setLive(true);
@@ -54,12 +54,13 @@ export function ProductBox({
   return (
     <div className="pbox-stage" onPointerMove={point} onPointerLeave={rest} onPointerCancel={rest} onPointerDown={(e) => { point(e); setPop((n) => n + 1); }} role="img" aria-label={label}>
       <div className="relative">
-        <div className="pbox-plate" aria-hidden />
+        <div className="pbox-halo" aria-hidden style={{ "--hue": hue, width: `${w * 1.35}px` } as CSSProperties} />
+        <div className="pbox-plate" aria-hidden style={{ "--hue": hue } as CSSProperties} />
         <div key={pop} className={`pbox-float ${pop ? "pbox-pop" : ""}`} style={{ transformStyle: "preserve-3d" }}>
           <div ref={box} className={`pbox ${live ? "is-live" : ""}`} style={vars}>
             <div className="pbox-face pbox-back" />
-            <div className="pbox-face pbox-pages" />
-            <div className="pbox-face pbox-top" />
+            <div className="pbox-face pbox-pages"><span style={{ fontSize: `${d * 0.26}px` }}>{spine}</span></div>
+            <div className="pbox-face pbox-top"><span style={{ fontSize: `${d * 0.3}px` }}>STAYFLOW</span></div>
             <div className="pbox-face pbox-spine"><span style={{ fontSize: `${d * 0.42}px` }}>{spine}</span></div>
             <div className="pbox-face pbox-front">
               {children}

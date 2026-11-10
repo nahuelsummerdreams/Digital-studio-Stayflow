@@ -24,7 +24,7 @@ export function ProductCard({ id }: { id: ProductId }) {
   const p = PRODUCTS[id];
   const c = m.products[id];
   return (
-    <article className="reveal fx-card group relative flex flex-col items-center overflow-hidden rounded-3xl px-5 pb-6 pt-3 text-center" style={{ backgroundImage: `radial-gradient(90% 55% at 50% 0%, hsl(${HUE[id]} 85% 45% / 0.2), transparent)` }}>
+    <article className="reveal fx-card group relative flex flex-col items-center overflow-hidden rounded-3xl px-5 pb-6 pt-3 text-center" style={{ backgroundImage: `radial-gradient(90% 55% at 50% 0%, hsl(${HUE[id]} 100% 50% / 0.3), transparent)` }}>
       <ProductCover id={id} />
       <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.preorder}</span>
       <h3 className="font-display mt-3 text-xl">{p.name}</h3>
