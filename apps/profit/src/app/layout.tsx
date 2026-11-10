@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { DEFAULT_THEME, PRODUCT_BRAND, THEME_INIT_SCRIPT } from "@stayflow/ui";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import { Providers } from "./providers";
+import "@stayflow/ui/theme.css";
 import "./globals.css";
 
 const brand = PRODUCT_BRAND.profit;

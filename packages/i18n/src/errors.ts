@@ -1,4 +1,4 @@
-import type { MessageKey } from "./index";
+import type { MessageKey } from "./core";
 
 interface ErrorLike {
   code?: unknown;

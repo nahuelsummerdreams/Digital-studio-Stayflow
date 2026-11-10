@@ -1,0 +1,85 @@
+/* Shared by every Stayflow app. One source of truth for the dark base and the three accents. */
+:root {
+  color-scheme: dark;
+  --bg: 6 10 19;
+  --surface: 13 19 33;
+  --surface-2: 19 27 46;
+  --line: 32 42 68;
+  --fg: 240 244 250;
+  --muted: 139 151 173;
+  --danger: 255 107 129;
+  --success: 52 227 161;
+  --accent: 47 123 255;
+  --accent-2: 34 211 166;
+  --on-accent: 255 255 255;
+}
+:root[data-theme="green"] {
+  --accent: 57 255 136;
+  --accent-2: 182 255 60;
+  --on-accent: 4 19 10;
+}
+:root[data-theme="coral"] {
+  --accent: 255 56 92;
+  --accent-2: 255 138 92;
+  --on-accent: 255 255 255;
+}
+
+html {
+  background: rgb(var(--bg));
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100vh;
+  color: rgb(var(--fg));
+  -webkit-font-smoothing: antialiased;
+  /* One soft glow in the accent color; the rest stays quiet. */
+  background:
+    radial-gradient(900px 480px at 85% -8%, rgb(var(--accent) / 0.16), transparent 62%),
+    rgb(var(--bg));
+  background-repeat: no-repeat;
+}
+
+.font-display {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* Decorative accent gradient for headlines. */
+.text-gradient {
+  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Positive money figures. In the coral theme the accent is too close to the loss color,
+   so gains stay neutral there: red must only ever mean "you lost money". */
+.text-money {
+  background: linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+:root[data-theme="coral"] .text-money {
+  background: none;
+  color: rgb(var(--fg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    transition: none !important;
+  }
+}
+
+/* Keyboard focus must always be visible. */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+}

@@ -6,7 +6,8 @@ Modular tools for vacation rental hosts. Each app is sold on its own; the **Suit
 
 ```
 apps/
-  profit/        Stayflow Profit (Next.js PWA)       <- first sellable app
+  web/           Landing page (static, Spanish)       http://localhost:3000
+  profit/        Stayflow Profit (Next.js PWA)       <- first sellable app  http://localhost:3001
   guest/ host/   next
   suite/         loads every module (built last)
 packages/
@@ -35,9 +36,11 @@ pnpm install
 pnpm test          # logic + licensing tests
 pnpm typecheck
 pnpm dev:profit    # http://localhost:3001
+pnpm dev:web       # http://localhost:3000 (landing)
 ```
 
 Copy `.env.example` to `.env.local` and fill the Supabase values to connect real data.
+The landing reads `NEXT_PUBLIC_PROFIT_URL` (see `apps/web/.env.example`) to know where its buttons lead.
 
 ## Data model (supabase/migrations)
 
