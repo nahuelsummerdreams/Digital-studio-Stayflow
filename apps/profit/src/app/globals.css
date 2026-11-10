@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --accent: #0F766E; }
+html, body { background: #F7F5F0; color: #0B0F14; }
+body { -webkit-font-smoothing: antialiased; }
