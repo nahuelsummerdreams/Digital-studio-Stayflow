@@ -1,6 +1,6 @@
 import { Header } from "@/components/Header";
 import { Precios } from "@/components/precios";
-import { Apps, Blocks, Faq, FinalCta, Footer, Hero, Pain, Steps, Strip } from "@/components/sections";
+import { Apps, Blocks, Faq, FinalCta, Footer, Hero, Pain, Steps, Strip, Ticker } from "@/components/sections";
 
 export default function Home() {
   return (
@@ -9,6 +9,7 @@ export default function Home() {
       <main>
         <Hero />
         <Strip />
+        <Ticker />
         <Pain />
         <Blocks />
         <Precios />

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useCart } from "./cart";
 
 const reduced = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -54,3 +55,90 @@ export function Tilt({ children, max = 7, className = "" }: { children: ReactNod
     </div>
   );
 }
+
+/** A soft light that follows the cursor across the whole page. Desktop mice only. */
+export function CursorGlow() {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (reduced() || !window.matchMedia("(hover: hover)").matches) return;
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    let x = 0;
+    let y = 0;
+    const move = (e: PointerEvent) => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!raf) raf = requestAnimationFrame(() => {
+        raf = 0;
+        el.style.transform = `translate3d(${x - 260}px, ${y - 260}px, 0)`;
+        el.style.opacity = "1";
+      });
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
+  return <div ref={ref} aria-hidden className="pointer-events-none fixed left-0 top-0 z-[5] h-[520px] w-[520px] rounded-full opacity-0 mix-blend-screen transition-opacity duration-500" style={{ background: "radial-gradient(closest-side, rgb(var(--accent) / 0.16), transparent)" }} />;
+}
+
+/** Thin progress bar at the top that fills as you scroll. Pure CSS, so it costs nothing. */
+export function ScrollProgress() {
+  return <div aria-hidden className="scroll-progress" />;
+}
+
+const SPARK_COLORS = ["rgb(var(--accent))", "rgb(var(--accent-2))", "#fff", "#ffd36b"];
+
+/** A burst of sparks from the middle of whatever it wraps. Used when something goes into the cart. */
+export function useBurst() {
+  const [bursts, setBursts] = useState<number[]>([]);
+  const fire = () => {
+    if (reduced()) return;
+    const id = Date.now() + Math.random();
+    setBursts((b) => [...b, id]);
+    setTimeout(() => setBursts((b) => b.filter((x) => x !== id)), 900);
+  };
+  const layer = (
+    <span aria-hidden className="pointer-events-none absolute inset-0 overflow-visible">
+      {bursts.map((id) => Array.from({ length: 12 }, (_, i) => {
+        const a = (i / 12) * Math.PI * 2;
+        const r = 38 + (i % 3) * 14;
+        return <i key={`${id}-${i}`} className="spark" style={{ "--dx": `${Math.cos(a) * r}px`, "--dy": `${Math.sin(a) * r}px`, background: SPARK_COLORS[i % SPARK_COLORS.length] } as CSSProperties} />;
+      }))}
+    </span>
+  );
+  return { fire, layer };
+}
+
+/** Confetti over the whole screen the moment the 30% discount unlocks. */
+export function Celebration() {
+  const { celebrate } = useCart();
+  const [run, setRun] = useState(0);
+  useEffect(() => {
+    if (!celebrate || reduced()) return;
+    setRun(celebrate);
+    const t = setTimeout(() => setRun(0), 3200);
+    return () => clearTimeout(t);
+  }, [celebrate]);
+  if (!run) return null;
+  const colors = ["rgb(var(--accent))", "rgb(var(--accent-2))", "#ffd36b", "#ff6b8b", "#fff"];
+  return (
+    <div aria-hidden key={run}>
+      {Array.from({ length: 44 }, (_, i) => (
+        <i key={i} className="confetti" style={{ left: `${(i * 97) % 100}%`, background: colors[i % colors.length], "--dx": `${((i * 53) % 160) - 80}px`, "--rot": `${(i * 47) % 720}deg`, "--dur": `${1.6 + ((i * 13) % 14) / 10}s`, "--delay": `${((i * 7) % 10) / 20}s` } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
+
+/** Drifting glowing specks, for behind a hero. Positions are fixed so the markup is the same every render. */
+export function Motes({ count = 14 }: { count?: number }) {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+      {Array.from({ length: count }, (_, i) => (
+        <i key={i} className="mote" style={{ left: `${(i * 37 + 7) % 100}%`, top: `${40 + ((i * 23) % 55)}%`, width: 3 + (i % 3) * 2, height: 3 + (i % 3) * 2, "--dur": `${5 + (i % 5)}s`, "--delay": `${(i * 0.7) % 6}s` } as CSSProperties} />
+      ))}
+    </div>
+  );
+}
+
+export { type ReactNode };

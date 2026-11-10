@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
 import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
 import { GetHostButton } from "./client";
-import { Tilt } from "./effects";
+import { Motes, Tilt } from "./effects";
 import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
@@ -21,6 +21,7 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <div aria-hidden className="bg-grid pointer-events-none absolute inset-0" />
+      <Motes />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[680px]" style={{ background: "radial-gradient(60% 60% at 70% 10%, rgb(var(--accent) / 0.24), transparent 70%)" }} />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:pt-20 lg:grid-cols-[0.95fr_1.05fr] lg:pb-24">
         <div className="anim-stagger">
@@ -298,5 +299,23 @@ export function Footer() {
         <p className="text-xs text-muted">© {new Date().getFullYear()} Digital Studio. {t("landing.footer.rights")}</p>
       </div>
     </footer>
+  );
+}
+
+/** A slow ticker of everything the system covers. Motion between sections keeps the page alive. */
+export function Ticker() {
+  const words = ["RESERVAS", "CRONOGRAMA", "HUÉSPEDES", "TAREAS", "GANANCIA REAL", "GUÍA CON QR", "SIN DOBLES RESERVAS", "AVISOS A TIEMPO", "FOTOS DE TUS PROPIEDADES"];
+  const row = [...words, ...words];
+  return (
+    <div aria-hidden className="overflow-hidden border-y border-line/60 bg-surface/30 py-5 [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
+      <div className="ticker flex w-max items-center gap-10 whitespace-nowrap">
+        {row.map((x, i) => (
+          <span key={i} className="font-display flex items-center gap-10 text-lg tracking-[0.12em] text-muted">
+            {x}
+            <i className="h-1.5 w-1.5 rotate-45 bg-accent shadow-[0_0_10px_rgb(var(--accent))]" />
+          </span>
+        ))}
+      </div>
+    </div>
   );
 }

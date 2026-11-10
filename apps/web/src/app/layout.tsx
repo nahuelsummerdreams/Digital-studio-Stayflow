@@ -5,8 +5,10 @@ import { t } from "@/lib/t";
 import "@stayflow/ui/fonts";
 import "@stayflow/ui/theme.css";
 import "./globals.css";
+import "./boxes.css";
 import { CartDrawer, CartProvider } from "@/components/cart";
 import { CartBar } from "@/components/client";
+import { Celebration, CursorGlow, ScrollProgress } from "@/components/effects";
 import { MessagesProvider } from "@/i18n/client";
 
 export const metadata: Metadata = {
@@ -34,9 +36,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="font-sans">
         <MessagesProvider>
           <CartProvider>
+            <ScrollProgress />
+            <CursorGlow />
             {children}
             <CartDrawer />
             <CartBar />
+            <Celebration />
           </CartProvider>
         </MessagesProvider>
       </body>

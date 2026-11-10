@@ -47,7 +47,7 @@ export function Header() {
             {t("landing.nav.login")}
           </a>
           <CartButton />
-          <a href="/#precios" className={`${buttonClass} !px-3.5 !py-2`}>
+          <a href="/#precios" className={`${buttonClass} hidden !px-3.5 !py-2 sm:inline-flex`}>
             {t("landing.nav.buy")}
           </a>
         </div>

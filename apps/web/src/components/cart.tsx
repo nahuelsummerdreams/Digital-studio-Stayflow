@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@stayflow/ui";
 import { LAUNCH_KIT, PACKS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { track } from "@/lib/analytics";
@@ -22,6 +22,8 @@ interface CartApi extends CartState {
   setKit: (v: boolean) => void;
   /** Replaces the apps (used by the ready-made packs). */
   setApps: (ids: readonly ProductId[]) => void;
+  /** Goes up each time the 30% discount gets unlocked, to trigger the celebration. */
+  celebrate: number;
   clear: () => void;
 }
 
@@ -38,6 +40,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<CartState>({ apps: [], kit: false });
   const [open, setOpen] = useState(false);
   const [ready, setReady] = useState(false);
+  const [celebrate, setCelebrate] = useState(0);
 
   useEffect(() => {
     try {
@@ -87,9 +90,15 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clear = useCallback(() => setState({ apps: [], kit: false }), []);
 
   const totals = useMemo(() => computeTotals(state), [state]);
+  const wasActive = useRef(false);
+  useEffect(() => {
+    if (!ready) return;
+    if (totals.discountActive && !wasActive.current) setCelebrate((n) => n + 1);
+    wasActive.current = totals.discountActive;
+  }, [totals.discountActive, ready]);
   const value = useMemo<CartApi>(
-    () => ({ ...state, totals, open, setOpen, has: (id) => state.apps.includes(id), toggle, add, remove, setKit, setApps, clear }),
-    [state, totals, open, toggle, add, remove, setKit, setApps, clear],
+    () => ({ ...state, totals, open, setOpen, has: (id) => state.apps.includes(id), toggle, add, remove, setKit, setApps, celebrate, clear }),
+    [state, totals, open, toggle, add, remove, setKit, setApps, celebrate, clear],
   );
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }

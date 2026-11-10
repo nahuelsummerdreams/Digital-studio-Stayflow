@@ -7,7 +7,7 @@ import { btnGhost } from "@/components/styles";
 import { Header } from "@/components/Header";
 import { ProductCard } from "@/components/precios";
 import { Footer } from "@/components/sections";
-import { ProductArt } from "@/components/visuals";
+import { ProductCover } from "@/components/covers";
 import { CROSS_SELL, MULTIPACK_PERCENT, PRODUCT_IDS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { usd } from "@/lib/pricing";
 import { fmt, getMessages } from "@/i18n";
@@ -68,7 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
             <p className="mt-5 rounded-2xl border border-accent/25 bg-accent/8 px-4 py-3 text-sm"><span className="font-semibold text-accent">{m.productPage.compareTitle}.</span> <span className="text-muted">{fmt(m.productPage.compareBody)}</span></p>
           </div>
-          <div className="fx-card fx-hero overflow-hidden rounded-[28px]"><div className="h-80"><ProductArt id={id} /></div></div>
+          <div className="relative"><div aria-hidden className="absolute inset-x-8 top-10 h-72 rounded-full bg-accent/20 blur-3xl" /><div className="relative"><ProductCover id={id} size="lg" /></div></div>
         </div>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_1fr]">

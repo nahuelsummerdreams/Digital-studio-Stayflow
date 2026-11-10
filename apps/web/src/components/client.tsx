@@ -10,23 +10,31 @@ import { usd } from "@/lib/pricing";
 import { fmt, plural } from "@/i18n";
 import { useMessages } from "@/i18n/client";
 import { Breakdown, CartButton, DiscountMeter, OffersList, useCart } from "./cart";
+import { useBurst } from "./effects";
 import { btnGhost, btnPrimary } from "./styles";
 import { ProductArt } from "./visuals";
 
 export function AddToCart({ id, className = "", wide = false }: { id: ProductId; className?: string; wide?: boolean }) {
   const { m } = useMessages();
   const { has, toggle } = useCart();
+  const { fire, layer } = useBurst();
   const on = has(id);
   return (
-    <button
-      type="button"
-      onClick={() => toggle(id)}
-      aria-pressed={on}
-      className={`${on ? "inline-flex items-center justify-center gap-2 rounded-xl border border-accent bg-accent/10 px-5 py-3 text-sm font-semibold text-accent" : btnPrimary} ${wide ? "w-full" : ""} ${className}`}
-    >
-      {on ? <Icon name="check" className="h-4 w-4" /> : <Icon name="plus" className="h-4 w-4" />}
-      {on ? m.solution.added : m.solution.add}
-    </button>
+    <span className={`relative ${wide ? "block w-full" : "block"}`}>
+      <button
+        type="button"
+        onClick={() => {
+          if (!on) fire();
+          toggle(id);
+        }}
+        aria-pressed={on}
+        className={`${on ? "inline-flex items-center justify-center gap-2 rounded-xl border border-accent bg-accent/10 px-5 py-3 text-sm font-semibold text-accent" : btnPrimary} w-full ${className}`}
+      >
+        {on ? <Icon name="check" className="h-4 w-4" /> : <Icon name="plus" className="h-4 w-4" />}
+        {on ? m.solution.added : m.solution.add}
+      </button>
+      {layer}
+    </span>
   );
 }
 

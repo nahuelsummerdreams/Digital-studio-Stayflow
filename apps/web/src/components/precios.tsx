@@ -5,8 +5,7 @@ import { packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
 import { AddPack, AddToCart, Builder, GetHostButton, KitButton, PlanCta } from "./client";
 import { btnGhost } from "./styles";
-import { ScheduleMock } from "./mock";
-import { ProductArt } from "./visuals";
+import { HUE, PackCover, ProductCover } from "./covers";
 
 const m = getMessages();
 const SECTION = "mx-auto max-w-6xl px-5 py-16 md:py-24";
@@ -20,29 +19,20 @@ function Sub({ title, body }: { title: string; body?: string }) {
   );
 }
 
-/** A tool with its price, its picture and what it does for you. Used in the price list and on the product pages. */
+/** A tool as a boxed product: the cover with the real system inside, then its price and the buy button. */
 export function ProductCard({ id }: { id: ProductId }) {
   const p = PRODUCTS[id];
   const c = m.products[id];
   return (
-    <article className="reveal fx-card flex flex-col overflow-hidden rounded-3xl">
-      <div className="relative h-52 border-b border-line bg-bg/60">
-        <ProductArt id={id} />
-        <span className={`absolute left-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.preorder}</span>
-      </div>
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-xl">{p.name}</h3>
-          <p className="shrink-0 text-right"><span className="font-display text-2xl tabular-nums">{usd(p.price)}</span><span className="block text-[11px] text-muted">{m.solution.oneTime}</span></p>
-        </div>
-        <p className="mt-2 text-sm text-muted">{c.problem}</p>
-        <ul className="mt-4 space-y-2">
-          {c.benefits.map((b) => <li key={b} className="flex items-start gap-2.5 text-sm"><span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"><Icon name="check" className="h-2.5 w-2.5" /></span>{b}</li>)}
-        </ul>
-        <div className="mt-auto grid grid-cols-2 gap-2.5 pt-6">
-          <AddToCart id={id} className="!px-3" />
-          <Link href={`/products/${id}`} className={`${btnGhost} !px-3`}>{m.solution.learn}</Link>
-        </div>
+    <article className="reveal fx-card group relative flex flex-col items-center overflow-hidden rounded-3xl px-5 pb-6 pt-3 text-center" style={{ backgroundImage: `radial-gradient(90% 55% at 50% 0%, hsl(${HUE[id]} 85% 45% / 0.2), transparent)` }}>
+      <ProductCover id={id} />
+      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.preorder}</span>
+      <h3 className="font-display mt-3 text-xl">{p.name}</h3>
+      <p className="mt-1 max-w-[17rem] text-sm text-muted">{c.problem}</p>
+      <p className="mt-4 flex items-baseline justify-center gap-2"><span className="font-display text-gradient text-4xl tabular-nums">{usd(p.price)}</span><span className="text-xs text-muted">{m.solution.oneTime}</span></p>
+      <div className="mt-5 grid w-full grid-cols-[1.5fr_1fr] gap-2.5">
+        <AddToCart id={id} className="!px-2 whitespace-nowrap !text-[13px]" />
+        <Link href={`/products/${id}`} className={`${btnGhost} !px-3`}>{m.solution.learn}</Link>
       </div>
     </article>
   );
@@ -53,22 +43,20 @@ function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
   const t = packTotals(id);
   const featured = id === "mega";
   return (
-    <article className={`reveal fx-card relative flex flex-col rounded-3xl p-7 ${featured ? "fx-hero" : ""}`}>
-      {c.badge && <span className="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent shadow-[0_0_24px_-4px_rgb(var(--accent))]">{c.badge}</span>}
-      <h4 className="font-display text-xl">{c.name}</h4>
-      <p className="mt-1 min-h-10 text-sm text-muted">{c.for}</p>
-      <p className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-display text-gradient whitespace-nowrap text-4xl tabular-nums xl:text-[2.6rem]">{usd(t.total)}</span>
+    <article className={`reveal fx-card relative flex flex-col items-center rounded-3xl px-6 pb-7 pt-3 text-center ${featured ? "fx-hero" : ""}`}>
+      {c.badge && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent shadow-[0_0_24px_-4px_rgb(var(--accent))]">{c.badge}</span>}
+      <PackCover id={id} />
+      <h4 className="font-display mt-2 text-xl">{c.name}</h4>
+      <p className="mt-1 text-sm text-muted">{c.for}</p>
+      <p className="mt-4 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
+        <span className="font-display text-gradient whitespace-nowrap text-4xl tabular-nums">{usd(t.total)}</span>
         <span className="whitespace-nowrap text-sm text-muted line-through">{usd(t.originalTotal)}</span>
       </p>
       <p className="mt-1 text-sm font-medium text-success">{fmt(m.packs.saves, { amount: usd(t.saved) })} · {m.solution.oneTime}</p>
-      <p className="mb-3 mt-6 text-xs font-semibold uppercase tracking-[0.14em] text-muted">{m.packs.includes} · {plural(m.packs, "apps", t.appCount)}</p>
-      <ul className="flex-1 space-y-2">
-        {PACKS[id].apps.map((a) => (
-          <li key={a} className="flex items-center justify-between gap-3 text-sm"><span className="flex items-center gap-2.5"><Icon name="check" className="h-4 w-4 text-accent" />{PRODUCTS[a].name}</span><span className="text-xs tabular-nums text-muted">{usd(PRODUCTS[a].price)}</span></li>
-        ))}
+      <ul className="mt-5 flex flex-wrap justify-center gap-1.5">
+        {PACKS[id].apps.map((a) => <li key={a} className="rounded-full border border-line bg-bg/50 px-2.5 py-1 text-[11px] text-muted">{PRODUCTS[a].name.replace("Stayflow ", "")} · {usd(PRODUCTS[a].price)}</li>)}
       </ul>
-      <div className="mt-7"><AddPack pack={id} /></div>
+      <div className="mt-6 w-full"><AddPack pack={id} /></div>
     </article>
   );
 }
@@ -86,7 +74,7 @@ export function Precios() {
         </div>
 
         <div id="host" className="mt-16 grid items-center gap-10 lg:grid-cols-2">
-          <div className="reveal"><ScheduleMock /><div className="mt-4 flex flex-wrap gap-2"><Pill tone="success">{m.prices.host.chipA}</Pill><Pill tone="accent">{m.prices.host.chipB}</Pill><Pill tone="warning">{m.prices.host.chipC}</Pill></div></div>
+          <div className="reveal relative"><div aria-hidden className="absolute inset-x-6 top-10 h-72 rounded-full bg-accent/20 blur-3xl" /><div className="relative"><ProductCover id="host" size="lg" /><div className="mt-2 flex flex-wrap justify-center gap-2"><Pill tone="success">{m.prices.host.chipA}</Pill><Pill tone="accent">{m.prices.host.chipB}</Pill><Pill tone="warning">{m.prices.host.chipC}</Pill></div></div></div>
           <div className="reveal">
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{m.prices.host.eyebrow}</p>
             <h3 className="font-display mt-3 text-3xl leading-tight md:text-4xl">{fmt(m.prices.host.title, { price: usd(PRODUCTS.host.price) })}</h3>
