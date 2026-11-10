@@ -1,20 +1,20 @@
-import { en, type Messages } from "./en";
+import { es, type Messages } from "./es";
 
-export type Locale = "en";
-/** Add "es" and "pt" here (plus their catalogue files and a route) to open those languages. */
-export const LOCALES: Locale[] = ["en"];
-export const DEFAULT_LOCALE: Locale = "en";
+export type Locale = "es";
+/** Add "en" and "pt" here (plus their catalogue files) to open those languages. */
+export const LOCALES: Locale[] = ["es"];
+export const DEFAULT_LOCALE: Locale = "es";
 export type { Messages };
 
-const CATALOG: Record<Locale, Messages> = { en };
+const CATALOG: Record<Locale, Messages> = { es };
 export const getMessages = (locale: Locale = DEFAULT_LOCALE): Messages => CATALOG[locale];
 
-/** "{count} more apps" with variables. */
+/** "{count} apps más", con variables. */
 export function fmt(template: string, vars: Record<string, string | number> = {}): string {
   return template.replace(/\{(\w+)\}/g, (_, k: string) => (k in vars ? String(vars[k]) : `{${k}}`));
 }
 
-/** Picks the "_one" / "_other" variant of a key for the locale's plural rules. */
+/** Elige la variante "_one" / "_other" de una clave según las reglas de plural del idioma. */
 export function plural(m: object, base: string, count: number, locale: Locale = DEFAULT_LOCALE): string {
   const rule = new Intl.PluralRules(locale).select(count);
   const bag = m as Record<string, unknown>;

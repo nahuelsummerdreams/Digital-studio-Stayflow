@@ -1,37 +1,42 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
+import { DEFAULT_THEME, THEME_INIT_SCRIPT } from "@stayflow/ui";
+import { t } from "@/lib/t";
 import "@stayflow/ui/fonts";
 import "@stayflow/ui/theme.css";
 import "./globals.css";
-import "./site.css";
-import { CartProvider } from "@/components/cart";
-import { CartUi } from "@/components/sections";
+import { CartDrawer, CartProvider } from "@/components/cart";
+import { CartBar } from "@/components/client";
 import { MessagesProvider } from "@/i18n/client";
-import { getMessages } from "@/i18n";
-
-const m = getMessages();
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://stayflow-web-livid.vercel.app";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: { default: m.meta.title, template: "%s" },
-  description: m.meta.description,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://stayflow-web-livid.vercel.app"),
+  title: t("landing.meta.title"),
+  description: t("landing.meta.description"),
   icons: { icon: "/icon.svg" },
-  alternates: { canonical: "/", languages: { en: "/" } }, // add es / pt here when those languages open
-  openGraph: { title: m.meta.title, description: m.meta.description, locale: "en_US", type: "website", siteName: "Stayflow" },
-  twitter: { card: "summary_large_image", title: m.meta.title, description: m.meta.description },
+  openGraph: {
+    title: t("landing.meta.title"),
+    description: t("landing.meta.description"),
+    locale: "es_ES",
+    type: "website",
+  },
 };
 
-export const viewport: Viewport = { themeColor: "#F7F9F8", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#060A13", width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-theme="site">
+    <html lang="es" data-theme={DEFAULT_THEME} suppressHydrationWarning>
+      <head>
+        {/* Applies the saved accent before first paint, so it never flashes. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="font-sans">
         <MessagesProvider>
           <CartProvider>
             {children}
-            <CartUi />
+            <CartDrawer />
+            <CartBar />
           </CartProvider>
         </MessagesProvider>
       </body>

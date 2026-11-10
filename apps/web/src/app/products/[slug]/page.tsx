@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { Icon } from "@stayflow/ui";
 import { AddToCart, ViewItem } from "@/components/client";
 import { btnGhost } from "@/components/styles";
-import { Announce, Footer, Header, ProductCard } from "@/components/sections";
+import { Header } from "@/components/Header";
+import { ProductCard } from "@/components/precios";
+import { Footer } from "@/components/sections";
 import { ProductArt } from "@/components/visuals";
 import { CROSS_SELL, MULTIPACK_PERCENT, PRODUCT_IDS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { usd } from "@/lib/pricing";
@@ -49,7 +51,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   ];
   return (
     <>
-      <Announce />
       <Header />
       <ViewItem id={id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -67,7 +68,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
             <p className="mt-5 rounded-2xl border border-accent/25 bg-accent/8 px-4 py-3 text-sm"><span className="font-semibold text-accent">{m.productPage.compareTitle}.</span> <span className="text-muted">{fmt(m.productPage.compareBody)}</span></p>
           </div>
-          <div className="zone-dark rounded-[28px] shadow-[0_30px_80px_-30px_rgb(0_0_0/0.5)]"><div className="h-80"><ProductArt id={id} /></div></div>
+          <div className="fx-card fx-hero overflow-hidden rounded-[28px]"><div className="h-80"><ProductArt id={id} /></div></div>
         </div>
 
         <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_1fr]">
@@ -94,7 +95,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{CROSS_SELL[id].map((x) => <ProductCard key={x} id={x} />)}</div>
           </section>
         )}
-        <p className="mt-12 text-center text-xs text-muted">{MULTIPACK_PERCENT}% · {m.announce}</p>
+        <p className="mt-12 text-center text-xs text-muted">{MULTIPACK_PERCENT}% · {m.productPage.compareBody}</p>
       </main>
       <Footer />
     </>

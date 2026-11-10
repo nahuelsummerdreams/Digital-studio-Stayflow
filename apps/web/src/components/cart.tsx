@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Icon } from "@stayflow/ui";
-import { LAUNCH_KIT, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { LAUNCH_KIT, PACKS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { track } from "@/lib/analytics";
-import { computeTotals, normalizeApps, recommendations, usd, type CartState, type Totals } from "@/lib/pricing";
-import { plural } from "@/i18n";
+import { computeTotals, normalizeApps, offers, recommendations, usd, type CartState, type Offer, type Totals } from "@/lib/pricing";
+import { fmt, plural } from "@/i18n";
 import { useMessages } from "@/i18n/client";
 
 const STORAGE_KEY = "stayflow-cart-v1";
@@ -20,6 +20,8 @@ interface CartApi extends CartState {
   add: (id: ProductId) => void;
   remove: (id: ProductId) => void;
   setKit: (v: boolean) => void;
+  /** Replaces the apps (used by the ready-made packs). */
+  setApps: (ids: readonly ProductId[]) => void;
   clear: () => void;
 }
 
@@ -78,12 +80,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setState((s) => ({ ...s, kit: v }));
     track(v ? "add_to_cart" : "remove_from_cart", { item_id: "kit", item_name: LAUNCH_KIT.name, price: LAUNCH_KIT.price, currency: "USD" });
   }, []);
+  const setApps = useCallback((ids: readonly ProductId[]) => {
+    setState((s) => ({ ...s, apps: normalizeApps(ids) }));
+    track("select_promotion", { items: ids });
+  }, []);
   const clear = useCallback(() => setState({ apps: [], kit: false }), []);
 
   const totals = useMemo(() => computeTotals(state), [state]);
   const value = useMemo<CartApi>(
-    () => ({ ...state, totals, open, setOpen, has: (id) => state.apps.includes(id), toggle, add, remove, setKit, clear }),
-    [state, totals, open, toggle, add, remove, setKit, clear],
+    () => ({ ...state, totals, open, setOpen, has: (id) => state.apps.includes(id), toggle, add, remove, setKit, setApps, clear }),
+    [state, totals, open, toggle, add, remove, setKit, setApps, clear],
   );
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 }
@@ -140,6 +146,45 @@ export function Breakdown({ totals, labels, className = "" }: { totals: Totals; 
   );
 }
 
+/** Upsell and downsell suggestions for what is in the cart. They sit inside the cart, never in the way. */
+export function OffersList({ className = "" }: { className?: string }) {
+  const { m, locale } = useMessages();
+  const cart = useCart();
+  const list = offers({ apps: cart.apps, kit: cart.kit });
+  if (list.length === 0) return null;
+
+  const render = (o: Offer): { text: string; label: string; run: () => void } => {
+    if (o.kind === "unlock") {
+      const name = PRODUCTS[o.id].name;
+      const text = o.extra < 0 ? fmt(m.offers.unlockCheaper, { name, amount: usd(-o.extra) }) : fmt(m.offers.unlock, { name, price: usd(o.extra) });
+      return { text, label: m.offers.add, run: () => cart.add(o.id) };
+    }
+    if (o.kind === "pack") {
+      const count = plural(m.offers, o.moreApps === 1 ? "packOne" : "packMany", o.moreApps, locale);
+      return { text: fmt(m.offers.pack, { pack: m.packs.list[o.pack].name, count: fmt(count, { count: o.moreApps }), extra: usd(o.extra) }), label: m.offers.switch, run: () => cart.setApps(PACKS[o.pack].apps) };
+    }
+    return { text: fmt(m.offers.drop, { name: PRODUCTS[o.id].name, saving: usd(o.saving) }), label: m.offers.remove, run: () => cart.remove(o.id) };
+  };
+
+  return (
+    <section aria-label={m.offers.title} className={className}>
+      <h3 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted">{m.offers.title}</h3>
+      <ul className="space-y-2">
+        {list.map((o) => {
+          const r = render(o);
+          return (
+            <li key={`${o.kind}-${"id" in o ? o.id : o.pack}`} className={`flex items-center gap-3 rounded-2xl border p-3.5 ${o.kind === "drop" ? "border-line bg-surface/60" : "border-accent/40 bg-accent/8"}`}>
+              <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${o.kind === "drop" ? "bg-line/60 text-muted" : "bg-accent/15 text-accent"}`}><Icon name={o.kind === "drop" ? "trendDown" : "trendUp"} className="h-4 w-4" /></span>
+              <p className="min-w-0 flex-1 text-sm leading-snug">{r.text}</p>
+              <button type="button" onClick={r.run} className="shrink-0 rounded-lg border border-accent/50 px-3 py-1.5 text-xs font-semibold text-accent transition hover:bg-accent hover:text-onaccent">{r.label}</button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 /** Slide-over cart with live prices, upsells that don't get in the way, and the Launch Kit add-on. */
 export function CartDrawer() {
   const { m, locale } = useMessages();
@@ -162,7 +207,7 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-[70]">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setOpen(false)} aria-hidden />
-      <aside role="dialog" aria-modal="true" aria-label={m.cart.title} className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-bg shadow-2xl anim-in">
+      <aside role="dialog" aria-modal="true" aria-label={m.cart.title} className="absolute inset-y-0 right-0 flex w-full max-w-md flex-col bg-bg shadow-2xl anim-in border-l border-line">
         <header className="flex items-center justify-between border-b border-line px-5 py-4">
           <h2 className="font-display text-xl">{m.cart.title}</h2>
           <button type="button" onClick={() => setOpen(false)} aria-label={m.nav.close} className="flex h-9 w-9 items-center justify-center rounded-lg border border-line text-muted transition hover:text-fg">
@@ -206,6 +251,8 @@ export function CartDrawer() {
               </ul>
             </section>
           )}
+
+          <OffersList />
 
           {!cart.kit && (
             <button type="button" onClick={() => cart.setKit(true)} className="flex w-full items-center gap-3 rounded-2xl border border-dashed border-accent/50 bg-accent/5 p-3.5 text-left transition hover:bg-accent/10">

@@ -1,301 +1,266 @@
-import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { BrandMark, Icon, type IconName } from "@stayflow/ui";
-import { LAUNCH_KIT, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
-import { usd } from "@/lib/pricing";
-import { getMessages, type Messages } from "@/i18n";
-import { AddToCart, Builder, CartBar, CartButton, KitButton, PlanCta } from "./client";
-import { btnGhost, btnPrimary } from "./styles";
-import { CartDrawer } from "./cart";
-import { FloatCard, HeroStage, ProductArt, ScheduleVisual } from "./visuals";
+import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
+import { APP_PRICES, BUY_URL, DISCOUNT_PCT, GUEST_URL, HOST_URL, PACK_PRICE, PACK_SAVING, PROFIT_URL, SEPARATE_TOTAL, t } from "@/lib/t";
+import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
-const m: Messages = getMessages();
 
-function Head({ eyebrow, title, body, center = false, dark = false }: { eyebrow: string; title: string; body?: string; center?: boolean; dark?: boolean }) {
+function Head({ eyebrow, title, body, center = false }: { eyebrow: string; title: string; body?: string; center?: boolean }) {
   return (
     <div className={`reveal ${center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}`}>
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">{eyebrow}</p>
-      <h2 className="font-display mt-4 text-3xl leading-[1.1] md:text-5xl">{title}</h2>
-      {body && <p className={`mt-5 text-base leading-relaxed md:text-lg ${dark ? "text-muted" : "text-muted"}`}>{body}</p>}
+      <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{eyebrow}</p>
+      <h2 className="font-display mt-4 text-3xl leading-tight md:text-5xl">{title}</h2>
+      {body && <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">{body}</p>}
     </div>
   );
 }
 
-/** Stayflow wordmark with the Digital Studio seal beside it. */
-export function Wordmark() {
-  return (
-    <span className="flex items-center gap-3">
-      <span className="flex items-center gap-2.5"><BrandMark className="h-8 w-8" /><span className="font-display text-lg tracking-tight">Stayflow</span></span>
-      <span aria-hidden className="hidden h-6 w-px bg-line sm:block" />
-      <span className="hidden items-center gap-2 sm:flex">
-        <span className="text-[10px] uppercase tracking-[0.2em] text-muted">{m.nav.by}</span>
-        {/* The logo is white artwork; brightness(0) renders it as dark ink on the light page. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-7 w-auto [filter:brightness(0)]" />
-      </span>
-    </span>
-  );
-}
-
-export function Announce() {
-  return (
-    <div className="zone-dark px-4 py-2 text-center text-xs font-medium sm:text-sm">
-      <span className="mr-2 rounded-full bg-accent/20 px-2 py-0.5 text-[11px] font-bold text-accent">−30%</span>
-      {m.announce}
-    </div>
-  );
-}
-
-const LINKS = [
-  ["#tools", m.nav.tools],
-  ["#toolkit", m.nav.toolkit],
-  ["#kit", m.nav.kit],
-  ["#plans", m.nav.plans],
-  ["#faq", m.nav.faq],
-] as const;
-
-export function Header() {
-  return (
-    <header className="sticky top-0 z-40 border-b border-line/70 bg-bg/80 backdrop-blur-2xl">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
-        <Link href="/" aria-label="Stayflow · Digital Studio"><Wordmark /></Link>
-        <nav aria-label="Main" className="hidden items-center gap-7 text-sm text-muted lg:flex">
-          {LINKS.map(([href, label]) => <a key={href} href={`/${href}`} className="transition hover:text-fg">{label}</a>)}
-        </nav>
-        <div className="flex items-center gap-2">
-          <CartButton />
-          <details className="group relative lg:hidden">
-            <summary aria-label={m.nav.menu} className="flex h-10 w-10 cursor-pointer list-none items-center justify-center rounded-xl border border-line bg-surface [&::-webkit-details-marker]:hidden"><Icon name="menu" className="h-5 w-5" /></summary>
-            <div className="absolute right-0 top-12 w-56 rounded-2xl border border-line bg-surface p-2 shadow-xl">
-              {LINKS.map(([href, label]) => <a key={href} href={`/${href}`} className="block rounded-xl px-3 py-2.5 text-sm hover:bg-surface2">{label}</a>)}
-            </div>
-          </details>
-        </div>
-      </div>
-    </header>
-  );
-}
+/** Where the "buy" buttons go: the store once connected, otherwise to the explanation. */
+const BUY = BUY_URL ? { href: BUY_URL, label: "landing.price.ctaBuy" as const } : { href: "#preguntas", label: "landing.price.cta" as const };
 
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <div aria-hidden className="bg-grid pointer-events-none absolute inset-0" />
-      {/* Slow-moving colour behind everything: the page is never static. */}
-      <div aria-hidden className="blob pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-accent2/25 blur-3xl" />
-      <div aria-hidden className="blob pointer-events-none absolute right-0 top-40 h-96 w-96 rounded-full bg-accent/15 blur-3xl" style={{ animationDelay: "-7s" }} />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pt-20 lg:grid-cols-[0.9fr_1.1fr] lg:pb-28">
-        <div>
-          <p className="line-in inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs text-muted shadow-sm">
-            <span aria-hidden className="pulse-ring h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-            <span className="truncate">{m.hero.eyebrow}</span>
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[680px]" style={{ background: "radial-gradient(60% 60% at 70% 10%, rgb(var(--accent) / 0.24), transparent 70%)" }} />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:pt-20 lg:grid-cols-[0.95fr_1.05fr] lg:pb-24">
+        <div className="anim-stagger">
+          <p className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface/60 px-3.5 py-1.5 text-xs text-muted backdrop-blur">
+            <span aria-hidden className="pulse-ring h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
+            <span className="truncate">{t("landing.hero.eyebrow")}</span>
           </p>
-          <h1 className="font-display mt-6 text-[2.75rem] leading-[1.04] sm:text-6xl xl:text-[3.9rem]">
-            <span className="line-in block" style={{ animationDelay: "0.1s" }}>{m.hero.title}</span>
-            <span className="line-in text-gradient text-shine block" style={{ animationDelay: "0.3s" }}>{m.hero.accent}</span>
+          <h1 className="font-display mt-6 text-[2.6rem] leading-[1.06] sm:text-5xl xl:text-[3.4rem]">
+            {t("landing.hero.title")} <span className="text-gradient block">{t("landing.hero.accent")}</span>
           </h1>
-          <p className="line-in mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg" style={{ animationDelay: "0.5s" }}>{m.hero.body}</p>
-          <div className="line-in mt-8 flex flex-wrap gap-3" style={{ animationDelay: "0.65s" }}>
-            <a href="#tools" className={`${btnPrimary} !px-6 !py-3.5 !text-base`}>{m.hero.explore}<Icon name="arrow" className="h-4 w-4" /></a>
-            <a href="#toolkit" className={`${btnGhost} !px-6 !py-3.5 !text-base`}>{m.hero.build}</a>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">{t("landing.hero.body")}</p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a href="#precios" className={`${buttonClass} gap-2 !px-6 !py-3.5 !text-base`}>
+              {t("landing.hero.cta")} <Icon name="arrow" className="h-4 w-4" />
+            </a>
+            <a href="#sistema" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base text-fg backdrop-blur transition hover:border-accent/60">
+              <span aria-hidden className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-accent"><svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor"><path d="M8 5v14l11-7z" /></svg></span>
+              {t("landing.hero.secondary")}
+            </a>
           </div>
-          <ul className="line-in mt-8 grid gap-2.5 text-sm text-muted" style={{ animationDelay: "0.8s" }}>
-            {[m.hero.point1, m.hero.point2, m.hero.point3].map((x) => (
-              <li key={x} className="flex items-center gap-2.5"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/12 text-accent"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
+          <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
+            {(["trust1", "trust2", "trust3"] as const).map((k) => (
+              <li key={k} className="flex items-center gap-2"><Icon name="check" className="h-4 w-4 text-success" />{t(`landing.hero.${k}`)}</li>
             ))}
           </ul>
         </div>
 
         <div className="relative">
-          <HeroStage />
-          <FloatCard icon="qr" tone="accent" title={m.hero.floatA} sub={m.hero.floatAsub} className="-left-1 top-[44%] lg:-left-8" style={{ "--r": "-2deg" } as CSSProperties} />
-          <FloatCard icon="check" tone="success" title={m.hero.floatB} sub={m.hero.floatBsub} className="-right-1 top-[58%] lg:-right-6" style={{ "--r": "2deg", animationDelay: "-3s" } as CSSProperties} />
-          <p className="mt-3 text-center text-[11px] text-muted lg:text-right">{m.hero.sample}</p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-const PROBLEM_ICONS: IconName[] = ["bell", "calendar", "wallet", "tasks", "users", "list"];
-
-export function Problem() {
-  return (
-    <section className="zone-dark">
-      <div className={SECTION}>
-        <Head eyebrow={m.problem.eyebrow} title={m.problem.title} />
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {m.problem.items.map((x, i) => (
-            <li key={x.t} className="reveal fx-card rounded-3xl p-7">
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-danger/12 text-danger"><Icon name={PROBLEM_ICONS[i] ?? "alert"} className="h-5 w-5" /></span>
-              <h3 className="font-display mt-5 text-lg">{x.t}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{x.d}</p>
-            </li>
-          ))}
-        </ul>
-        <p className="reveal font-display mx-auto mt-14 max-w-2xl text-center text-2xl leading-snug text-gradient md:text-3xl">{m.problem.closing}</p>
-      </div>
-    </section>
-  );
-}
-
-export function ProductCard({ id }: { id: ProductId }) {
-  const p = PRODUCTS[id];
-  const c = m.products[id];
-  return (
-    <article className="reveal fx-card flex flex-col overflow-hidden rounded-3xl">
-      <div className="zone-dark relative h-56 border-b border-line">
-        <ProductArt id={id} />
-        <span className={`absolute left-4 top-4 rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.preorder}</span>
-      </div>
-      <div className="flex flex-1 flex-col p-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <h3 className="font-display text-xl">{p.name}</h3>
-          <p className="shrink-0"><span className="font-display text-2xl tabular-nums">{usd(p.price)}</span><span className="ml-1 text-xs text-muted">{m.solution.oneTime}</span></p>
-        </div>
-        <p className="mt-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted">{m.solution.solves}</p>
-        <p className="mt-1 text-sm leading-relaxed">{c.problem}</p>
-        <ul className="mt-4 space-y-2">
-          {c.benefits.map((b) => <li key={b} className="flex items-start gap-2.5 text-sm text-muted"><span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent"><Icon name="check" className="h-2.5 w-2.5" /></span>{b}</li>)}
-        </ul>
-        <div className="mt-auto grid grid-cols-2 gap-2.5 pt-6">
-          <AddToCart id={id} className="!px-3" />
-          <Link href={`/products/${id}`} className={`${btnGhost} !px-3`}>{m.solution.learn}</Link>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-export function Solution() {
-  return (
-    <section id="tools" className={SECTION}>
-      <Head eyebrow={m.solution.eyebrow} title={m.solution.title} body={m.solution.body} />
-      <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {PRODUCT_LIST.map((p) => <ProductCard key={p.id} id={p.id} />)}
-      </div>
-    </section>
-  );
-}
-
-export function Compare() {
-  return (
-    <section className="border-y border-line/70 bg-surface2/50">
-      <div className={SECTION}>
-        <Head center eyebrow={m.compare.eyebrow} title={m.compare.title} body={m.compare.body} />
-        <div className="reveal mt-14 overflow-hidden rounded-3xl border border-line bg-surface shadow-sm">
-          <div className="grid grid-cols-2 text-sm font-semibold">
-            <p className="flex items-center gap-2 bg-surface2 px-5 py-4 text-muted"><Icon name="close" className="h-4 w-4 text-danger" />{m.compare.left}</p>
-            <p className="flex items-center gap-2 bg-accent/10 px-5 py-4 text-accent"><Icon name="check" className="h-4 w-4" />{m.compare.right}</p>
-          </div>
-          {m.compare.rows.map((r) => (
-            <div key={r.a} className="grid grid-cols-2 border-t border-line text-sm">
-              <p className="px-5 py-4 text-muted">{r.a}</p>
-              <p className="bg-accent/[0.04] px-5 py-4 font-medium">{r.b}</p>
+          <div aria-hidden className="absolute -inset-6 rounded-[56px] bg-accent/20 blur-3xl" />
+          <div className="relative pb-10 pt-4">
+            <div className="orbit hidden lg:block" aria-hidden />
+            <div className="relative transition-transform duration-700 ease-out lg:[transform:perspective(1800px)_rotateY(-10deg)_rotateX(3deg)] lg:hover:[transform:perspective(1800px)_rotateY(-3deg)_rotateX(1deg)]">
+              <DashboardMock compact />
             </div>
-          ))}
-        </div>
-        <p className="mx-auto mt-6 max-w-2xl text-center text-xs leading-relaxed text-muted">{m.compare.disclaimer}</p>
-      </div>
-    </section>
-  );
-}
-
-export function MultiPack() {
-  return (
-    <section id="toolkit" className={SECTION}>
-      <Head eyebrow={m.builder.eyebrow} title={m.builder.title} body={m.builder.body} />
-      <div className="reveal mt-12"><Builder /></div>
-    </section>
-  );
-}
-
-export function Kit() {
-  return (
-    <section id="kit" className="zone-dark">
-      <div className={`${SECTION} grid items-center gap-12 lg:grid-cols-2`}>
-        <div className="reveal">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-accent">{m.kit.eyebrow}</p>
-          <h2 className="font-display mt-4 text-3xl leading-[1.1] md:text-5xl">{m.kit.title}</h2>
-          <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">{m.kit.body}</p>
-          <p className="mt-8 flex items-baseline gap-2"><span className="font-display text-gradient text-6xl">{usd(LAUNCH_KIT.price)}</span><span className="text-sm text-muted">{m.kit.price}</span></p>
-          <KitButton className="mt-6 !px-6 !py-3.5 !text-base" />
-          <p className="mt-4 text-xs leading-relaxed text-muted">{m.kit.status}<br />{m.kit.note}</p>
-        </div>
-        <div className="reveal fx-card fx-hero rounded-3xl p-7">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{m.kit.includes}</p>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-            {m.kit.items.map((x) => <li key={x} className="flex items-center gap-3 rounded-xl border border-line bg-bg/50 px-3.5 py-3 text-sm"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"><Icon name="check" className="h-3.5 w-3.5" /></span>{x}</li>)}
-          </ul>
+            <div className="drift fx-card absolute -left-2 top-[34%] hidden w-64 rounded-2xl p-3 shadow-2xl sm:block lg:-left-8" style={{ "--r": "-2deg" } as CSSProperties}>
+              <div className="flex items-center gap-3">
+                <Avatar name="Familia Ortega" className="h-9 w-9 text-xs" />
+                <div className="min-w-0">
+                  <p className="truncate text-[13px] font-semibold">{t("landing.hero.floatA")}</p>
+                  <p className="truncate text-[11px] text-muted">{t("landing.hero.floatAsub")}</p>
+                </div>
+              </div>
+            </div>
+            <div className="drift fx-card absolute -right-2 bottom-[16%] hidden w-60 rounded-2xl p-3 shadow-2xl sm:block lg:-right-6" style={{ "--r": "2deg", animationDelay: "-3s" } as CSSProperties}>
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-danger/15 text-danger"><Icon name="alert" className="h-[18px] w-[18px]" /></span>
+                <div className="min-w-0">
+                  <p className="truncate text-[13px] font-semibold">{t("landing.hero.floatB")}</p>
+                  <p className="text-[11px] leading-snug text-muted">{t("landing.hero.floatBsub")}</p>
+                </div>
+              </div>
+            </div>
+            <p className="absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 text-center text-xs font-medium text-fg/90"><Icon name="sparkles" className="h-3.5 w-3.5 text-accent" />{t("landing.hero.tag")}</p>
+          </div>
+          <p className="text-center text-[11px] text-muted lg:text-right">{t("landing.hero.sample")}</p>
         </div>
       </div>
     </section>
   );
 }
 
-export function Plans() {
+/** The five promises as a strip, then the facts as numbers. No invented customer counts or ratings. */
+export function Strip() {
+  const items: { icon: IconName; k: "one" | "two" | "three" | "four" | "five" }[] = [
+    { icon: "check", k: "one" },
+    { icon: "calendar", k: "two" },
+    { icon: "bell", k: "three" },
+    { icon: "wallet", k: "four" },
+    { icon: "key", k: "five" },
+  ];
   return (
-    <section id="plans" className={SECTION}>
-      <Head center eyebrow={m.plans.eyebrow} title={m.plans.title} body={m.plans.body} />
-      <div className="mt-14 grid gap-5 lg:grid-cols-3">
-        {PLAN_IDS.map((id) => {
-          const p = m.plans.list[id];
-          const featured = id === "pro";
-          return (
-            <article key={id} className={`reveal fx-card relative flex flex-col rounded-3xl p-8 ${featured ? "fx-hero !border-accent" : ""}`}>
-              {featured && <span className="absolute -top-3 left-8 rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent">{"badge" in p ? p.badge : ""}</span>}
-              <h3 className="font-display text-2xl">{p.name}</h3>
-              <p className="mt-1 text-sm text-muted">{p.for}</p>
-              <p className="mt-6 flex items-baseline gap-1"><span className="font-display text-5xl tabular-nums">{usd(PLAN_PRICE[id])}</span><span className="text-sm text-muted">{m.plans.perMonth}</span></p>
-              <ul className="mt-6 flex-1 space-y-3 border-t border-line pt-6">
-                {p.features.map((f) => <li key={f} className="flex items-start gap-3 text-sm"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/12 text-accent"><Icon name="check" className="h-3 w-3" /></span>{f}</li>)}
-              </ul>
-              <p className="mt-6 text-xs font-medium text-accent">{m.plans.soon}</p>
-              <div className="mt-3"><PlanCta plan={id} /></div>
-            </article>
-          );
-        })}
-      </div>
-      <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-muted">{m.plans.notice}</p>
+    <section aria-label="Resumen" className="mx-auto max-w-6xl px-5 pb-20">
+      <ul className="reveal fx-card grid gap-px overflow-hidden rounded-2xl bg-line/40 sm:grid-cols-2 lg:grid-cols-5">
+        {items.map((i) => (
+          <li key={i.k} className="flex items-center gap-3.5 bg-surface/90 p-5">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent shadow-[0_0_24px_-6px_rgb(var(--accent))]"><Icon name={i.icon} className="h-5 w-5" /></span>
+            <span className="min-w-0">
+              <span className="block text-sm font-semibold">{t(`landing.strip.${i.k}.title`)}</span>
+              <span className="block text-xs text-muted">{t(`landing.strip.${i.k}.body`)}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <dl className="mt-12 grid grid-cols-2 gap-8 text-center lg:grid-cols-4">
+        {(["one", "two", "three", "four"] as const).map((k) => (
+          <div key={k} className="reveal">
+            <dt className="font-display text-gradient text-5xl">{t(`landing.stats.${k}.n`)}</dt>
+            <dd className="mt-2 text-sm text-muted">{t(`landing.stats.${k}.l`)}</dd>
+          </div>
+        ))}
+      </dl>
     </section>
   );
 }
 
-const BENEFIT_ICONS: IconName[] = ["clock", "calendar", "users", "wallet", "tasks", "building"];
-
-export function Benefits() {
+export function Pain() {
   return (
-    <section className="border-y border-line/70 bg-surface2/50">
-      <div className={SECTION}>
-        <Head center eyebrow={m.benefits.eyebrow} title={m.benefits.title} />
-        <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {m.benefits.items.map((b, i) => (
-            <li key={b.t} className="reveal flex gap-4 rounded-3xl border border-line bg-surface p-6 shadow-sm">
-              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent"><Icon name={BENEFIT_ICONS[i] ?? "check"} className="h-5 w-5" /></span>
-              <span><span className="font-display block text-lg">{b.t}</span><span className="mt-1 block text-sm leading-relaxed text-muted">{b.d}</span></span>
+    <section id="sistema" className="border-t border-line/60 bg-surface/30">
+      <div className="mx-auto max-w-6xl px-5 pb-6 pt-20 md:pt-28">
+        <Head center eyebrow={t("landing.pain.eyebrow")} title={t("landing.pain.title")} body={t("landing.pain.body")} />
+      </div>
+    </section>
+  );
+}
+
+function Block({ id, icon, tag, pain, title, body, bullets, visual, flip = false }: { id?: string; icon: IconName; tag: string; pain: string; title: string; body: string; bullets: string[]; visual: ReactNode; flip?: boolean }) {
+  return (
+    <div id={id} className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 md:py-20 lg:grid-cols-2 lg:gap-20">
+      <div className={`reveal ${flip ? "lg:order-2" : ""}`}>
+        <p className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-accent">
+          <Icon name={icon} className="h-3.5 w-3.5" />{tag}
+        </p>
+        <p className="mt-6 flex gap-3 text-lg font-medium leading-snug text-danger/90">
+          <span aria-hidden className="mt-0.5 shrink-0"><Icon name="alert" className="h-5 w-5" /></span>
+          <span>{pain}</span>
+        </p>
+        <h3 className="font-display mt-5 text-3xl leading-tight md:text-4xl">{title}</h3>
+        <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">{body}</p>
+        <ul className="mt-6 space-y-3">
+          {bullets.map((b) => (
+            <li key={b} className="flex items-start gap-3 text-[15px]">
+              <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>
+              {b}
             </li>
           ))}
         </ul>
       </div>
+      <div className={`reveal relative ${flip ? "lg:order-1" : ""}`}>
+        <div aria-hidden className="absolute -inset-4 rounded-[40px] bg-accent/10 blur-2xl" />
+        <div className="relative">{visual}</div>
+      </div>
+    </div>
+  );
+}
+
+/** One block per promise: the pain, what changes, and a picture of it working. */
+export function Blocks() {
+  const b = (k: "bookings" | "schedule" | "guests" | "tasks" | "profit") => ({
+    tag: t(`landing.blocks.${k}.tag`),
+    pain: t(`landing.blocks.${k}.pain`),
+    title: t(`landing.blocks.${k}.title`),
+    body: t(`landing.blocks.${k}.body`),
+    bullets: [t(`landing.blocks.${k}.b1`), t(`landing.blocks.${k}.b2`), t(`landing.blocks.${k}.b3`)],
+  });
+  return (
+    <section className="bg-surface/30 pb-10">
+      <Block icon="bed" {...b("bookings")} visual={<BookingsMock />} />
+      <Block id="cronograma" icon="calendar" {...b("schedule")} flip visual={<div role="img" aria-label={t("landing.blocks.schedule.alt")}><ScheduleMock /></div>} />
+      <Block icon="users" {...b("guests")} visual={<GuestsMock />} />
+      <Block icon="tasks" {...b("tasks")} flip visual={<TasksMock />} />
+      <Block icon="wallet" {...b("profit")} visual={<ProfitMock />} />
     </section>
   );
 }
+
+export function Apps() {
+  const apps: { name: string; body: string; href: string; icon: IconName }[] = [
+    { name: "Stayflow Host", body: t("landing.apps.host"), href: HOST_URL, icon: "dashboard" },
+    { name: "Stayflow Profit", body: t("landing.apps.profit"), href: PROFIT_URL, icon: "chart" },
+    { name: "Stayflow Guest", body: t("landing.apps.guest"), href: GUEST_URL, icon: "qr" },
+  ];
+  const soon = [
+    { name: "Stayflow AI", body: t("landing.apps.ai") },
+    { name: "Stayflow Operations", body: t("landing.apps.operations") },
+  ];
+  return (
+    <section id="apps" className="border-y border-line/60 bg-surface/30">
+      <div className={SECTION}>
+        <Head eyebrow={t("landing.apps.eyebrow")} title={t("landing.apps.title")} body={t("landing.apps.body")} />
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {apps.map((a) => (
+            <article key={a.name} className="reveal fx-card fx-hero rounded-3xl p-7">
+              <div className="flex items-center justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent/12 text-accent"><Icon name={a.icon} className="h-5 w-5" /></span>
+                <span className="rounded-full bg-accent px-2.5 py-1 text-[11px] font-medium text-onaccent">{t("landing.apps.available")}</span>
+              </div>
+              <h3 className="font-display mt-5 text-lg">{a.name}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-fg/80">{a.body}</p>
+              <a href={a.href} target="_blank" rel="noopener noreferrer" className="group mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+                {t("landing.apps.open")}
+                <Icon name="arrow" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </a>
+            </article>
+          ))}
+          {soon.map((a) => (
+            <article key={a.name} className="reveal fx-card rounded-3xl p-7 opacity-80">
+              <span className="inline-block rounded-full border border-line px-2.5 py-1 text-[11px] font-medium text-muted">{t("landing.apps.soon")}</span>
+              <h3 className="font-display mt-5 text-lg">{a.name}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{a.body}</p>
+            </article>
+          ))}
+          <article className="reveal rounded-3xl border border-dashed border-line p-7">
+            <h3 className="font-display text-lg">Stayflow Suite</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{t("landing.apps.suite")}</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Steps() {
+  const steps = (["one", "two", "three"] as const).map((k, i) => ({ n: i + 1, title: t(`landing.steps.${k}.title`), body: t(`landing.steps.${k}.body`) }));
+  return (
+    <section id="como-empieza" className={SECTION}>
+      <Head eyebrow={t("landing.steps.eyebrow")} title={t("landing.steps.title")} />
+      <ol className="mt-14 grid gap-10 md:grid-cols-3">
+        {steps.map((s) => (
+          <li key={s.n} className="reveal">
+            <span className="font-display text-6xl text-gradient">{s.n}</span>
+            <h3 className="font-display mt-4 text-xl">{s.title}</h3>
+            <p className="mt-2 leading-relaxed text-muted">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+      <p className="fx-card mt-12 inline-block rounded-2xl px-5 py-4 text-sm text-muted">{t("landing.steps.install")}</p>
+    </section>
+  );
+}
+
+const FAQ_N = [1, 2, 3, 4, 5, 6] as const;
 
 export function Faq() {
+  const items = FAQ_N.map((n) => ({ q: t(`landing.faq.q${n}`), a: t(`landing.faq.a${n}`) }));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: m.faq.items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
+    mainEntity: items.map((i) => ({ "@type": "Question", name: i.q, acceptedAnswer: { "@type": "Answer", text: i.a } })),
   };
   return (
-    <section id="faq" className="mx-auto max-w-3xl px-5 py-20 md:py-28">
+    <section id="preguntas" className="mx-auto max-w-3xl px-5 py-20 md:py-28">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Head center eyebrow={m.faq.eyebrow} title={m.faq.title} />
+      <Head center eyebrow={t("landing.faq.eyebrow")} title={t("landing.faq.title")} />
       <div className="mt-12 divide-y divide-line border-y border-line">
-        {m.faq.items.map((i) => (
+        {items.map((i) => (
           <details key={i.q} className="group py-5">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-6 text-base font-medium [&::-webkit-details-marker]:hidden">
-              {i.q}<span aria-hidden className="text-2xl leading-none text-accent transition group-open:rotate-45">+</span>
+              {i.q}
+              <span aria-hidden className="text-2xl leading-none text-accent transition group-open:rotate-45">+</span>
             </summary>
             <p className="mt-3 max-w-2xl leading-relaxed text-muted">{i.a}</p>
           </details>
@@ -308,15 +273,12 @@ export function Faq() {
 export function FinalCta() {
   return (
     <section className="mx-auto max-w-6xl px-5 pb-20 md:pb-28">
-      <div className="zone-dark reveal relative overflow-hidden rounded-[32px] px-6 py-16 text-center md:px-16 md:py-24">
-        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 80% at 50% 120%, rgb(var(--accent) / 0.35), transparent 70%)" }} />
+      <div className="reveal fx-card fx-hero relative overflow-hidden rounded-[32px] px-6 py-16 text-center md:px-16 md:py-24">
+        <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 80% at 50% 120%, rgb(var(--accent) / 0.32), transparent 70%)" }} />
         <div className="relative">
-          <h2 className="font-display mx-auto max-w-2xl text-3xl leading-tight md:text-5xl">{m.cta.title}</h2>
-          <p className="mx-auto mt-5 max-w-lg text-lg text-muted">{m.cta.body}</p>
-          <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href="#tools" className={`${btnPrimary} !px-7 !py-3.5 !text-base`}>{m.cta.explore}</a>
-            <a href="#toolkit" className="inline-flex items-center justify-center rounded-xl border border-white/20 px-7 py-3.5 text-base font-semibold text-white transition hover:bg-white/10">{m.cta.build}</a>
-          </div>
+          <h2 className="font-display mx-auto max-w-2xl text-3xl leading-tight md:text-5xl">{t("landing.cta.title")}</h2>
+          <p className="mx-auto mt-5 max-w-md text-lg text-muted">{t("landing.cta.body")}</p>
+          <a href="#precios" className={`${buttonClass} mt-9 !px-7 !py-3.5 !text-base`}>{t("landing.cta.button")}</a>
         </div>
       </div>
     </section>
@@ -325,26 +287,15 @@ export function FinalCta() {
 
 export function Footer() {
   return (
-    <footer className="border-t border-line/70">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <Wordmark />
-          <p className="mt-4 max-w-xs text-sm text-muted">{m.footer.tag}</p>
+    <footer className="border-t border-line/60">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-5 py-10 sm:flex-row sm:items-center">
+        <div className="flex items-center gap-4">
+          <span className="text-xs uppercase tracking-[0.2em] text-muted">{t("landing.footer.by")}</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-8 w-auto" />
         </div>
-        <p className="text-xs text-muted">© {new Date().getFullYear()} Digital Studio. {m.footer.rights}</p>
+        <p className="text-xs text-muted">© {new Date().getFullYear()} Digital Studio. {t("landing.footer.rights")}</p>
       </div>
     </footer>
   );
 }
-
-/** Cart drawer + floating bar, mounted once per page. */
-export function CartUi() {
-  return (
-    <>
-      <CartDrawer />
-      <CartBar />
-    </>
-  );
-}
-
-export { ScheduleVisual, type ReactNode };

@@ -1,19 +1,19 @@
-import { Announce, Benefits, Compare, Faq, FinalCta, Footer, Header, Hero, Kit, MultiPack, Plans, Problem, Solution } from "@/components/sections";
+import { Header } from "@/components/Header";
+import { Precios } from "@/components/precios";
+import { Apps, Blocks, Faq, FinalCta, Footer, Hero, Pain, Steps, Strip } from "@/components/sections";
 
 export default function Home() {
   return (
     <>
-      <Announce />
       <Header />
       <main>
         <Hero />
-        <Problem />
-        <Solution />
-        <Compare />
-        <MultiPack />
-        <Kit />
-        <Plans />
-        <Benefits />
+        <Strip />
+        <Pain />
+        <Blocks />
+        <Precios />
+        <Apps />
+        <Steps />
         <Faq />
         <FinalCta />
       </main>

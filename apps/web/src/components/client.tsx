@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Icon } from "@stayflow/ui";
 import { track } from "@/lib/analytics";
-import { LAUNCH_KIT, MULTIPACK_PERCENT, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type PlanId, type ProductId } from "@/lib/catalog";
+import { LAUNCH_KIT, MULTIPACK_PERCENT, PACKS, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type PlanId, type ProductId } from "@/lib/catalog";
 import { saveLead, type LeadSource } from "@/lib/leads";
 import { usd } from "@/lib/pricing";
 import { fmt, plural } from "@/i18n";
 import { useMessages } from "@/i18n/client";
-import { Breakdown, CartButton, DiscountMeter, useCart } from "./cart";
+import { Breakdown, CartButton, DiscountMeter, OffersList, useCart } from "./cart";
 import { btnGhost, btnPrimary } from "./styles";
 import { ProductArt } from "./visuals";
 
@@ -46,12 +46,12 @@ export function CartBar() {
       <button
         type="button"
         onClick={() => { setOpen(true); track("view_cart", { value: totals.total, currency: "USD" }); }}
-        className="pointer-events-auto anim-in flex w-full max-w-md items-center gap-3 rounded-2xl bg-[rgb(9_22_16)] px-4 py-3 text-left text-white shadow-2xl ring-1 ring-white/10"
+        className="pointer-events-auto anim-in fx-card fx-hero flex w-full max-w-md items-center gap-3 rounded-2xl px-4 py-3 text-left shadow-2xl"
       >
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10"><Icon name="wallet" className="h-[18px] w-[18px]" /></span>
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-accent/15 text-accent"><Icon name="wallet" className="h-[18px] w-[18px]" /></span>
         <span className="min-w-0 flex-1 text-sm">
-          <span className="block font-semibold">{plural(m.cart, "items", count, locale)}{totals.discountActive && <span className="ml-2 rounded-full bg-emerald-400/20 px-2 py-0.5 text-[11px] text-emerald-300">−30%</span>}</span>
-          <span className="block text-xs text-white/60">{totals.appCount === 1 ? m.cart.unlockOne : m.cart.review}</span>
+          <span className="block font-semibold">{plural(m.cart, "items", count, locale)}{totals.discountActive && <span className="ml-2 rounded-full bg-success/15 px-2 py-0.5 text-[11px] text-success">−30%</span>}</span>
+          <span className="block text-xs text-muted">{totals.appCount === 1 ? m.cart.unlockOne : m.cart.review}</span>
         </span>
         <span className="font-display text-lg tabular-nums">{usd(totals.total)}</span>
       </button>
@@ -110,6 +110,7 @@ export function Builder() {
             <div className="my-4 h-px bg-line" />
             <DiscountMeter className="mb-4" />
             <Breakdown totals={totals} labels={m.builder} />
+            <OffersList className="mt-5" />
             <Link href="/checkout" className={`${btnPrimary} mt-5 w-full`}>{m.builder.checkout}</Link>
           </>
         )}
@@ -214,6 +215,7 @@ export function CheckoutView() {
         </ul>
         <DiscountMeter className="my-5" />
         <Breakdown totals={totals} labels={m.cart} />
+        <OffersList className="mt-6" />
         <p className="mt-5 text-xs text-muted">{m.checkout.preorderNote}</p>
       </section>
       <section className="fx-card fx-hero rounded-3xl p-6 sm:p-8">
@@ -226,3 +228,20 @@ export function CheckoutView() {
 }
 
 export { fmt, MULTIPACK_PERCENT, PLAN_IDS, PLAN_PRICE, ProductArt };
+
+/** Puts a ready-made pack in the cart (replacing the apps), so the 30% rule prices it. */
+export function AddPack({ pack }: { pack: import("@/lib/catalog").PackId }) {
+  const { m } = useMessages();
+  const { apps, setApps } = useCart();
+  const ids = PACKS[pack].apps;
+  const on = ids.length === apps.length && ids.every((id) => apps.includes(id));
+  return (
+    <button type="button" onClick={() => setApps(ids)} aria-pressed={on} className={`${on ? "inline-flex items-center justify-center gap-2 rounded-xl border border-accent bg-accent/10 px-5 py-3 text-sm font-semibold text-accent" : btnPrimary} w-full`}>
+      <Icon name={on ? "check" : "plus"} className="h-4 w-4" />
+      {on ? m.packs.inCart : m.packs.add}
+    </button>
+  );
+}
+
+/** Cart drawer + floating bar, mounted once in the layout. */
+export { CartDrawer } from "./cart";

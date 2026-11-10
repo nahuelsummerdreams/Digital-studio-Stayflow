@@ -58,3 +58,12 @@ export const CROSS_SELL: Record<ProductId, ProductId[]> = {
 export const PLAN_IDS = ["starter", "pro", "business"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
 export const PLAN_PRICE: Record<PlanId, number> = { starter: 19, pro: 29, business: 59 };
+
+/** Ready-made packs: the apps are the ones in the cart, so the 30% Multi-Pack rule prices them. */
+export const PACK_IDS = ["essential", "pro", "mega"] as const;
+export type PackId = (typeof PACK_IDS)[number];
+export const PACKS: Record<PackId, { id: PackId; apps: ProductId[] }> = {
+  essential: { id: "essential", apps: ["host", "guest", "profit"] },
+  pro: { id: "pro", apps: ["host", "guest", "profit", "operations", "ai"] },
+  mega: { id: "mega", apps: [...PRODUCT_IDS] },
+};

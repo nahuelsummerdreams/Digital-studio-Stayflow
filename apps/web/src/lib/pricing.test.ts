@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computeTotals, normalizeApps, recommendations } from "./pricing";
+import { computeTotals, normalizeApps, offers, packTotals, recommendations } from "./pricing";
 
 describe("computeTotals", () => {
   it("an empty cart is zero and unlocks nothing", () => {
@@ -61,5 +61,38 @@ describe("recommendations", () => {
   });
   it("is empty for an empty cart", () => {
     expect(recommendations([])).toEqual([]);
+  });
+});
+
+describe("packs", () => {
+  it("prices the ready-made packs with the 30% rule", () => {
+    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 127, discount: 38.1, total: 88.9 });
+    expect(packTotals("pro")).toMatchObject({ appsSubtotal: 185, total: 129.5 });
+    expect(packTotals("mega")).toMatchObject({ appCount: 9, appsSubtotal: 291, total: 203.7 });
+  });
+});
+
+describe("offers (upsell and downsell)", () => {
+  it("one app: suggests the cheapest other app, and it can even lower the price", () => {
+    const [o] = offers({ apps: ["guest"], kit: false });
+    expect(o).toMatchObject({ kind: "unlock", id: "profit" });
+    expect((o as { extra: number }).extra).toBeLessThan(0); // 49 -> 47.60
+  });
+  it("two apps: suggests the smallest pack that contains them", () => {
+    const o = offers({ apps: ["host", "profit"], kit: false });
+    expect(o[0]).toMatchObject({ kind: "pack", pack: "essential", moreApps: 1 });
+  });
+  it("apps outside the packs jump to the megapack", () => {
+    expect(offers({ apps: ["listing", "website"], kit: false })[0]).toMatchObject({ kind: "pack", pack: "mega" });
+  });
+  it("three or more apps: downsell drops the priciest and keeps the discount", () => {
+    const o = offers({ apps: ["host", "guest", "ai", "operations"], kit: false }, 5);
+    const drop = o.find((x) => x.kind === "drop") as { id: string; saving: number };
+    expect(drop.id).toBe("host");
+    expect(drop.saving).toBeCloseTo(41.3, 2); // 59 * 0.7
+  });
+  it("nothing to offer for an empty cart or the full megapack", () => {
+    expect(offers({ apps: [], kit: false })).toEqual([]);
+    expect(offers({ apps: [...Object.keys({}), "host", "guest", "ai", "profit", "operations", "listing", "academy", "experiences", "website"] as never, kit: false }).some((x) => x.kind === "pack")).toBe(false);
   });
 });
