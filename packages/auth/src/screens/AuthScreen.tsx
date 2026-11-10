@@ -80,7 +80,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
 
       <button
         type="button"
-        className="mt-4 text-sm text-black/60 underline-offset-4 hover:underline"
+        className="mt-4 text-sm text-muted underline-offset-4 hover:underline"
         onClick={() => {
           setMode(signup ? "signin" : "signup");
           setError(null);

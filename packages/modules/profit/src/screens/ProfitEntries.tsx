@@ -99,8 +99,8 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
     return (
       <section className={cardClass}>
         <h2 className="text-sm font-medium">Add a property first</h2>
-        <p className="mt-2 text-sm text-black/60">
-          Income and expenses are tracked per property. Create one in <strong className="text-ink">Properties</strong>.
+        <p className="mt-2 text-sm text-muted">
+          Income and expenses are tracked per property. Create one in <strong className="text-fg">Properties</strong>.
         </p>
       </section>
     );
@@ -137,7 +137,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
       }}
       aria-pressed={kind === k}
       className={`flex-1 rounded-lg px-3 py-2 text-sm font-medium transition ${
-        kind === k ? "bg-ink text-white" : "text-black/60 hover:text-black"
+        kind === k ? "bg-accent text-onaccent" : "text-muted hover:text-fg"
       }`}
     >
       {label}
@@ -147,7 +147,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
   return (
     <div className="space-y-6">
       <form onSubmit={submit} className={`${cardClass} space-y-4`}>
-        <div className="flex gap-1 rounded-xl bg-paper p-1">
+        <div className="flex gap-1 rounded-xl bg-bg p-1">
           {tab("income", "Income")}
           {tab("expense", "Expense")}
         </div>
@@ -220,23 +220,23 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
       <section className={cardClass}>
         <h2 className="text-sm font-medium">Recent entries</h2>
         {loading ? (
-          <p className="mt-3 text-sm text-black/50">Loading…</p>
+          <p className="mt-3 text-sm text-muted">Loading…</p>
         ) : loadError ? (
           <p role="alert" className={`${errorClass} mt-3`}>{loadError}</p>
         ) : rows.length === 0 ? (
-          <p className="mt-3 text-sm text-black/60">No entries yet.</p>
+          <p className="mt-3 text-sm text-muted">No entries yet.</p>
         ) : (
           <ul className="mt-3 divide-y divide-line">
             {rows.map((r) => (
               <li key={r.key} className="flex items-center justify-between gap-3 py-3 text-sm">
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{r.title}</span>
-                  <span className="block truncate text-black/50">
+                  <span className="block truncate text-muted">
                     {r.date} · {nameOf(r.propertyId)}
                   </span>
                 </span>
                 <span className="flex shrink-0 items-center gap-3">
-                  <span className={`font-medium ${r.kind === "expense" ? "text-red-700" : "text-emerald-700"}`}>
+                  <span className={`font-medium ${r.kind === "expense" ? "text-danger" : "text-success"}`}>
                     {r.kind === "expense" ? "−" : "+"}
                     {money(r.amount)}
                   </span>

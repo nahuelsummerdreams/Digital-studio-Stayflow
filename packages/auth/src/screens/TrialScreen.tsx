@@ -33,14 +33,14 @@ export function TrialScreen({ product, productName }: { product: ProductKey; pro
         {ended ? (
           <>
             <h1 className="font-display text-3xl leading-tight">Your {productName} plan has ended.</h1>
-            <p className="mt-3 text-sm text-black/60">
+            <p className="mt-3 text-sm text-muted">
               Your data is safe. Renew your plan to pick up right where you left off.
             </p>
           </>
         ) : (
           <>
             <h1 className="font-display text-3xl leading-tight">Try {productName} free for 14 days.</h1>
-            <p className="mt-3 text-sm text-black/60">No card needed. Add your properties and see your real numbers.</p>
+            <p className="mt-3 text-sm text-muted">No card needed. Add your properties and see your real numbers.</p>
             {error && <p role="alert" className={`${errorClass} mt-4`}>{error}</p>}
             <button className={`${buttonClass} mt-6 w-full`} onClick={begin} disabled={busy}>
               {busy ? "Starting…" : "Start free trial"}
@@ -48,7 +48,7 @@ export function TrialScreen({ product, productName }: { product: ProductKey; pro
           </>
         )}
       </section>
-      <button type="button" onClick={signOut} className="mt-4 text-sm text-black/60 underline-offset-4 hover:underline">
+      <button type="button" onClick={signOut} className="mt-4 text-sm text-muted underline-offset-4 hover:underline">
         Sign out
       </button>
     </main>

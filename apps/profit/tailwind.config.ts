@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import { stayflowPreset } from "@stayflow/ui";
+import { stayflowPreset } from "@stayflow/ui/preset";
 
 export default {
   presets: [stayflowPreset],

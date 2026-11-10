@@ -31,7 +31,7 @@ export function CreateOrgScreen() {
   return (
     <main className="mx-auto max-w-md px-5 pb-16 pt-14">
       <h1 className="font-display text-4xl leading-tight">Let’s set up your business.</h1>
-      <p className="mt-3 text-sm text-black/60">This is where your properties and numbers will live.</p>
+      <p className="mt-3 text-sm text-muted">This is where your properties and numbers will live.</p>
       <form onSubmit={submit} className={`${cardClass} mt-8 space-y-4`}>
         <label className={labelClass}>
           Business name
@@ -50,7 +50,7 @@ export function CreateOrgScreen() {
           {busy ? "Creating…" : "Continue"}
         </button>
       </form>
-      <button type="button" onClick={signOut} className="mt-4 text-sm text-black/60 underline-offset-4 hover:underline">
+      <button type="button" onClick={signOut} className="mt-4 text-sm text-muted underline-offset-4 hover:underline">
         Sign out
       </button>
     </main>

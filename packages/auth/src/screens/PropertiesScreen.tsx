@@ -46,14 +46,14 @@ export function PropertiesScreen() {
       <section className={cardClass}>
         <h2 className="text-sm font-medium">Your properties</h2>
         {properties.length === 0 ? (
-          <p className="mt-3 text-sm text-black/60">No properties yet. Add your first one below.</p>
+          <p className="mt-3 text-sm text-muted">No properties yet. Add your first one below.</p>
         ) : (
           <ul className="mt-3 divide-y divide-line">
             {properties.map((p) => (
               <li key={p.id} className="flex items-center justify-between gap-3 py-3 text-sm">
                 <span>
                   <span className="font-medium">{p.name}</span>
-                  {p.city && <span className="text-black/50"> · {p.city}</span>}
+                  {p.city && <span className="text-muted"> · {p.city}</span>}
                 </span>
                 <button type="button" className={ghostButtonClass} onClick={() => archive(p.id, p.name)}>
                   Archive

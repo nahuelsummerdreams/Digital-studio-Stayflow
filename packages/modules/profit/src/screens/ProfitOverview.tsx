@@ -18,7 +18,7 @@ const monthLabel = (ym: string) =>
 
 export function ProfitOverview({ client, orgId, currency, properties }: Props) {
   const { ledger, loading, error } = useLedger(client, orgId);
-  if (loading) return <p className="text-sm text-black/50">Loading your numbers…</p>;
+  if (loading) return <p className="text-sm text-muted">Loading your numbers…</p>;
   if (error) return <p role="alert" className={errorClass}>{error}</p>;
 
   const { incomes, expenses } = ledger;
@@ -34,14 +34,14 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
   return (
     <div className="space-y-6">
       <section className={cardClass}>
-        <p className="text-sm text-black/60">Net profit, all time</p>
-        <p className={`mt-1 font-display text-5xl ${net < 0 ? "text-red-700" : ""}`}>{money(net)}</p>
-        <p className="mt-3 text-sm text-black/60">
+        <p className="text-sm text-muted">Net profit, all time</p>
+        <p className={`mt-1 font-display text-5xl ${net < 0 ? "text-danger" : "text-money"}`}>{money(net)}</p>
+        <p className="mt-3 text-sm text-muted">
           {money(revenue)} earned · {money(spent)} spent
         </p>
         {empty && (
-          <p className="mt-4 text-sm text-black/60">
-            Nothing recorded yet. Add your first booking in <strong className="text-ink">Entries</strong> to see what you
+          <p className="mt-4 text-sm text-muted">
+            Nothing recorded yet. Add your first booking in <strong className="text-fg">Entries</strong> to see what you
             really earn.
           </p>
         )}
@@ -50,10 +50,10 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
       {byProperty.length > 0 && (
         <section className="grid gap-4 sm:grid-cols-2">
           {byProperty.map((p) => (
-            <article key={p.propertyId} className="rounded-card border border-line bg-white p-5">
+            <article key={p.propertyId} className="rounded-card border border-line bg-surface p-5">
               <h2 className="text-sm font-medium">{nameOf(p.propertyId)}</h2>
-              <p className={`mt-2 font-display text-3xl ${p.net < 0 ? "text-red-700" : ""}`}>{money(p.net)}</p>
-              <p className="mt-1 text-sm text-black/60">
+              <p className={`mt-2 font-display text-3xl ${p.net < 0 ? "text-danger" : ""}`}>{money(p.net)}</p>
+              <p className="mt-1 text-sm text-muted">
                 {p.marginPct}% margin · {p.nights} nights
               </p>
             </article>
@@ -68,7 +68,7 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
             {months.map((m) => (
               <li key={m.month} className="flex items-center justify-between py-3 text-sm">
                 <span>{monthLabel(m.month)}</span>
-                <span className={`font-medium ${m.net < 0 ? "text-red-700" : ""}`}>{money(m.net)}</span>
+                <span className={`font-medium ${m.net < 0 ? "text-danger" : ""}`}>{money(m.net)}</span>
               </li>
             ))}
           </ul>

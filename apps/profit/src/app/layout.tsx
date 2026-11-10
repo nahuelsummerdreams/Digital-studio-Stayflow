@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
-import { PRODUCT_BRAND } from "@stayflow/ui";
+import { DEFAULT_THEME, PRODUCT_BRAND, THEME_INIT_SCRIPT } from "@stayflow/ui";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 import { Providers } from "./providers";
 import "./globals.css";
@@ -17,14 +17,18 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: brand.accent,
+  themeColor: "#060A13",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme={DEFAULT_THEME} suppressHydrationWarning>
+      <head>
+        {/* Applies the saved accent before first paint, so it never flashes. */}
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="font-sans">
         <Providers>{children}</Providers>
         <RegisterServiceWorker />

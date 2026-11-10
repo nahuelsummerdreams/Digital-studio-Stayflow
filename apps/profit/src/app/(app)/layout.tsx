@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { AuthScreen, CreateOrgScreen, TrialScreen, useAccount } from "@stayflow/auth";
-import { PRODUCT_BRAND, errorClass } from "@stayflow/ui";
+import { PRODUCT_BRAND, ThemeSwitcher, errorClass } from "@stayflow/ui";
 
 const brand = PRODUCT_BRAND.profit;
 const NAV = [
@@ -18,7 +18,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const { loading, error, session, org, licenses, can, signOut } = useAccount();
   const pathname = usePathname();
 
-  if (loading) return <p className="px-5 pt-14 text-center text-sm text-black/50">Loading…</p>;
+  if (loading) return <p className="px-5 pt-14 text-center text-sm text-muted">Loading…</p>;
   if (!session) return <AuthScreen productName={brand.name} tagline={brand.tagline} />;
   if (error) {
     return (
@@ -42,18 +42,21 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{brand.name}</p>
           <h1 className="mt-2 font-display text-3xl leading-tight">{org.name}</h1>
         </div>
-        <button type="button" onClick={signOut} className="mt-1 text-sm text-black/50 underline-offset-4 hover:underline">
-          Sign out
-        </button>
+        <div className="mt-1 flex flex-col items-end gap-3">
+          <ThemeSwitcher />
+          <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
+            Sign out
+          </button>
+        </div>
       </header>
 
       {daysLeft !== null && (
-        <p className="mt-4 rounded-xl bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent">
           Free trial: {daysLeft} {daysLeft === 1 ? "day" : "days"} left.
         </p>
       )}
 
-      <nav className="mt-6 flex gap-1 rounded-xl bg-white p-1 ring-1 ring-line" aria-label="Sections">
+      <nav className="mt-6 flex gap-1 rounded-xl bg-surface p-1 ring-1 ring-line" aria-label="Sections">
         {NAV.map((n) => {
           const active = pathname === n.href;
           return (
@@ -62,7 +65,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
               href={n.href}
               aria-current={active ? "page" : undefined}
               className={`flex-1 rounded-lg px-3 py-2 text-center text-sm font-medium transition ${
-                active ? "bg-ink text-white" : "text-black/60 hover:text-black"
+                active ? "bg-accent text-onaccent" : "text-muted hover:text-fg"
               }`}
             >
               {n.label}
@@ -73,8 +76,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
       <div className="mt-6">{children}</div>
 
-      <footer className="mt-10 flex items-center justify-between rounded-card bg-ink px-6 py-5">
-        <span className="text-xs uppercase tracking-[0.2em] text-white/50">A product by</span>
+      <footer className="mt-10 flex items-center justify-between rounded-card border border-line bg-surface px-6 py-5">
+        <span className="text-xs uppercase tracking-[0.2em] text-muted">A product by</span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-7 w-auto" />
       </footer>
