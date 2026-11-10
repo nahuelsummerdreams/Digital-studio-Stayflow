@@ -1,14 +1,20 @@
 import Link from "next/link";
 import { Icon, Pill } from "@stayflow/ui";
 import { LAUNCH_KIT, PACK_IDS, PACKS, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
-import { packTotals, usd } from "@/lib/pricing";
+import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
-import { AddPack, AddToCart, Builder, GetHostButton, KitButton, PlanCta } from "./client";
+import { AddPack, AddToCart, Builder, KitButton, PlanCta } from "./client";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
 
 const m = getMessages();
 const SECTION = "mx-auto max-w-6xl px-5 py-16 md:py-24";
+
+/** Real numbers for the upsell and downsell examples, from the same price rules the cart uses. */
+const upA = computeTotals({ apps: ["guest"], kit: false });
+const upB = computeTotals({ apps: ["guest", "profit"], kit: false });
+const downA = computeTotals({ apps: ["host", "guest", "ai", "operations"], kit: false });
+const downB = computeTotals({ apps: ["guest", "ai", "operations"], kit: false });
 
 function Sub({ title, body }: { title: string; body?: string }) {
   return (
@@ -73,36 +79,34 @@ export function Precios() {
           <p className="mt-5 text-base leading-relaxed text-muted md:text-lg">{m.prices.body}</p>
         </div>
 
-        <div id="host" className="mt-16 grid items-center gap-10 lg:grid-cols-2">
-          <div className="reveal relative"><div aria-hidden className="absolute inset-x-6 top-10 h-72 rounded-full bg-accent/20 blur-3xl" /><div className="relative"><ProductCover id="host" size="lg" /><div className="mt-2 flex flex-wrap justify-center gap-2"><Pill tone="success">{m.prices.host.chipA}</Pill><Pill tone="accent">{m.prices.host.chipB}</Pill><Pill tone="warning">{m.prices.host.chipC}</Pill></div></div></div>
-          <div className="reveal">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{m.prices.host.eyebrow}</p>
-            <h3 className="font-display mt-3 text-3xl leading-tight md:text-4xl">{fmt(m.prices.host.title, { price: usd(PRODUCTS.host.price) })}</h3>
-            <p className="mt-4 text-muted">{m.prices.host.body}</p>
-            <p className="mt-6 flex items-baseline gap-3"><span className="font-display text-gradient text-6xl tabular-nums">{usd(PRODUCTS.host.price)}</span><span className="text-sm text-muted">{m.prices.host.once}</span></p>
-            <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-              {m.products.host.features.slice(0, 6).map((f) => <li key={f} className="flex items-start gap-2.5 text-sm"><Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{f}</li>)}
-            </ul>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <GetHostButton where="price" />
-              <a href="#arma-tu-pack" className={`${btnGhost} !px-6 !py-3.5 !text-base`}>{m.prices.host.mix}</a>
-            </div>
-          </div>
-        </div>
-
-        <div id="arma-tu-pack" className="mt-24">
-          <Sub title={m.prices.mixTitle} body={m.prices.mixBody} />
-          <div className="reveal mt-8"><Builder /></div>
-        </div>
-
-        <div id="herramientas" className="mt-24">
+        <div id="herramientas" className="mt-16">
           <Sub title={m.prices.separateTitle} body={m.prices.separateBody} />
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{PRODUCT_LIST.filter((p) => p.id !== "host").map((p) => <ProductCard key={p.id} id={p.id} />)}</div>
+          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{PRODUCT_LIST.map((p) => <ProductCard key={p.id} id={p.id} />)}</div>
         </div>
 
         <div id="packs" className="mt-24">
           <Sub title={m.prices.packsLast} body={m.packs.body} />
           <div className="mt-8 grid items-stretch gap-5 lg:grid-cols-3">{PACK_IDS.map((id) => <PackCard key={id} id={id} />)}</div>
+        </div>
+
+        <div id="arma-tu-pack" className="mt-24">
+          <Sub title={m.prices.mixTitle} body={m.prices.mixBody} />
+          <div className="reveal mt-8"><Builder /></div>
+          <div className="mt-10">
+            <h4 className="reveal font-display text-xl">{m.prices.offersTitle}</h4>
+            <div className="mt-4 grid gap-4 md:grid-cols-2">
+              <div className="reveal fx-card rounded-3xl border-accent/30 p-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent"><Icon name="trendUp" className="h-5 w-5" /></span>
+                <h5 className="font-display mt-4 text-lg">{m.prices.upsellTitle}</h5>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{fmt(m.prices.upsellBody, { a: usd(upA.total), b: usd(upB.total), c: usd(upA.total - upB.total) })}</p>
+              </div>
+              <div className="reveal fx-card rounded-3xl p-6">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-line/60 text-muted"><Icon name="trendDown" className="h-5 w-5" /></span>
+                <h5 className="font-display mt-4 text-lg">{m.prices.downsellTitle}</h5>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{fmt(m.prices.downsellBody, { a: usd(downA.total), b: usd(downB.total) })}</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div id="kit" className="mt-24 grid items-center gap-10 lg:grid-cols-2">
