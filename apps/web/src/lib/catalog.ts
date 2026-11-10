@@ -22,7 +22,7 @@ const HOST_URL = process.env.NEXT_PUBLIC_HOST_URL ?? "https://stayflow-host.verc
 const GUEST_URL = process.env.NEXT_PUBLIC_GUEST_URL ?? "https://stayflow-guest-eight.vercel.app";
 
 export const PRODUCTS: Record<ProductId, Product> = {
-  host: { id: "host", name: "Stayflow Host", price: 59, status: "available", appUrl: HOST_URL }, // price: provisional, to be confirmed
+  host: { id: "host", name: "Stayflow Host", price: 49, status: "available", appUrl: HOST_URL },
   guest: { id: "guest", name: "Stayflow Guest", price: 49, status: "available", appUrl: GUEST_URL },
   ai: { id: "ai", name: "Stayflow AI", price: 29, status: "preorder" },
   profit: { id: "profit", name: "Stayflow Profit", price: 19, status: "available", appUrl: PROFIT_URL },

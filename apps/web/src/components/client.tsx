@@ -245,3 +245,24 @@ export function AddPack({ pack }: { pack: import("@/lib/catalog").PackId }) {
 
 /** Cart drawer + floating bar, mounted once in the layout. */
 export { CartDrawer } from "./cart";
+
+/** The main call to action: puts Stayflow Host in the cart and opens it, so the visitor can mix and match right away. */
+export function GetHostButton({ className = "", where = "hero" }: { className?: string; where?: string }) {
+  const { m } = useMessages();
+  const { add, setOpen, totals } = useCart();
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        add("host");
+        setOpen(true);
+        track("select_promotion", { where, item_id: "host" });
+        void totals;
+      }}
+      className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}
+    >
+      {fmt(m.hero.getHost, { price: usd(PRODUCTS.host.price) })}
+      <Icon name="arrow" className="h-4 w-4" />
+    </button>
+  );
+}

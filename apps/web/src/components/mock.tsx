@@ -1,4 +1,5 @@
 import { Avatar, BrandMark, Icon, Pill, ProgressBar, type IconName } from "@stayflow/ui";
+import { CountUp } from "./effects";
 import { t } from "@/lib/t";
 
 const PHOTOS = [
@@ -25,23 +26,27 @@ const NAV: { icon: IconName; label: string; active?: boolean; badge?: number }[]
 
 /** A static, faithful picture of the Host panel. Figures are illustrative and labelled as such next to it. */
 export function DashboardMock({ compact = false }: { compact?: boolean }) {
-  const kpis = [
-    { l: t("host.occupancy"), v: "68,4 %", d: "+12,4 %", icon: "dashboard" as IconName, hero: true },
-    { l: t("host.monthRevenue"), v: "4.280 €", d: "+8,1 %", icon: "wallet" as IconName },
-    { l: t("host.arrivalsWeek"), v: "4", d: "", icon: "key" as IconName },
-    { l: t("host.pendingTasks"), v: "3", d: "", icon: "tasks" as IconName },
+  const kpis: { l: string; v: React.ReactNode; d: string; icon: IconName; hero?: boolean }[] = [
+    { l: t("host.occupancy"), v: <CountUp value={68.4} decimals={1} suffix=" %" />, d: "+12,4 %", icon: "dashboard" as IconName, hero: true },
+    { l: t("host.monthRevenue"), v: <CountUp value={4280} suffix=" €" delay={650} />, d: "+8,1 %", icon: "wallet" as IconName },
+    { l: t("host.arrivalsWeek"), v: <CountUp value={4} delay={800} />, d: "", icon: "key" as IconName },
+    { l: t("host.pendingTasks"), v: <CountUp value={3} delay={950} />, d: "", icon: "tasks" as IconName },
   ];
   const props: { name: string; city: string; pill: string; tone: "success" | "warning" | "muted"; occ: number; rev: string; v: 0 | 1 | 2 }[] = [
     { name: "Casa del Árbol", city: "Sierra de Gredos", pill: t("host.stateOccupied"), tone: "success", occ: 74, rev: "2.270 €", v: 0 },
     { name: "Villa Palmera", city: "Marbella", pill: t("host.stateArriving"), tone: "warning", occ: 51, rev: "1.400 €", v: 2 },
   ];
   return (
-    <div className="fx-card fx-hero overflow-hidden rounded-[28px] text-left">
-      <div className="flex items-center gap-1.5 border-b border-line/70 bg-surface2/40 px-4 py-2.5" aria-hidden>
-        <i className="h-2.5 w-2.5 rounded-full bg-danger/70" />
-        <i className="h-2.5 w-2.5 rounded-full bg-amber-300/70" />
-        <i className="h-2.5 w-2.5 rounded-full bg-success/70" />
-        <span className="mx-auto rounded-md bg-bg/60 px-16 py-1 text-[10px] text-muted">stayflow · host</span>
+    <div className="fx-card fx-hero sheen overflow-hidden rounded-[28px] text-left">
+      {/* Title bar: the product and the studio behind it. */}
+      <div className="flex items-center gap-1.5 border-b border-line/70 bg-surface2/40 px-4 py-2.5">
+        <span aria-hidden className="flex gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-danger/70" /><i className="h-2.5 w-2.5 rounded-full bg-amber-300/70" /><i className="h-2.5 w-2.5 rounded-full bg-success/70" /></span>
+        <span className="mx-auto flex items-center gap-2"><BrandMark className="h-5 w-5 rounded-md" /><span className="font-display text-xs">Stayflow</span></span>
+        <span className="flex items-center gap-1.5">
+          <span className="hidden text-[8px] uppercase tracking-[0.18em] text-muted sm:inline">{t("landing.nav.by")}</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-5 w-auto" />
+        </span>
       </div>
       <div className={compact ? "" : "grid md:grid-cols-[10.5rem_1fr]"}>
         <div className={`hidden border-r border-line/60 bg-surface/30 p-4 ${compact ? "" : "md:block"}`}>
@@ -61,11 +66,26 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
           </ul>
         </div>
         <div className="min-w-0 p-4 md:p-5">
-          <p className="text-[10px] uppercase tracking-[0.14em] text-muted">{t("landing.mock.date")}</p>
-          <p className="font-display mt-1 text-xl md:text-2xl">{t("host.greetMorning")}, <span className="text-gradient">Lucía</span></p>
+          <div className="relative">
+      {/* Live notifications that appear one after another. */}
+      <div aria-hidden className="pointer-events-none absolute right-0 top-0 z-20 hidden h-11 w-48 sm:block">
+        {[
+          { icon: "bed" as IconName, tone: "bg-accent/15 text-accent", title: "Nueva reserva", sub: "Jorge Ruiz · 5 noches", delay: "0s" },
+          { icon: "qr" as IconName, tone: "bg-success/15 text-success", title: "Guía abierta por QR", sub: "Villa Palmera", delay: "4s" },
+          { icon: "wallet" as IconName, tone: "bg-amber-300/15 text-amber-300", title: "Ingreso registrado", sub: "+ 650 € en Profit", delay: "8s" },
+        ].map((n) => (
+          <div key={n.title} className="toast-cycle absolute inset-0 flex items-center gap-2 rounded-xl border border-line bg-surface/95 px-2.5 shadow-xl backdrop-blur" style={{ animationDelay: n.delay }}>
+            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${n.tone}`}><Icon name={n.icon} className="h-3.5 w-3.5" /></span>
+            <span className="min-w-0"><span className="block truncate text-[11px] font-semibold">{n.title}</span><span className="block truncate text-[9px] text-muted">{n.sub}</span></span>
+          </div>
+        ))}
+      </div>
+            <p className="text-[10px] uppercase tracking-[0.14em] text-muted">{t("landing.mock.date")}</p>
+            <p className="font-display mt-1 text-xl md:text-2xl">{t("host.greetMorning")}, <span className="text-gradient">Lucía</span></p>
+          </div>
           <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-            {kpis.map((k) => (
-              <div key={k.l} className={`rounded-2xl border border-line bg-bg/60 p-3 ${k.hero ? "shadow-[0_0_40px_-18px_rgb(var(--accent))]" : ""}`}>
+            {kpis.map((k, i) => (
+              <div key={k.l} className={`rise-in rounded-2xl border border-line bg-bg/60 p-3 ${k.hero ? "shadow-[0_0_40px_-18px_rgb(var(--accent))]" : ""}`} style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
                 <div className="flex items-start justify-between gap-1">
                   <p className="text-[10px] leading-tight text-muted">{k.l}</p>
                   <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent"><Icon name={k.icon} className="h-3 w-3" /></span>
@@ -76,7 +96,7 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
             ))}
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-[1.3fr_1fr]">
-            <div className="rounded-2xl border border-line bg-bg/60 p-3.5">
+            <div className="rise-in relative rounded-2xl border border-line bg-bg/60 p-3.5" style={{ animationDelay: "1s" }}>
               <p className="text-[11px] font-medium">{t("host.chartOccupancy")}</p>
               <svg viewBox="0 0 300 100" preserveAspectRatio="none" className="mt-2 h-24 w-full" aria-hidden>
                 <defs>
@@ -89,8 +109,9 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
                 <path d="M0 82 C30 80 50 70 80 58 S130 36 160 40 S220 20 250 14 S290 10 300 6 L300 100 L0 100 Z" fill="url(#mockArea)" />
                 <path d="M0 82 C30 80 50 70 80 58 S130 36 160 40 S220 20 250 14 S290 10 300 6" fill="none" stroke="rgb(var(--accent))" strokeWidth="2.2" strokeLinecap="round" pathLength={1} style={{ strokeDasharray: 1, strokeDashoffset: 1, animation: "draw 1.6s var(--ease) 0.4s forwards" }} />
               </svg>
+              <span aria-hidden className="ping-dot absolute right-[14px] top-[3.55rem] h-2.5 w-2.5 rounded-full bg-accent shadow-[0_0_14px_rgb(var(--accent))]" style={{ animation: "fade-up 0.5s var(--ease) 2s both" }} />
             </div>
-            <div className="rounded-2xl border border-line bg-bg/60 p-3.5">
+            <div className="rise-in rounded-2xl border border-line bg-bg/60 p-3.5" style={{ animationDelay: "1.15s" }}>
               <p className="text-[11px] font-medium">{t("host.agenda")}</p>
               <div className="mt-2 grid grid-cols-7 gap-1 text-center text-[9px] text-muted">
                 {[9, 10, 11, 12, 13, 14, 15].map((d) => (
@@ -105,7 +126,7 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
           </div>
           <ul className="mt-3 space-y-2">
             {props.map((p) => (
-              <li key={p.name} className="flex items-center gap-3 rounded-2xl border border-line bg-bg/60 p-2">
+              <li key={p.name} className="rise-in flex items-center gap-3 rounded-2xl border border-line bg-bg/60 p-2" style={{ animationDelay: p.v === 0 ? "1.3s" : "1.45s" }}>
                 <SceneArt variant={p.v} className="h-14 w-24 shrink-0 rounded-xl" />
                 <div className="min-w-0 flex-1">
                   <p className="flex items-center gap-2"><span className="font-display truncate text-sm">{p.name}</span><Pill tone={p.tone}>{p.pill}</Pill></p>

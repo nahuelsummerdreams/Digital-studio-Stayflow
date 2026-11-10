@@ -360,6 +360,62 @@ body::after {
   pointer-events: none;
 }
 
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(26px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 0.8s var(--ease) both; }
+
+/* Hero device: a ring of light that travels around it, a sheen that sweeps across, and live notifications. */
+@keyframes spin-center {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+.spin-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 230%;
+  width: 230%;
+  background: conic-gradient(from 0deg, transparent 0 55%, rgb(var(--accent)) 72%, rgb(var(--accent-2)) 84%, transparent 100%);
+  animation: spin-center 7s linear infinite;
+}
+@keyframes sheen-move {
+  0%, 55% { transform: translateX(-140%) skewX(-18deg); }
+  100% { transform: translateX(260%) skewX(-18deg); }
+}
+.sheen { position: relative; overflow: hidden; }
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.1), transparent);
+  animation: sheen-move 7s ease-in-out 1.5s infinite;
+}
+@keyframes toast-cycle {
+  0% { opacity: 0; transform: translateY(14px) scale(0.96); }
+  4%, 26% { opacity: 1; transform: none; }
+  32%, 100% { opacity: 0; transform: translateY(-8px) scale(0.98); }
+}
+.toast-cycle { animation: toast-cycle 12s var(--ease) infinite both; }
+@keyframes ping-dot {
+  75%, 100% { transform: scale(2.6); opacity: 0; }
+}
+.ping-dot::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: rgb(var(--accent));
+  animation: ping-dot 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes bar-pulse {
+  50% { opacity: 0.72; }
+}
+.bar-pulse { animation: bar-pulse 3.2s ease-in-out infinite; }
+
 /* ---------------------------------------------------------------- accessibility */
 a:focus-visible,
 button:focus-visible,

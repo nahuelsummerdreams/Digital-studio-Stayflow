@@ -1,6 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
-import { APP_PRICES, BUY_URL, DISCOUNT_PCT, GUEST_URL, HOST_URL, PACK_PRICE, PACK_SAVING, PROFIT_URL, SEPARATE_TOTAL, t } from "@/lib/t";
+import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
+import { GetHostButton } from "./client";
+import { Tilt } from "./effects";
 import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
@@ -14,9 +16,6 @@ function Head({ eyebrow, title, body, center = false }: { eyebrow: string; title
     </div>
   );
 }
-
-/** Where the "buy" buttons go: the store once connected, otherwise to the explanation. */
-const BUY = BUY_URL ? { href: BUY_URL, label: "landing.price.ctaBuy" as const } : { href: "#preguntas", label: "landing.price.cta" as const };
 
 export function Hero() {
   return (
@@ -34,9 +33,7 @@ export function Hero() {
           </h1>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">{t("landing.hero.body")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#precios" className={`${buttonClass} gap-2 !px-6 !py-3.5 !text-base`}>
-              {t("landing.hero.cta")} <Icon name="arrow" className="h-4 w-4" />
-            </a>
+            <GetHostButton />
             <a href="#sistema" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base text-fg backdrop-blur transition hover:border-accent/60">
               <span aria-hidden className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-accent"><svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor"><path d="M8 5v14l11-7z" /></svg></span>
               {t("landing.hero.secondary")}
@@ -53,9 +50,13 @@ export function Hero() {
           <div aria-hidden className="absolute -inset-6 rounded-[56px] bg-accent/20 blur-3xl" />
           <div className="relative pb-10 pt-4">
             <div className="orbit hidden lg:block" aria-hidden />
-            <div className="relative transition-transform duration-700 ease-out lg:[transform:perspective(1800px)_rotateY(-10deg)_rotateX(3deg)] lg:hover:[transform:perspective(1800px)_rotateY(-3deg)_rotateX(1deg)]">
-              <DashboardMock compact />
-            </div>
+            <Tilt className="relative">
+              {/* A ring of light travels around the screen; the screen itself is alive (see DashboardMock). */}
+              <div className="relative overflow-hidden rounded-[30px] p-[1.5px] shadow-[0_40px_90px_-30px_rgb(var(--accent)/0.5)]">
+                <span aria-hidden className="spin-ring" />
+                <div className="relative rounded-[28px] bg-bg"><DashboardMock compact /></div>
+              </div>
+            </Tilt>
             <div className="drift fx-card absolute -left-2 top-[34%] hidden w-64 rounded-2xl p-3 shadow-2xl sm:block lg:-left-8" style={{ "--r": "-2deg" } as CSSProperties}>
               <div className="flex items-center gap-3">
                 <Avatar name="Familia Ortega" className="h-9 w-9 text-xs" />

@@ -66,9 +66,9 @@ describe("recommendations", () => {
 
 describe("packs", () => {
   it("prices the ready-made packs with the 30% rule", () => {
-    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 127, discount: 38.1, total: 88.9 });
-    expect(packTotals("pro")).toMatchObject({ appsSubtotal: 185, total: 129.5 });
-    expect(packTotals("mega")).toMatchObject({ appCount: 9, appsSubtotal: 291, total: 203.7 });
+    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 117, discount: 35.1, total: 81.9 });
+    expect(packTotals("pro")).toMatchObject({ appsSubtotal: 175, total: 122.5 });
+    expect(packTotals("mega")).toMatchObject({ appCount: 9, appsSubtotal: 281, total: 196.7 });
   });
 });
 
@@ -89,7 +89,7 @@ describe("offers (upsell and downsell)", () => {
     const o = offers({ apps: ["host", "guest", "ai", "operations"], kit: false }, 5);
     const drop = o.find((x) => x.kind === "drop") as { id: string; saving: number };
     expect(drop.id).toBe("host");
-    expect(drop.saving).toBeCloseTo(41.3, 2); // 59 * 0.7
+    expect(drop.saving).toBeCloseTo(34.3, 2); // 49 * 0.7
   });
   it("nothing to offer for an empty cart or the full megapack", () => {
     expect(offers({ apps: [], kit: false })).toEqual([]);
