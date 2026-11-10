@@ -334,6 +334,32 @@ body::after {
   }
 }
 
+/* Glowing ring that circles the hero preview. */
+@keyframes orbit-spin {
+  from {
+    transform: rotateX(72deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(72deg) rotateZ(360deg);
+  }
+}
+.orbit {
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  bottom: -6%;
+  height: 78%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: conic-gradient(from 0deg, rgb(var(--accent)), transparent 28%, rgb(var(--accent-2)) 58%, transparent 82%, rgb(var(--accent))) border-box;
+  -webkit-mask: linear-gradient(#000 0 0) padding-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 16px rgb(var(--accent) / 0.8));
+  animation: orbit-spin 16s linear infinite;
+  pointer-events: none;
+}
+
 /* ---------------------------------------------------------------- accessibility */
 a:focus-visible,
 button:focus-visible,

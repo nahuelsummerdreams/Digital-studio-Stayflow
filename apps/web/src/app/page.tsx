@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { Apps, Faq, FinalCta, Footer, Hero, Marquee, Pricing, Reveal, Schedule, Steps, System } from "@/components/sections";
+import { Apps, Blocks, Faq, FinalCta, Footer, Hero, Pain, Price, Steps, Strip } from "@/components/sections";
 
 export default function Home() {
   return (
@@ -7,13 +7,12 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <Marquee />
-        <System />
-        <Schedule />
-        <Reveal />
+        <Strip />
+        <Pain />
+        <Blocks />
+        <Price />
         <Apps />
         <Steps />
-        <Pricing />
         <Faq />
         <FinalCta />
       </main>
