@@ -78,6 +78,12 @@ export default function Home() {
       </section>
 
       <p className="mt-8 text-xs text-black/40">Demo data. Connect Supabase to see your own numbers.</p>
+
+      <footer className="mt-10 flex items-center justify-between rounded-card bg-ink px-6 py-5">
+        <span className="text-xs uppercase tracking-[0.2em] text-white/50">A product by</span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brand/digital-studio-logo-white.svg" alt="Digital Studio" className="h-7 w-auto" />
+      </footer>
     </main>
   );
 }
