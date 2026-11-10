@@ -153,7 +153,7 @@ export function GuideEditor({ client, property, publicBaseUrl, onBack }: Props) 
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 lg:max-w-3xl">
       <div className="flex items-center justify-between gap-3">
         <button type="button" onClick={onBack} className="text-sm text-muted underline-offset-4 hover:underline">{t("guest.back")}</button>
         <p className="truncate text-sm font-medium">{property.name}</p>

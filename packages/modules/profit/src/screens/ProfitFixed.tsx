@@ -110,13 +110,13 @@ export function ProfitFixed({ client, orgId, currency, properties }: Props) {
   const monthlyTotal = rows.filter((r) => r.active).reduce((s, r) => s + r.amount, 0);
 
   return (
-    <div className="space-y-6">
-      <section className={cardClass}>
+    <div className="space-y-6 lg:grid lg:grid-cols-[22rem_1fr] lg:items-start lg:gap-6 lg:space-y-0">
+      <section className={`${cardClass} lg:col-span-2`}>
         <h2 className="text-sm font-medium">{t("fixed.title")}</h2>
         <p className="mt-2 text-sm text-muted">{t("fixed.intro")}</p>
       </section>
 
-      <form onSubmit={submit} className={`${cardClass} space-y-4`}>
+      <form onSubmit={submit} className={`${cardClass} space-y-4 lg:sticky lg:top-8`}>
         <label className={labelClass}>
           {t("fixed.property")}
           <select className={inputClass} value={propertyId} onChange={(e) => setPropertyId(e.target.value)}>
@@ -139,7 +139,7 @@ export function ProfitFixed({ client, orgId, currency, properties }: Props) {
           </label>
         </div>
         <p className="-mt-2 text-xs text-muted">{t("fixed.dayHint")}</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 items-end gap-3">
           <label className={labelClass}>
             {t("fixed.category")}
             <select className={inputClass} value={category} onChange={(e) => setCategory(e.target.value as ExpenseCategory)}>

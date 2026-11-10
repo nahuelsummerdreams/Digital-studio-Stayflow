@@ -44,7 +44,7 @@ export function PropertiesScreen() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
       <section className={cardClass}>
         <h2 className="text-sm font-medium">{t("properties.yourProperties")}</h2>
         {properties.length === 0 ? (

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatMonth, formatPct, formatSignedPct } from "./format";
+import { formatDate, formatMonth, formatMonthShort, formatPct, formatSignedPct } from "./format";
 
 describe("format", () => {
   it("formats dates without shifting the day", () => {
@@ -8,6 +8,10 @@ describe("format", () => {
   });
   it("capitalizes month names", () => {
     expect(formatMonth("2026-11")).toBe("Noviembre de 2026");
+  });
+  it("abbreviates months for chart labels", () => {
+    expect(formatMonthShort("2026-06")).toBe("jun");
+    expect(formatMonthShort("2026-09")).toMatch(/^sep/);
   });
   it("formats percentages with Spanish decimals", () => {
     expect(formatPct(64.8)).toBe("64,8");

@@ -83,8 +83,8 @@ export function ProfitCalculator({ client, orgId, currency }: Props) {
   );
 
   return (
-    <div className="space-y-6">
-      <section className={cardClass}>
+    <div className="space-y-6 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:space-y-0">
+      <section className={`${cardClass} lg:col-span-2`}>
         <h2 className="text-sm font-medium">{t("calculator.title")}</h2>
         <p className="mt-2 text-sm text-muted">{t("calculator.intro")}</p>
       </section>
@@ -110,6 +110,7 @@ export function ProfitCalculator({ client, orgId, currency }: Props) {
         {field(t("calculator.targetProfit"), target, setTarget)}
       </section>
 
+      <div className="space-y-6 lg:sticky lg:top-8">
       <section className={cardClass} aria-live="polite">
         <h2 className="text-sm font-medium">{t("calculator.resultTitle")}</h2>
         {nightsN <= 0 ? (
@@ -137,6 +138,7 @@ export function ProfitCalculator({ client, orgId, currency }: Props) {
           <p className="text-sm">{t("calculator.breakEvenBody", { count: needed })}</p>
         )}
       </section>
+      </div>
     </div>
   );
 }

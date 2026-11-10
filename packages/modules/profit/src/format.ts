@@ -25,3 +25,8 @@ export function formatSignedPct(pct: number, locale = DEFAULT_LOCALE): string {
 export function formatPct(pct: number, locale = DEFAULT_LOCALE): string {
   return new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(pct);
 }
+
+/** "2026-06" -> "jun" */
+export function formatMonthShort(ym: string, locale = DEFAULT_LOCALE): string {
+  return new Date(`${ym}-01T00:00:00Z`).toLocaleDateString(locale, { month: "short", timeZone: "UTC" }).replace(".", "");
+}

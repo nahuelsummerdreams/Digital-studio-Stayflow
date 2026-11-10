@@ -38,6 +38,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
   const [category, setCategory] = useState<ExpenseCategory>("cleaning");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState(today);
+  const [visible, setVisible] = useState(20);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -147,8 +148,8 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
   );
 
   return (
-    <div className="space-y-6">
-      <form onSubmit={submit} className={`${cardClass} space-y-4`}>
+    <div className="space-y-6 lg:grid lg:grid-cols-[22rem_1fr] lg:items-start lg:gap-6 lg:space-y-0">
+      <form onSubmit={submit} className={`${cardClass} space-y-4 lg:sticky lg:top-8`}>
         <div className="flex gap-1 rounded-xl bg-bg p-1">
           {tab("income", t("entries.income"))}
           {tab("expense", t("entries.expense"))}
@@ -229,7 +230,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
           <p className="mt-3 text-sm text-muted">{t("entries.none")}</p>
         ) : (
           <ul className="mt-3 divide-y divide-line">
-            {rows.map((r) => (
+            {rows.slice(0, visible).map((r) => (
               <li key={r.key} className="flex items-center justify-between gap-3 py-3 text-sm">
                 <span className="min-w-0">
                   <span className="block truncate font-medium">{r.title}</span>
@@ -249,6 +250,14 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
               </li>
             ))}
           </ul>
+        )}
+        {rows.length > visible && (
+          <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-4">
+            <span className="text-sm text-muted">{t("entries.showing", { shown: visible, total: rows.length })}</span>
+            <button type="button" className={ghostButtonClass} onClick={() => setVisible((v) => v + 20)}>
+              {t("entries.showMore")}
+            </button>
+          </div>
         )}
       </section>
     </div>

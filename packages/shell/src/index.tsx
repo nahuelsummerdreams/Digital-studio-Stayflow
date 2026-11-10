@@ -60,48 +60,92 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
     ? Math.max(0, Math.ceil((trial.currentPeriodEnd.getTime() - Date.now()) / 86_400_000))
     : null;
 
+  const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
+  const current = nav.find((n) => isActive(n.href));
+
   return (
-    <main className="mx-auto max-w-3xl px-5 pb-16 pt-8">
-      <header className="flex items-start justify-between gap-4">
+    <div className="lg:grid lg:min-h-screen lg:grid-cols-[17rem_1fr]">
+      {/* Desktop: fixed side menu. This is how a host uses the installed app. */}
+      <aside className="sticky top-0 hidden h-screen flex-col border-r border-line bg-surface/40 px-5 py-8 lg:flex">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{brand.name}</p>
-          <h1 className="font-display mt-2 text-3xl leading-tight">{org.name}</h1>
+          <p className="font-display mt-2 truncate text-xl leading-tight">{org.name}</p>
         </div>
-        <div className="mt-1 flex flex-col items-end gap-3">
+        <nav className="mt-10 flex flex-col gap-1" aria-label={t("common.sections")}>
+          {nav.map((n) => {
+            const active = isActive(n.href);
+            return (
+              <Link
+                key={n.href}
+                href={n.href}
+                aria-current={active ? "page" : undefined}
+                className={`rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                  active ? "bg-accent/15 text-accent" : "text-muted hover:bg-surface hover:text-fg"
+                }`}
+              >
+                {n.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <div className="mt-auto space-y-5">
           <ThemeSwitcher />
-          <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
+          <button type="button" onClick={signOut} className="block text-sm text-muted underline-offset-4 hover:underline">
             {t("common.signOut")}
           </button>
+          <StudioSeal className="!flex-col !items-start !gap-2" />
         </div>
-      </header>
+      </aside>
 
-      {daysLeft !== null && (
-        <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent">{t("common.trialDays", { count: daysLeft })}</p>
-      )}
+      <main className="min-w-0 px-5 pb-16 pt-8 lg:px-10 lg:pt-12">
+        <div className="mx-auto max-w-5xl">
+          {/* Phone and small tablet: header + tabs. */}
+          <header className="flex items-start justify-between gap-4 lg:hidden">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">{brand.name}</p>
+              <h1 className="font-display mt-2 text-3xl leading-tight">{org.name}</h1>
+            </div>
+            <div className="mt-1 flex flex-col items-end gap-3">
+              <ThemeSwitcher />
+              <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
+                {t("common.signOut")}
+              </button>
+            </div>
+          </header>
 
-      <nav className="mt-6 flex flex-wrap gap-1 rounded-xl border border-line bg-surface p-1" aria-label={t("common.sections")}>
-        {nav.map((n) => {
-          const active = n.href === "/" ? pathname === "/" : pathname === n.href || pathname.startsWith(`${n.href}/`);
-          return (
-            <Link
-              key={n.href}
-              href={n.href}
-              aria-current={active ? "page" : undefined}
-              className={`min-w-[30%] flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-medium transition sm:min-w-0 ${
-                active ? activeTabClass : idleTabClass
-              }`}
-            >
-              {n.label}
-            </Link>
-          );
-        })}
-      </nav>
+          {daysLeft !== null && (
+            <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent lg:mt-0">
+              {t("common.trialDays", { count: daysLeft })}
+            </p>
+          )}
 
-      <div className="mt-6">{children}</div>
+          <nav className="mt-6 flex flex-wrap gap-1 rounded-xl border border-line bg-surface p-1 lg:hidden" aria-label={t("common.sections")}>
+            {nav.map((n) => {
+              const active = isActive(n.href);
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`min-w-[30%] flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-medium transition sm:min-w-0 ${
+                    active ? activeTabClass : idleTabClass
+                  }`}
+                >
+                  {n.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-      <footer className="mt-10 rounded-card border border-line bg-surface px-6 py-5">
-        <StudioSeal className="justify-between" />
-      </footer>
-    </main>
+          {current && <h1 className="font-display mt-4 hidden text-3xl lg:block">{current.label}</h1>}
+
+          <div className="mt-6">{children}</div>
+
+          <footer className="mt-10 rounded-card border border-line bg-surface px-6 py-5 lg:hidden">
+            <StudioSeal className="justify-between" />
+          </footer>
+        </div>
+      </main>
+    </div>
   );
 }
