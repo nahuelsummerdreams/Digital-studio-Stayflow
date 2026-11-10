@@ -94,7 +94,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
         {signup ? t("auth.haveAccount") : t("auth.newHere")}
       </button>
 
-      <StudioSeal className="mt-14" />
+      <StudioSeal className="mt-14" logoClassName="h-10 w-auto text-fg" />
     </main>
   );
 }

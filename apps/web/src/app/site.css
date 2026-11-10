@@ -63,3 +63,38 @@
   background: linear-gradient(180deg, rgb(var(--surface) / 0.92), rgb(var(--surface) / 0.7));
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.045), 0 18px 40px -26px rgb(0 0 0 / 0.75);
 }
+
+/* ---------------------------------------------------------------- first-view effects (pure CSS) */
+@keyframes line-in {
+  from { opacity: 0; transform: translateY(26px); filter: blur(10px); }
+  to { opacity: 1; transform: none; filter: blur(0); }
+}
+.line-in { animation: line-in 0.9s var(--ease) both; }
+
+@keyframes clip-reveal {
+  from { clip-path: inset(0 0 100% 0 round 28px); transform: translateY(24px) scale(1.06); }
+  to { clip-path: inset(0 0 0 0 round 28px); transform: none; }
+}
+.clip-reveal { animation: clip-reveal 1.15s var(--ease) both; }
+
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.14) translate(-1.5%, -1%); }
+}
+.kenburns { animation: kenburns 22s ease-in-out infinite alternate; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(70px) scale(0.95); }
+  to { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 1.05s var(--ease) both; }
+
+@keyframes shine { to { background-position: 200% 0; } }
+.text-shine {
+  background-image: linear-gradient(100deg, rgb(var(--accent)) 20%, rgb(var(--accent-2)) 38%, rgb(150 245 205) 50%, rgb(var(--accent-2)) 62%, rgb(var(--accent)) 80%);
+  background-size: 200% 100%;
+  animation: line-in 0.9s var(--ease) both, shine 7s linear 1.2s infinite;
+}
+
+@keyframes blob { 50% { transform: translate(40px, -30px) scale(1.15); } }
+.blob { animation: blob 14s ease-in-out infinite; }

@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { AccountProvider, AuthScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { Avatar, BrandMark, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { Avatar, BrandMark, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
 import { BellMenu, CommandPalette, UserMenu, type SearchItem, type ShellAlert } from "./chrome";
 
 export type { SearchItem, ShellAlert } from "./chrome";
@@ -129,11 +129,18 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
     <div className="lg:grid lg:min-h-screen lg:grid-cols-[16.5rem_1fr]">
       {/* Desktop: fixed side menu. This is how a host uses the installed app. */}
       <aside className="sticky top-0 hidden h-screen flex-col border-r border-line/70 bg-surface/30 px-4 pb-4 pt-6 backdrop-blur-xl lg:flex">
-        <div className="flex items-center gap-3 px-2">
-          <BrandMark />
-          <div className="min-w-0">
-            <p className="font-display truncate text-lg leading-tight">Stayflow</p>
-            <p className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name.replace(/^Stayflow\s*/i, "")}</p>
+        <div className="px-2">
+          <div className="flex items-center gap-3">
+            <BrandMark />
+            <div className="min-w-0">
+              <p className="font-display truncate text-lg leading-tight">Stayflow</p>
+              <p className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name.replace(/^Stayflow\s*/i, "")}</p>
+            </div>
+          </div>
+          {/* The producer's seal sits right under the product mark, so every screen says who is behind it. */}
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-line/70 bg-surface/50 px-3 py-2.5">
+            <span className="shrink-0 whitespace-nowrap text-[9px] uppercase tracking-[0.18em] text-muted">{t("common.productBy")}</span>
+            <DigitalStudioLogo className="h-6 w-auto text-fg" />
           </div>
         </div>
 
@@ -183,7 +190,6 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
               <p className="truncate text-[11px] text-muted">{org.name}</p>
             </div>
           </div>
-          <StudioSeal className="!flex-col !items-start !gap-2 px-2" />
         </div>
       </aside>
 

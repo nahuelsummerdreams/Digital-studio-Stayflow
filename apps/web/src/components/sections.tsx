@@ -7,7 +7,7 @@ import { getMessages, type Messages } from "@/i18n";
 import { AddToCart, Builder, CartBar, CartButton, KitButton, PlanCta } from "./client";
 import { btnGhost, btnPrimary } from "./styles";
 import { CartDrawer } from "./cart";
-import { FloatCard, HeroVisual, ProductArt, ScheduleVisual } from "./visuals";
+import { FloatCard, HeroStage, ProductArt, ScheduleVisual } from "./visuals";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
 const m: Messages = getMessages();
@@ -81,21 +81,25 @@ export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
       <div aria-hidden className="bg-grid pointer-events-none absolute inset-0" />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pt-20 lg:grid-cols-[0.95fr_1.05fr] lg:pb-28">
-        <div className="anim-stagger">
-          <p className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs text-muted shadow-sm">
+      {/* Slow-moving colour behind everything: the page is never static. */}
+      <div aria-hidden className="blob pointer-events-none absolute -left-24 top-10 h-80 w-80 rounded-full bg-accent2/25 blur-3xl" />
+      <div aria-hidden className="blob pointer-events-none absolute right-0 top-40 h-96 w-96 rounded-full bg-accent/15 blur-3xl" style={{ animationDelay: "-7s" }} />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pt-20 lg:grid-cols-[0.9fr_1.1fr] lg:pb-28">
+        <div>
+          <p className="line-in inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-xs text-muted shadow-sm">
             <span aria-hidden className="pulse-ring h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
             <span className="truncate">{m.hero.eyebrow}</span>
           </p>
-          <h1 className="font-display mt-6 text-[2.75rem] leading-[1.04] sm:text-6xl xl:text-7xl">
-            {m.hero.title} <span className="text-gradient block">{m.hero.accent}</span>
+          <h1 className="font-display mt-6 text-[2.75rem] leading-[1.04] sm:text-6xl xl:text-[3.9rem]">
+            <span className="line-in block" style={{ animationDelay: "0.1s" }}>{m.hero.title}</span>
+            <span className="line-in text-gradient text-shine block" style={{ animationDelay: "0.3s" }}>{m.hero.accent}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">{m.hero.body}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="line-in mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg" style={{ animationDelay: "0.5s" }}>{m.hero.body}</p>
+          <div className="line-in mt-8 flex flex-wrap gap-3" style={{ animationDelay: "0.65s" }}>
             <a href="#tools" className={`${btnPrimary} !px-6 !py-3.5 !text-base`}>{m.hero.explore}<Icon name="arrow" className="h-4 w-4" /></a>
             <a href="#toolkit" className={`${btnGhost} !px-6 !py-3.5 !text-base`}>{m.hero.build}</a>
           </div>
-          <ul className="mt-8 grid gap-2.5 text-sm text-muted">
+          <ul className="line-in mt-8 grid gap-2.5 text-sm text-muted" style={{ animationDelay: "0.8s" }}>
             {[m.hero.point1, m.hero.point2, m.hero.point3].map((x) => (
               <li key={x} className="flex items-center gap-2.5"><span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/12 text-accent"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
             ))}
@@ -103,16 +107,10 @@ export function Hero() {
         </div>
 
         <div className="relative">
-          <div aria-hidden className="absolute -inset-6 rounded-[56px] bg-accent/20 blur-3xl" />
-          <div className="relative pb-6 pt-4">
-            <div className="orbit hidden lg:block" aria-hidden />
-            <div className="relative transition-transform duration-700 ease-out lg:[transform:perspective(1800px)_rotateY(-9deg)_rotateX(3deg)] lg:hover:[transform:perspective(1800px)_rotateY(-3deg)_rotateX(1deg)]">
-              <HeroVisual />
-            </div>
-            <FloatCard icon="qr" tone="accent" title={m.hero.floatA} sub={m.hero.floatAsub} className="-left-2 top-[30%] lg:-left-10" style={{ "--r": "-2deg" } as CSSProperties} />
-            <FloatCard icon="check" tone="success" title={m.hero.floatB} sub={m.hero.floatBsub} className="-right-2 top-[58%] lg:-right-8" style={{ "--r": "2deg", animationDelay: "-3s" } as CSSProperties} />
-          </div>
-          <p className="text-center text-[11px] text-muted lg:text-right">{m.hero.sample}</p>
+          <HeroStage />
+          <FloatCard icon="qr" tone="accent" title={m.hero.floatA} sub={m.hero.floatAsub} className="-left-1 top-[44%] lg:-left-8" style={{ "--r": "-2deg" } as CSSProperties} />
+          <FloatCard icon="check" tone="success" title={m.hero.floatB} sub={m.hero.floatBsub} className="-right-1 top-[58%] lg:-right-6" style={{ "--r": "2deg", animationDelay: "-3s" } as CSSProperties} />
+          <p className="mt-3 text-center text-[11px] text-muted lg:text-right">{m.hero.sample}</p>
         </div>
       </div>
     </section>

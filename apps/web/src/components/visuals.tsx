@@ -1,29 +1,18 @@
 import { Avatar, BrandMark, Icon, Pill, ProgressBar, type IconName } from "@stayflow/ui";
 import type { ProductId } from "@/lib/catalog";
 
-/** Illustrative property "photos" drawn in SVG. Real hosts upload their own. */
+/** The two sample property photos. Variant 2 is a different crop of the villa, so three rows never look identical. */
+const PHOTOS = [
+  { src: "/photos/treehouse.jpg", pos: "50% 45%" },
+  { src: "/photos/villa.jpg", pos: "40% 55%" },
+  { src: "/photos/villa.jpg", pos: "88% 40%" },
+] as const;
+
+/** A property thumbnail. */
 export function SceneArt({ variant = 0, className = "" }: { variant?: 0 | 1 | 2; className?: string }) {
-  const sets = [
-    { sky: ["#ffb27a", "#ffe2b8"], sea: "#16405e", wall: "#f1eadf", sun: "#fff1c9" },
-    { sky: ["#6d82d6", "#cfc6ee"], sea: "#12304d", wall: "#ece8f2", sun: "#ffffff" },
-    { sky: ["#2f6a52", "#b4d89a"], sea: "#163d2e", wall: "#f0ecd9", sun: "#ffe9a3" },
-  ] as const;
-  const c = sets[variant];
-  const id = `sc${variant}`;
-  return (
-    <svg aria-hidden viewBox="0 0 320 200" preserveAspectRatio="xMidYMid slice" className={className}>
-      <defs>
-        <linearGradient id={id} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor={c.sky[0]} /><stop offset="1" stopColor={c.sky[1]} /></linearGradient>
-        <linearGradient id={`${id}s`} x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor={c.sea} /><stop offset="1" stopColor="#060b14" /></linearGradient>
-      </defs>
-      <rect width="320" height="200" fill={`url(#${id})`} />
-      <circle cx="238" cy="52" r="26" fill={c.sun} opacity="0.95" />
-      <rect y="140" width="320" height="60" fill={`url(#${id}s)`} />
-      <polygon points="62,140 62,86 130,66 198,86 198,140" fill={c.wall} />
-      <rect x="92" y="102" width="22" height="38" rx="2" fill="#3a2c28" />
-      <rect x="132" y="98" width="44" height="26" rx="3" fill="#8fc3e0" />
-    </svg>
-  );
+  const p = PHOTOS[variant];
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={p.src} alt="" loading="lazy" decoding="async" className={`bg-surface2 object-cover ${className}`} style={{ objectPosition: p.pos }} />;
 }
 
 export function QrArt({ className = "h-24 w-24" }: { className?: string }) {
@@ -124,9 +113,9 @@ export function ProductArt({ id }: { id: ProductId }) {
     case "listing":
       return (
         <div className={panel}>
-          <p className="font-display text-sm">Sunny loft steps from the sea</p>
+          <p className="font-display text-sm">Treehouse retreat in the pines</p>
           <div className="space-y-1.5">{[100, 92, 76].map((w) => <div key={w} className="h-2 rounded-full bg-line/80" style={{ width: `${w}%` }} />)}</div>
-          <div className="flex flex-wrap gap-2 text-[10px]">{["Sea view", "Fast Wi-Fi", "Self check-in"].map((x) => <span key={x} className="rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-accent">{x}</span>)}</div>
+          <div className="flex flex-wrap gap-2 text-[10px]">{["Forest views", "Fast Wi-Fi", "Self check-in"].map((x) => <span key={x} className="rounded-full border border-accent/40 bg-accent/10 px-2.5 py-1 text-accent">{x}</span>)}</div>
           <p className="flex items-center gap-1.5 text-[11px] text-muted"><Icon name="sparkles" className="h-3.5 w-3.5 text-accent" />Description optimized</p>
         </div>
       );
@@ -144,9 +133,9 @@ export function ProductArt({ id }: { id: ProductId }) {
     case "experiences":
       return (
         <div className={`${panel} sm:flex-row sm:items-center`}>
-          {[["Sunset kayak", "$45", 0], ["Local food tour", "$60", 2]].map(([t, p, v]) => (
+          {[["Sunset kayak", "$45", 1], ["Forest night walk", "$60", 0]].map(([t, p, v]) => (
             <div key={t as string} className="flex-1 overflow-hidden rounded-xl border border-line bg-surface/70">
-              <SceneArt variant={v as 0 | 2} className="h-16 w-full" />
+              <SceneArt variant={v as 0 | 1} className="h-16 w-full" />
               <p className="flex items-center justify-between px-3 py-2 text-xs"><span className="font-medium">{t}</span><span className="font-semibold text-accent">{p}</span></p>
             </div>
           ))}
@@ -157,18 +146,18 @@ export function ProductArt({ id }: { id: ProductId }) {
         <div className={panel}>
           <div className="overflow-hidden rounded-xl border border-line bg-surface/70">
             <div className="flex items-center gap-1 border-b border-line px-3 py-1.5" aria-hidden><i className="h-1.5 w-1.5 rounded-full bg-danger/70" /><i className="h-1.5 w-1.5 rounded-full bg-amber-300/70" /><i className="h-1.5 w-1.5 rounded-full bg-success/70" /></div>
-            <div className="relative"><SceneArt variant={0} className="h-24 w-full" /><span className="absolute bottom-2 left-3 rounded-md bg-black/55 px-2 py-1 text-[11px] font-semibold text-white">Casa del Mar</span><span className="absolute bottom-2 right-3 rounded-md bg-accent px-2.5 py-1 text-[11px] font-semibold text-onaccent">Book now</span></div>
+            <div className="relative"><SceneArt variant={0} className="h-24 w-full" /><span className="absolute bottom-2 left-3 rounded-md bg-black/55 px-2 py-1 text-[11px] font-semibold text-white">Palm Villa</span><span className="absolute bottom-2 right-3 rounded-md bg-accent px-2.5 py-1 text-[11px] font-semibold text-onaccent">Book now</span></div>
           </div>
         </div>
       );
   }
 }
 
-/** The hero: a dark dashboard in a tilted device with a glowing ring and floating cards. */
-export function HeroVisual() {
+/** A dark dashboard in a device frame. `mini` keeps just the numbers and the schedule, for the hero collage. */
+export function HeroVisual({ mini = false }: { mini?: boolean }) {
   const kpis: [string, string, IconName][] = [["Occupancy", "68.4%", "dashboard"], ["Income", "$4,280", "wallet"], ["Arrivals", "4", "key"]];
   return (
-    <div className="zone-dark relative rounded-[28px] shadow-[0_40px_90px_-30px_rgb(0_0_0/0.55)]">
+    <div className="zone-dark relative rounded-[28px] shadow-[0_40px_90px_-30px_rgb(0_0_0/0.6)]">
       <div className="flex items-center gap-1.5 border-b border-line/70 px-4 py-2.5" aria-hidden>
         <i className="h-2.5 w-2.5 rounded-full bg-danger/70" /><i className="h-2.5 w-2.5 rounded-full bg-amber-300/70" /><i className="h-2.5 w-2.5 rounded-full bg-success/70" />
         <span className="mx-auto flex items-center gap-1.5 rounded-md bg-bg/60 px-6 py-1 text-[10px] text-muted"><BrandMark className="h-3.5 w-3.5 rounded-md" />stayflow</span>
@@ -183,19 +172,50 @@ export function HeroVisual() {
             </div>
           ))}
         </div>
-        <div className="mt-3 rounded-2xl border border-line bg-surface/70 p-3.5">
-          <p className="text-[11px] font-medium">Schedule</p>
-          <div className="mt-2.5"><ScheduleVisual compact /></div>
+        <div className="mt-3"><ScheduleVisual compact /></div>
+        {!mini && (
+          <ul className="mt-3 space-y-2">
+            {[["Treehouse Retreat", 74, 0], ["Palm Villa", 51, 1]].map(([n, o, v]) => (
+              <li key={n as string} className="flex items-center gap-3 rounded-2xl border border-line bg-surface/70 p-2">
+                <SceneArt variant={v as 0 | 1} className="h-12 w-20 shrink-0 rounded-xl" />
+                <div className="min-w-0 flex-1"><p className="truncate font-display text-sm">{n}</p><div className="mt-1.5"><ProgressBar value={o as number} label={n as string} /></div></div>
+                <span className="pr-2 text-xs tabular-nums text-muted">{o}%</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The first thing a visitor sees: two real property photos that reveal themselves, slowly zoom, and a dashboard that
+ * rises in front of them. Pure CSS, so it costs no JavaScript.
+ */
+export function HeroStage() {
+  return (
+    <div className="relative h-[560px] sm:h-[640px]">
+      <div aria-hidden className="orbit hidden lg:block" />
+      <figure className="clip-reveal absolute right-0 top-0 h-[70%] w-[60%] overflow-hidden rounded-[28px] shadow-[0_40px_90px_-30px_rgb(0_0_0/0.55)] ring-1 ring-black/10" style={{ animationDelay: "0.15s" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/photos/treehouse.jpg" alt="A treehouse rental glowing at dusk among tall pines" fetchPriority="high" className="kenburns h-full w-full object-cover" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/5" />
+        <figcaption className="absolute inset-x-4 top-4 flex items-start justify-between gap-3 text-white">
+          <span className="font-display text-xl leading-tight">Treehouse Retreat</span>
+          <Pill tone="success">Booked tonight</Pill>
+        </figcaption>
+      </figure>
+      <figure className="clip-reveal absolute left-0 top-[8%] h-[34%] w-[42%] overflow-hidden rounded-[24px] shadow-[0_30px_70px_-28px_rgb(0_0_0/0.5)] ring-1 ring-black/10" style={{ animationDelay: "0.45s" }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/photos/villa.jpg" alt="A villa with a palm-lined pool and shaded terrace" className="kenburns h-full w-full object-cover" style={{ animationDelay: "-8s" }} />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
+        <figcaption className="absolute bottom-3 left-3 font-display text-sm text-white">Palm Villa</figcaption>
+      </figure>
+      <div className="rise-in absolute inset-x-[2%] bottom-0 z-10" style={{ animationDelay: "0.8s" }}>
+        <div className="transition-transform duration-700 ease-out lg:[transform:perspective(1800px)_rotateY(-6deg)_rotateX(2deg)] lg:hover:[transform:perspective(1800px)_rotateY(-2deg)_rotateX(0deg)]">
+          <HeroVisual mini />
         </div>
-        <ul className="mt-3 space-y-2">
-          {[["Loft by the Sea", 74, 0], ["Olive Grove House", 51, 2]].map(([n, o, v]) => (
-            <li key={n as string} className="flex items-center gap-3 rounded-2xl border border-line bg-surface/70 p-2">
-              <SceneArt variant={v as 0 | 2} className="h-12 w-20 shrink-0 rounded-xl" />
-              <div className="min-w-0 flex-1"><p className="truncate font-display text-sm">{n}</p><div className="mt-1.5"><ProgressBar value={o as number} label={n as string} /></div></div>
-              <span className="pr-2 text-xs tabular-nums text-muted">{o}%</span>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
