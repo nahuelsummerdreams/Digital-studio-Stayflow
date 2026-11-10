@@ -3,9 +3,9 @@
  * Values are "R G B" channels so Tailwind opacity modifiers work (bg-accent/10).
  */
 export const THEMES = [
-  { id: "blue", label: "Electric blue", swatch: "#2F7BFF" },
-  { id: "green", label: "Neon green", swatch: "#39FF88" },
-  { id: "coral", label: "Coral", swatch: "#FF385C" },
+  { id: "blue", swatch: "#2F7BFF" },
+  { id: "green", swatch: "#39FF88" },
+  { id: "coral", swatch: "#FF385C" },
 ] as const;
 
 export type ThemeId = (typeof THEMES)[number]["id"];

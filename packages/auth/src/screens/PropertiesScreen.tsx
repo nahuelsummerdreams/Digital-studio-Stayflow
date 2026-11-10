@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { errorKey, useT } from "@stayflow/i18n";
 import { buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { archiveProperty, createProperty, errorMessage } from "../api";
+import { archiveProperty, createProperty } from "../api";
 
 /** Properties are shared by every Stayflow app, so this screen lives with the account. */
 export function PropertiesScreen() {
+  const t = useT();
   const { client, org, properties, refresh } = useAccount();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
@@ -24,29 +26,29 @@ export function PropertiesScreen() {
       setCity("");
       await refresh();
     } catch (err) {
-      setError(errorMessage(err));
+      setError(t(errorKey(err)));
     } finally {
       setBusy(false);
     }
   }
 
   async function archive(id: string, label: string) {
-    if (!window.confirm(`Archive "${label}"? Its history is kept, it just stops showing up.`)) return;
+    if (!window.confirm(t("properties.archiveConfirm", { name: label }))) return;
     setError(null);
     try {
       await archiveProperty(client, id);
       await refresh();
     } catch (err) {
-      setError(errorMessage(err));
+      setError(t(errorKey(err)));
     }
   }
 
   return (
     <div className="space-y-6">
       <section className={cardClass}>
-        <h2 className="text-sm font-medium">Your properties</h2>
+        <h2 className="text-sm font-medium">{t("properties.yourProperties")}</h2>
         {properties.length === 0 ? (
-          <p className="mt-3 text-sm text-muted">No properties yet. Add your first one below.</p>
+          <p className="mt-3 text-sm text-muted">{t("properties.none")}</p>
         ) : (
           <ul className="mt-3 divide-y divide-line">
             {properties.map((p) => (
@@ -56,7 +58,7 @@ export function PropertiesScreen() {
                   {p.city && <span className="text-muted"> · {p.city}</span>}
                 </span>
                 <button type="button" className={ghostButtonClass} onClick={() => archive(p.id, p.name)}>
-                  Archive
+                  {t("properties.archive")}
                 </button>
               </li>
             ))}
@@ -65,18 +67,18 @@ export function PropertiesScreen() {
       </section>
 
       <form onSubmit={add} className={`${cardClass} space-y-4`}>
-        <h2 className="text-sm font-medium">Add a property</h2>
+        <h2 className="text-sm font-medium">{t("properties.addTitle")}</h2>
         <label className={labelClass}>
-          Name
-          <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Sea View Loft" maxLength={120} required />
+          {t("properties.name")}
+          <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("properties.namePlaceholder")} maxLength={120} required />
         </label>
         <label className={labelClass}>
-          City (optional)
+          {t("properties.city")}
           <input className={inputClass} value={city} onChange={(e) => setCity(e.target.value)} />
         </label>
         {error && <p role="alert" className={errorClass}>{error}</p>}
         <button className={buttonClass} disabled={busy}>
-          {busy ? "Adding…" : "Add property"}
+          {busy ? t("properties.adding") : t("properties.add")}
         </button>
       </form>
     </div>

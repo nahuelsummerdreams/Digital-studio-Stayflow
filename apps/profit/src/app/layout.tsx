@@ -24,7 +24,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" data-theme={DEFAULT_THEME} suppressHydrationWarning>
+    <html lang="es" data-theme={DEFAULT_THEME} suppressHydrationWarning>
       <head>
         {/* Applies the saved accent before first paint, so it never flashes. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />

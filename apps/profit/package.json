@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@stayflow/auth": "workspace:*",
+    "@stayflow/i18n": "workspace:*",
     "@stayflow/licensing": "workspace:*",
     "@stayflow/module-profit": "workspace:*",
     "@stayflow/ui": "workspace:*",

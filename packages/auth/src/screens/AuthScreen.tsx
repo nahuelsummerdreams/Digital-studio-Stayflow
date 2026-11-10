@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { errorKey, useT } from "@stayflow/i18n";
 import { buttonClass, cardClass, errorClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { errorMessage } from "../api";
 
 /** Sign in / create account. One Stayflow account works in every app. */
 export function AuthScreen({ productName, tagline }: { productName: string; tagline: string }) {
+  const t = useT();
   const { client } = useAccount();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [fullName, setFullName] = useState("");
@@ -29,13 +30,13 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
           options: { data: { full_name: fullName.trim() } },
         });
         if (err) throw err;
-        if (!data.session) setInfo("Almost there. Check your email and confirm your account, then sign in.");
+        if (!data.session) setInfo(t("auth.confirmEmail"));
       } else {
         const { error: err } = await client.auth.signInWithPassword({ email: email.trim(), password });
         if (err) throw err;
       }
     } catch (err) {
-      setError(errorMessage(err));
+      setError(t(errorKey(err)));
     } finally {
       setBusy(false);
     }
@@ -48,19 +49,19 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
       <h1 className="mt-3 font-display text-4xl leading-tight">{tagline}</h1>
 
       <form onSubmit={submit} className={`${cardClass} mt-8 space-y-4`}>
-        <h2 className="text-sm font-medium">{signup ? "Create your account" : "Sign in"}</h2>
+        <h2 className="text-sm font-medium">{signup ? t("auth.signUpTitle") : t("auth.signInTitle")}</h2>
         {signup && (
           <label className={labelClass}>
-            Your name
+            {t("auth.name")}
             <input className={inputClass} value={fullName} onChange={(e) => setFullName(e.target.value)} autoComplete="name" required />
           </label>
         )}
         <label className={labelClass}>
-          Email
+          {t("auth.email")}
           <input className={inputClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
         </label>
         <label className={labelClass}>
-          Password
+          {t("auth.password")}
           <input
             className={inputClass}
             type="password"
@@ -74,7 +75,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
         {error && <p role="alert" className={errorClass}>{error}</p>}
         {info && <p role="status" className={infoClass}>{info}</p>}
         <button className={`${buttonClass} w-full`} disabled={busy}>
-          {busy ? "One moment…" : signup ? "Create account" : "Sign in"}
+          {busy ? t("auth.busy") : signup ? t("auth.signUp") : t("auth.signIn")}
         </button>
       </form>
 
@@ -87,7 +88,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
           setInfo(null);
         }}
       >
-        {signup ? "I already have an account" : "New here? Create an account"}
+        {signup ? t("auth.haveAccount") : t("auth.newHere")}
       </button>
     </main>
   );

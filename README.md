@@ -22,6 +22,12 @@ supabase/
 Profit alone and Profit inside the Suite run the same code; the license decides what is unlocked
 (a `suite` license unlocks every module).
 
+## Language
+
+Everything is Spanish for now (neutral, "tú"). Texts live in `packages/i18n/src/es.ts`, never inside
+components. To add English: create `en.ts` typed as `Messages` (a missing key will not compile), register
+it in `CATALOG`, and add a language switch. Amounts, dates and percentages already follow the locale.
+
 ## Run it
 
 ```bash
@@ -43,8 +49,8 @@ Copy `.env.example` to `.env.local` and fill the Supabase values to connect real
 ## Supabase project
 
 - Project `stayflow` (ref `eigsajmshgrmnhascghr`, region `us-east-1`). One project for every customer; tenants are isolated by RLS.
-- Migrations `0001`-`0005` are applied. Keep `supabase/migrations` in sync with the remote.
-- `supabase/tests/rls_isolation.sql` checks tenant isolation and license gating (14 checks, rolls itself back). Run it after any policy change.
+- Migrations `0001`-`0007` are applied. Keep `supabase/migrations` in sync with the remote.
+- `supabase/tests/rls_isolation.sql` (14 checks) and `supabase/tests/recurring_expenses.sql` (9 checks) roll themselves back. Run them after any policy or function change.
 - Keys are not committed. Get the URL and publishable key from the Supabase dashboard (Settings > API) and put them in `apps/profit/.env.local`.
 
 ## Roadmap

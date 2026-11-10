@@ -94,12 +94,27 @@ describe("misc", () => {
     expect(projectNet(hist, 2)).toHaveLength(2);
     expect(projectNet([], 2)).toEqual([0, 0]);
   });
-  it("rounds summaries but keeps cents on entries", () => {
-    expect(formatMoney(125_050, "EUR")).toBe("€1,251");
-    expect(formatMoneyExact(125_050, "EUR")).toBe("€1,250.50");
+  it("rounds summaries but keeps cents on entries, in Spanish format", () => {
+    const plain = (x: string) => x.replace(/\s/g, " ");
+    expect(plain(formatMoney(125_050, "EUR"))).toBe("1.251 €");
+    expect(plain(formatMoneyExact(125_050, "EUR"))).toBe("1.250,50 €");
+    expect(plain(formatMoneyExact(-20_000, "EUR"))).toBe("-200,00 €");
   });
-  it("parses money input", () => {
+  it("parses money typed the Spanish or the English way", () => {
+    expect(parseMoney("1.250,50")).toBe(125_050);
     expect(parseMoney("1,250.50")).toBe(125_050);
+    expect(parseMoney("1250,5")).toBe(125_050);
+    expect(parseMoney("1250")).toBe(125_000);
+    expect(parseMoney("1.250")).toBe(125_000); // three digits after the dot = thousands
+    expect(parseMoney("1.250.000")).toBe(125_000_000);
+    expect(parseMoney("0,99")).toBe(99);
+    expect(parseMoney("€ 80")).toBe(8_000);
+    expect(parseMoney("-5")).toBe(-500);
+  });
+  it("rejects input that is not an amount", () => {
     expect(parseMoney("abc")).toBeNull();
+    expect(parseMoney("")).toBeNull();
+    expect(parseMoney("1.2500")).toBeNull();
+    expect(parseMoney(",")).toBeNull();
   });
 });
