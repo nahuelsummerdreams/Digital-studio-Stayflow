@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
 import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
-import { GetHostButton } from "./client";
 import { Motes, Tilt } from "./effects";
 import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
@@ -29,22 +28,25 @@ export function Hero() {
             <span aria-hidden className="pulse-ring h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
             <span className="truncate">{t("landing.hero.eyebrow")}</span>
           </p>
-          <h1 className="font-display mt-6 text-[2.6rem] leading-[1.06] sm:text-5xl xl:text-[3.4rem]">
+          <h1 className="font-display mt-6 text-[1.95rem] font-extrabold uppercase leading-[1.16] tracking-tight sm:text-4xl xl:text-[2.5rem]">
             {t("landing.hero.title")} <span className="text-gradient block">{t("landing.hero.accent")}</span>
           </h1>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {t("landing.hero.pains").split("|").map((x) => (
+              <li key={x} className="rounded-full border border-danger/30 bg-danger/10 px-3 py-1.5 text-[13px] text-fg/90">{x}</li>
+            ))}
+          </ul>
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted md:text-lg">{t("landing.hero.body")}</p>
+          <p className="font-display mt-4 max-w-xl text-xl font-bold leading-snug md:text-2xl">{t("landing.hero.question")}</p>
+          <p className="mt-4 max-w-xl text-base leading-relaxed text-muted"><b className="font-extrabold text-fg">STAY</b><span className="font-semibold text-fg">flow</span> {t("landing.hero.brand")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <GetHostButton />
-            <a href="#sistema" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base text-fg backdrop-blur transition hover:border-accent/60">
-              <span aria-hidden className="flex h-5 w-5 items-center justify-center rounded-full bg-accent/20 text-accent"><svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor"><path d="M8 5v14l11-7z" /></svg></span>
+            <a href="#sistema" className={`${buttonClass} gap-2 !px-6 !py-3.5 !text-base`}>
+              {t("landing.hero.cta")} <Icon name="arrow" className="h-4 w-4" />
+            </a>
+            <a href="#herramientas" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">
               {t("landing.hero.secondary")}
             </a>
           </div>
-          <ul className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted">
-            {(["trust1", "trust2", "trust3"] as const).map((k) => (
-              <li key={k} className="flex items-center gap-2"><Icon name="check" className="h-4 w-4 text-success" />{t(`landing.hero.${k}`)}</li>
-            ))}
-          </ul>
         </div>
 
         <div className="relative">
