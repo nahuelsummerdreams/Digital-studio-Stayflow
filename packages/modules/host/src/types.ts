@@ -20,6 +20,8 @@ export interface Booking {
   /** Integer minor units (cents). */
   amount: number;
   notes: string;
+  /** ISO timestamp of when it was recorded. */
+  createdAt: string;
 }
 
 export interface NewBooking {
@@ -41,4 +43,12 @@ export interface HostTask {
   title: string;
   dueOn: string | null;
   done: boolean;
+}
+
+/** What the Host screens need to know about a property (photo included). */
+export interface HostProperty {
+  id: string;
+  name: string;
+  city?: string | null;
+  photoUrl?: string | null;
 }

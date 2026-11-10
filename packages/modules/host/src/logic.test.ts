@@ -8,7 +8,7 @@ import type { Booking, NewBooking } from "./types";
 let n = 0;
 const bk = (over: Partial<Booking>): Booking => ({
   id: `b${++n}`, propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2,
-  checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", ...over,
+  checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-11-01T10:00:00Z", ...over,
 });
 
 describe("dates", () => {
@@ -117,5 +117,69 @@ describe("status flow and validation", () => {
     expect(validateBooking(base, existing)).toBeNull();
     expect(validateBooking({ ...base, propertyId: "p2", checkOut: "2026-12-06" }, existing)).toBeNull();
     expect(validateBooking({ ...base, checkOut: "2026-12-06" }, [bk({ ...existing[0]!, status: "canceled" })])).toBeNull();
+  });
+});
+
+import { changePct, hostAlerts, monthlyOccupancy, propertyState, sourceBreakdown, weekOf } from "./insights";
+
+describe("insights", () => {
+  const mk = (over: Partial<Booking>): Booking => ({
+    id: "x", propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2,
+    checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 10000, notes: "", createdAt: "2026-11-01T10:00:00Z", ...over,
+  });
+
+  it("changePct handles zero and normal cases", () => {
+    expect(changePct(110, 100)).toBe(10);
+    expect(changePct(50, 100)).toBe(-50);
+    expect(changePct(0, 0)).toBe(0);
+    expect(changePct(5, 0)).toBeNull();
+  });
+
+  it("monthlyOccupancy returns 12 months", () => {
+    const occ = monthlyOccupancy([mk({ checkIn: "2026-11-01", checkOut: "2026-11-16" })], ["p1"], 2026);
+    expect(occ).toHaveLength(12);
+    expect(occ[10]).toBe(50);
+    expect(occ[0]).toBe(0);
+  });
+
+  it("sourceBreakdown counts live bookings only", () => {
+    const list = [mk({ id: "1" }), mk({ id: "2", source: "booking" }), mk({ id: "3", source: "booking" }), mk({ id: "4", status: "canceled" })];
+    expect(sourceBreakdown(list, "2026-11-01", "2026-12-01")).toEqual([
+      { source: "booking", count: 2 },
+      { source: "airbnb", count: 1 },
+    ]);
+  });
+
+  it("propertyState: occupied, arriving soon, free", () => {
+    const b = mk({ checkIn: "2026-11-08", checkOut: "2026-11-12", status: "checked_in" });
+    expect(propertyState([b], "p1", "2026-11-10").kind).toBe("occupied");
+    const soon = mk({ checkIn: "2026-11-12", checkOut: "2026-11-15" });
+    expect(propertyState([soon], "p1", "2026-11-10")).toMatchObject({ kind: "arriving", inDays: 2 });
+    const far = mk({ checkIn: "2026-11-25", checkOut: "2026-11-28" });
+    expect(propertyState([far], "p1", "2026-11-10")).toMatchObject({ kind: "free" });
+    expect(propertyState([], "p1", "2026-11-10")).toEqual({ kind: "free", next: null });
+  });
+
+  it("hostAlerts flags overdue tasks, missed check-ins/outs and missing amounts", () => {
+    const today = "2026-11-10";
+    const alerts = hostAlerts(
+      [
+        mk({ id: "a", status: "checked_in", checkIn: "2026-11-01", checkOut: "2026-11-09" }),
+        mk({ id: "b", status: "confirmed", checkIn: "2026-11-08", checkOut: "2026-11-12" }),
+        mk({ id: "c", status: "confirmed", checkIn: "2026-11-20", checkOut: "2026-11-22", amount: 0 }),
+        mk({ id: "d", status: "confirmed", checkIn: today, checkOut: "2026-11-12" }),
+      ],
+      [{ id: "t1", propertyId: null, title: "Sábanas", dueOn: "2026-11-08", done: false }],
+      today,
+    );
+    expect(alerts.map((x) => x.kind).sort()).toEqual(["arrivalPending", "arrivalsToday", "departurePending", "noAmount", "overdueTask"]);
+    expect(alerts.find((x) => x.kind === "overdueTask")).toMatchObject({ daysLate: 2 });
+  });
+
+  it("weekOf starts on Monday", () => {
+    const w = weekOf("2026-11-10"); // a Tuesday
+    expect(w[0]).toBe("2026-11-09");
+    expect(w[6]).toBe("2026-11-15");
+    expect(weekOf("2026-11-10", 1)[0]).toBe("2026-11-16");
   });
 });

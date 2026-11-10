@@ -24,6 +24,8 @@ export function errorKey(e: unknown): MessageKey {
   const code = typeof err.code === "string" ? err.code : "";
   const message = typeof err.message === "string" ? err.message : "";
   if (code && BY_CODE[code]) return BY_CODE[code];
+  if (message === "photo-type") return "errors.photoType";
+  if (message === "photo-size") return "errors.photoSize";
   if (/invalid login credentials/i.test(message)) return "errors.invalidCredentials";
   if (/already registered/i.test(message)) return "errors.userExists";
   if (/row-level security|permission denied|only owners and admins/i.test(message)) return "errors.noPermission";

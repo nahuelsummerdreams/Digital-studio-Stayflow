@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { Apps, Faq, Features, FinalCta, Footer, Hero, Pricing, Reveal, Steps } from "@/components/sections";
+import { Apps, Faq, FinalCta, Footer, Hero, Marquee, Pricing, Reveal, Schedule, Steps, System } from "@/components/sections";
 
 export default function Home() {
   return (
@@ -7,8 +7,10 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
+        <Marquee />
+        <System />
+        <Schedule />
         <Reveal />
-        <Features />
         <Apps />
         <Steps />
         <Pricing />

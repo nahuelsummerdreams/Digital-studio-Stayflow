@@ -65,18 +65,81 @@ export interface Property {
   id: string;
   name: string;
   city: string | null;
+  /** Storage path of the cover photo, or null. */
+  photoPath: string | null;
+  /** Ready-to-use public URL of the cover photo, or null. */
+  photoUrl: string | null;
 }
+
+interface PropertyRow {
+  id: string;
+  name: string;
+  city: string | null;
+  photo_path: string | null;
+}
+
+export const PHOTO_BUCKET = "property-photos";
 
 export async function fetchProperties(client: SupabaseClient, orgId: string): Promise<Property[]> {
   const { data, error } = await client
     .from("properties")
-    .select("id, name, city")
+    .select("id, name, city, photo_path")
     .eq("org_id", orgId)
     .is("archived_at", null)
     .order("created_at", { ascending: true })
-    .returns<Property[]>();
+    .returns<PropertyRow[]>();
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    name: r.name,
+    city: r.city,
+    photoPath: r.photo_path,
+    photoUrl: r.photo_path ? client.storage.from(PHOTO_BUCKET).getPublicUrl(r.photo_path).data.publicUrl : null,
+  }));
+}
+
+/** Shrinks a photo to at most 1600px on its long side as JPEG, so uploads are fast and storage stays small. */
+async function shrinkImage(file: File): Promise<Blob> {
+  try {
+    const bitmap = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    if (blob) return blob;
+  } catch {
+    // fall through: upload the original if the browser cannot decode it
+  }
+  return file;
+}
+
+/** Uploads a new cover photo for a property and removes the previous one. */
+export async function setPropertyPhoto(
+  client: SupabaseClient,
+  orgId: string,
+  property: { id: string; photoPath: string | null },
+  file: File,
+): Promise<void> {
+  if (!/^image\/(jpeg|png|webp)$/.test(file.type)) throw new Error("photo-type");
+  const blob = await shrinkImage(file);
+  if (blob.size > 5 * 1024 * 1024) throw new Error("photo-size");
+  const path = `${orgId}/${crypto.randomUUID()}.jpg`;
+  const up = await client.storage.from(PHOTO_BUCKET).upload(path, blob, { contentType: blob.type || "image/jpeg", upsert: false });
+  if (up.error) throw up.error;
+  const { error } = await client.from("properties").update({ photo_path: path }).eq("id", property.id);
+  if (error) {
+    await client.storage.from(PHOTO_BUCKET).remove([path]);
+    throw error;
+  }
+  if (property.photoPath) await client.storage.from(PHOTO_BUCKET).remove([property.photoPath]);
+}
+
+export async function removePropertyPhoto(client: SupabaseClient, property: { id: string; photoPath: string | null }): Promise<void> {
+  const { error } = await client.from("properties").update({ photo_path: null }).eq("id", property.id);
+  if (error) throw error;
+  if (property.photoPath) await client.storage.from(PHOTO_BUCKET).remove([property.photoPath]);
 }
 
 export async function createProperty(

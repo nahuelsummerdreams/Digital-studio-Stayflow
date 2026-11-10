@@ -15,9 +15,10 @@ interface BookingDb {
   status: BookingStatus;
   amount_minor: number;
   notes: string;
+  created_at: string;
 }
 
-const COLUMNS = "id, property_id, guest_name, guest_email, guest_phone, guests_count, check_in, check_out, nights, source, status, amount_minor, notes";
+const COLUMNS = "id, property_id, guest_name, guest_email, guest_phone, guests_count, check_in, check_out, nights, source, status, amount_minor, notes, created_at";
 
 const toBooking = (r: BookingDb): Booking => ({
   id: r.id,
@@ -33,6 +34,7 @@ const toBooking = (r: BookingDb): Booking => ({
   status: r.status,
   amount: Number(r.amount_minor),
   notes: r.notes,
+  createdAt: r.created_at,
 });
 
 export async function loadBookings(client: SupabaseClient, orgId: string): Promise<Booking[]> {

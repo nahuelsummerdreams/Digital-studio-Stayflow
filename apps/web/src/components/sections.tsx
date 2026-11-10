@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { PLANS, PLAN_LIMITS, PLAN_PRICE_USD, type PlanKey } from "@stayflow/licensing";
-import { Icon, buttonClass } from "@stayflow/ui";
-import { APP_URL, GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
-import { ProductPreview } from "./ProductPreview";
+import { Avatar, Icon, Pill, buttonClass, type IconName } from "@stayflow/ui";
+import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
+import { DashboardMock, SceneArt, ScheduleMock } from "./mock";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
 
@@ -19,35 +19,189 @@ function Head({ eyebrow, title, body, center = false }: { eyebrow: string; title
 export function Hero() {
   return (
     <section id="top" className="relative overflow-hidden">
+      <div aria-hidden className="bg-grid pointer-events-none absolute inset-0" />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[560px]"
-        style={{ background: "radial-gradient(60% 60% at 50% 0%, rgb(var(--accent) / 0.22), transparent 70%)" }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-[640px]"
+        style={{ background: "radial-gradient(55% 60% at 50% 0%, rgb(var(--accent) / 0.26), transparent 70%)" }}
       />
-      <div className="relative mx-auto grid max-w-6xl items-center gap-14 px-5 pb-20 pt-14 md:pb-28 md:pt-24 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="anim-stagger">
-          <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1.5 text-xs text-muted backdrop-blur">
-            <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-accent" />
+      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 md:pb-28 md:pt-24">
+        <div className="anim-stagger mx-auto max-w-3xl text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3.5 py-1.5 text-xs text-muted backdrop-blur">
+            <span aria-hidden className="pulse-ring h-1.5 w-1.5 rounded-full bg-accent" />
             {t("landing.hero.eyebrow")}
           </p>
-          <h1 className="font-display mt-6 text-5xl leading-[1.05] md:text-6xl lg:text-5xl xl:text-6xl">
-            {t("landing.hero.title")} <span className="block text-gradient">{t("landing.hero.accent")}</span>
+          <h1 className="font-display mt-7 text-5xl leading-[1.04] md:text-7xl">
+            {t("landing.hero.title")} <span className="text-gradient block md:inline">{t("landing.hero.accent")}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{t("landing.hero.body")}</p>
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <a href={APP_URL} className={`${buttonClass} !px-6 !py-3.5 !text-base`}>
+          <p className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-muted md:text-xl">{t("landing.hero.body")}</p>
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+            <a href={HOST_URL} className={`${buttonClass} !px-7 !py-4 !text-base`}>
               {t("landing.hero.cta")}
             </a>
-            <a
-              href="#como-empieza"
-              className="inline-flex items-center rounded-xl border border-line px-6 py-3.5 text-base text-muted transition hover:border-muted hover:text-fg"
-            >
+            <a href="#sistema" className="inline-flex items-center rounded-xl border border-line bg-surface/40 px-7 py-4 text-base text-muted backdrop-blur transition hover:border-muted hover:text-fg">
               {t("landing.hero.secondary")}
             </a>
           </div>
           <p className="mt-5 text-sm text-muted">{t("landing.hero.note")}</p>
         </div>
-        <ProductPreview />
+
+        <div className="relative mx-auto mt-16 max-w-5xl">
+          <div aria-hidden className="absolute -inset-x-10 -bottom-10 -top-6 rounded-[56px] bg-accent/20 blur-3xl" />
+          <div className="relative transition-transform duration-700 ease-out lg:[transform:perspective(1800px)_rotateX(5deg)] lg:hover:[transform:perspective(1800px)_rotateX(1deg)]">
+            <DashboardMock />
+          </div>
+          <div className="drift fx-card absolute -left-3 top-[28%] hidden w-60 rounded-2xl p-3.5 shadow-2xl lg:block xl:-left-14" style={{ "--r": "-2deg" } as CSSProperties}>
+            <div className="flex items-center gap-3">
+              <Avatar name="Familia Ortega" className="h-9 w-9 text-xs" />
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-semibold">{t("landing.hero.floatA")}</p>
+                <p className="truncate text-[11px] text-muted">{t("landing.hero.floatAsub")}</p>
+              </div>
+            </div>
+          </div>
+          <div className="drift fx-card absolute -right-3 bottom-[18%] hidden w-64 rounded-2xl p-3.5 shadow-2xl lg:block xl:-right-14" style={{ "--r": "2deg", animationDelay: "-3s" } as CSSProperties}>
+            <div className="flex items-center gap-3">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-success/15 text-success"><Icon name="check" className="h-[18px] w-[18px]" /></span>
+              <div className="min-w-0">
+                <p className="truncate text-[13px] font-semibold">{t("landing.hero.floatB")}</p>
+                <p className="text-[11px] leading-snug text-muted">{t("landing.hero.floatBsub")}</p>
+              </div>
+            </div>
+          </div>
+          <p className="mt-5 text-center text-[11px] text-muted">{t("landing.hero.sample")}</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Slow ticker of what the system covers: movement without noise. */
+export function Marquee() {
+  const items = t("landing.marquee").split("|");
+  const row = [...items, ...items];
+  return (
+    <div aria-hidden className="overflow-hidden border-y border-line/60 bg-surface/30 py-5 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]">
+      <div className="marquee flex w-max items-center gap-10 whitespace-nowrap">
+        {row.map((x, i) => (
+          <span key={i} className="font-display flex items-center gap-10 text-lg text-muted">
+            {x}
+            <i className="h-1.5 w-1.5 rounded-full bg-accent" />
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function Tile({ title, body, children, className = "" }: { title: string; body: string; children: ReactNode; className?: string }) {
+  return (
+    <article className={`reveal fx-card group flex flex-col overflow-hidden rounded-3xl ${className}`}>
+      <div className="flex-1 p-5 pb-0">{children}</div>
+      <div className="p-6 pt-5">
+        <h3 className="font-display text-lg leading-snug">{title}</h3>
+        <p className="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+      </div>
+    </article>
+  );
+}
+
+function QrArt() {
+  const cells = Array.from({ length: 81 }, (_, i) => ((i * i * 7 + i * 13 + 3) % 11 < 5 ? 1 : 0));
+  return (
+    <div className="mx-auto flex h-36 items-center justify-center gap-4">
+      <svg aria-hidden viewBox="0 0 9 9" className="h-28 w-28 rounded-2xl bg-white p-2 shadow-[0_0_50px_-12px_rgb(var(--accent))]" shapeRendering="crispEdges">
+        {cells.map((c, i) => (c ? <rect key={i} x={i % 9} y={Math.floor(i / 9)} width="1" height="1" fill="#06101f" /> : null))}
+        <rect x="0" y="0" width="3" height="3" fill="#06101f" /><rect x="0.5" y="0.5" width="2" height="2" fill="#fff" /><rect x="1" y="1" width="1" height="1" fill="#06101f" />
+        <rect x="6" y="0" width="3" height="3" fill="#06101f" /><rect x="6.5" y="0.5" width="2" height="2" fill="#fff" /><rect x="7" y="1" width="1" height="1" fill="#06101f" />
+        <rect x="0" y="6" width="3" height="3" fill="#06101f" /><rect x="0.5" y="6.5" width="2" height="2" fill="#fff" /><rect x="1" y="7" width="1" height="1" fill="#06101f" />
+      </svg>
+      <div aria-hidden className="space-y-2 text-[11px] text-muted">
+        {["Wi-Fi", "Check-in", "Restaurantes"].map((x) => (
+          <p key={x} className="flex items-center gap-2 rounded-lg border border-line bg-bg/60 px-2.5 py-1.5"><Icon name="check" className="h-3 w-3 text-accent" />{x}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Bento grid: each tile is a small live-looking piece of the product. */
+export function System() {
+  const alerts: { icon: IconName; text: string; sub: string; tone: string }[] = [
+    { icon: "alert", text: t("host.alertLate", { count: 2 }), sub: "Cambiar sábanas", tone: "text-danger" },
+    { icon: "login", text: t("host.alertArrivalsToday", { count: 1 }), sub: t("host.alertRegister"), tone: "text-success" },
+    { icon: "info", text: t("host.alertNoAmount", { name: "Clara" }), sub: "Estudio Casco Antiguo", tone: "text-accent" },
+  ];
+  return (
+    <section id="sistema" className={SECTION}>
+      <Head eyebrow={t("landing.system.eyebrow")} title={t("landing.system.title")} body={t("landing.system.body")} />
+      <div className="mt-14 grid gap-4 lg:grid-cols-3">
+        <Tile className="lg:col-span-2" title={t("landing.system.schedule.title")} body={t("landing.system.schedule.body")}>
+          <ScheduleMock compact />
+        </Tile>
+        <Tile title={t("landing.system.photos.title")} body={t("landing.system.photos.body")}>
+          <div className="relative mx-auto h-44 max-w-xs" aria-hidden>
+            <SceneArt variant={1} className="absolute left-0 top-6 h-28 w-44 -rotate-6 rounded-2xl border border-white/10 shadow-xl transition duration-500 group-hover:-rotate-12" />
+            <SceneArt variant={2} className="absolute right-0 top-2 h-28 w-44 rotate-6 rounded-2xl border border-white/10 shadow-xl transition duration-500 group-hover:rotate-12" />
+            <SceneArt variant={0} className="absolute left-1/2 top-12 h-32 w-48 -translate-x-1/2 rounded-2xl border border-white/20 shadow-2xl transition duration-500 group-hover:-translate-y-2" />
+          </div>
+        </Tile>
+        <Tile title={t("landing.system.panel.title")} body={t("landing.system.panel.body")}>
+          <div className="rounded-2xl border border-line bg-bg/60 p-4">
+            <p className="text-xs text-muted">{t("host.occupancy")}</p>
+            <p className="font-display text-money mt-1 text-4xl tabular-nums">68,4 %</p>
+            <p className="mt-1 text-xs text-success">+12,4 % {t("host.vsLastMonth")}</p>
+            <div className="mt-4 flex h-14 items-end gap-1.5" aria-hidden>
+              {[35, 48, 42, 60, 55, 72, 68, 84].map((h, i) => (
+                <i key={i} className="grow-view block flex-1 rounded-t-md bg-gradient-to-t from-accent/30 to-accent" style={{ height: `${h}%`, transformOrigin: "bottom" }} />
+              ))}
+            </div>
+          </div>
+        </Tile>
+        <Tile title={t("landing.system.alerts.title")} body={t("landing.system.alerts.body")}>
+          <ul className="space-y-3 rounded-2xl border border-line bg-bg/60 p-4">
+            {alerts.map((a) => (
+              <li key={a.text} className="flex items-start gap-3">
+                <span className={`mt-0.5 ${a.tone}`}><Icon name={a.icon} className="h-[18px] w-[18px]" /></span>
+                <span className="min-w-0"><span className="block truncate text-sm font-medium">{a.text}</span><span className={`block truncate text-xs ${a.tone}`}>{a.sub}</span></span>
+              </li>
+            ))}
+          </ul>
+        </Tile>
+        <Tile title={t("landing.system.guest.title")} body={t("landing.system.guest.body")}>
+          <QrArt />
+        </Tile>
+      </div>
+    </section>
+  );
+}
+
+/** One big look at the schedule, because it is what hosts open every morning. */
+export function Schedule() {
+  const points = ["b1", "b2", "b3", "b4"] as const;
+  return (
+    <section id="cronograma" className="relative overflow-hidden border-y border-line/60 bg-surface/30">
+      <div aria-hidden className="pointer-events-none absolute -right-40 top-0 h-[500px] w-[500px] rounded-full bg-accent/10 blur-3xl" />
+      <div className={`${SECTION} relative`}>
+        <Head eyebrow={t("landing.schedule.eyebrow")} title={t("landing.schedule.title")} body={t("landing.schedule.body")} />
+        <div className="reveal mt-12">
+          <ScheduleMock />
+        </div>
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+          {points.map((k) => (
+            <li key={k} className="reveal flex items-center gap-3 text-base">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"><Icon name="check" className="h-4 w-4" /></span>
+              {t(`landing.schedule.${k}`)}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <Pill tone="accent">{t("landing.apps.available")}</Pill>
+          <a href={HOST_URL} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
+            {t("landing.apps.open")} Stayflow Host
+            <Icon name="arrow" className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+        </div>
       </div>
     </section>
   );
@@ -68,7 +222,7 @@ export function Reveal() {
         ? "linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)))"
         : "rgb(var(--accent) / 0.45)";
   return (
-    <section id="producto" className="border-y border-line/60 bg-surface/30">
+    <section id="ganancia">
       <div className={`${SECTION} grid items-center gap-14 md:grid-cols-2`}>
         <Head eyebrow={t("landing.reveal.eyebrow")} title={t("landing.reveal.title")} body={t("landing.reveal.body")} />
         <div className="reveal fx-card rounded-3xl p-6 md:p-8">
@@ -86,28 +240,6 @@ export function Reveal() {
             ))}
           </ul>
         </div>
-      </div>
-    </section>
-  );
-}
-
-export function Features() {
-  const items = (["one", "two", "three", "four"] as const).map((k, i) => ({
-    n: `0${i + 1}`,
-    title: t(`landing.features.${k}.title`),
-    body: t(`landing.features.${k}.body`),
-  }));
-  return (
-    <section className={SECTION}>
-      <Head eyebrow={t("landing.features.eyebrow")} title={t("landing.features.title")} />
-      <div className="mt-14 grid gap-4 md:grid-cols-2">
-        {items.map((f) => (
-          <article key={f.n} className="reveal fx-card group rounded-3xl p-7">
-            <p className="font-display text-sm text-accent">{f.n}</p>
-            <h3 className="font-display mt-5 text-xl leading-snug">{f.title}</h3>
-            <p className="mt-3 leading-relaxed text-muted">{f.body}</p>
-          </article>
-        ))}
       </div>
     </section>
   );
@@ -231,7 +363,7 @@ export function Pricing() {
                   ))}
                 </ul>
                 <a
-                  href={APP_URL}
+                  href={HOST_URL}
                   className={
                     featured
                       ? `${buttonClass} mt-8 w-full`
@@ -296,7 +428,7 @@ export function FinalCta() {
         <div className="relative">
           <h2 className="font-display mx-auto max-w-2xl text-3xl leading-tight md:text-5xl">{t("landing.cta.title")}</h2>
           <p className="mx-auto mt-5 max-w-md text-lg text-muted">{t("landing.cta.body")}</p>
-          <a href={APP_URL} className={`${buttonClass} mt-9 !px-7 !py-3.5 !text-base`}>
+          <a href={HOST_URL} className={`${buttonClass} mt-9 !px-7 !py-3.5 !text-base`}>
             {t("landing.cta.button")}
           </a>
         </div>

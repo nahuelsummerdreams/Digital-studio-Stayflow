@@ -1,8 +1,9 @@
 import { BrandMark, ThemeSwitcher, buttonClass } from "@stayflow/ui";
-import { APP_URL, t } from "@/lib/t";
+import { HOST_URL as APP_URL, t } from "@/lib/t";
 
 const LINKS = [
-  { href: "#producto", key: "landing.nav.product" },
+  { href: "#sistema", key: "landing.nav.product" },
+  { href: "#cronograma", key: "landing.nav.schedule" },
   { href: "#apps", key: "landing.nav.apps" },
   { href: "#precios", key: "landing.nav.pricing" },
   { href: "#preguntas", key: "landing.nav.faq" },

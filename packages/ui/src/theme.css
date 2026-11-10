@@ -298,6 +298,42 @@ body::after {
   animation-duration: 0.5s;
 }
 
+
+/* ---------------------------------------------------------------- landing */
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(var(--line) / 0.45) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(var(--line) / 0.45) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(70% 60% at 50% 0%, #000, transparent 75%);
+  mask-image: radial-gradient(70% 60% at 50% 0%, #000, transparent 75%);
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee {
+  animation: marquee 38s linear infinite;
+}
+@keyframes drift {
+  50% {
+    transform: translate3d(0, -10px, 0) rotate(var(--r, 0deg));
+  }
+}
+.drift {
+  animation: drift 6s ease-in-out infinite;
+}
+/* Bars that grow while they scroll into view; static where the browser cannot do it. */
+@supports (animation-timeline: view()) {
+  .grow-view {
+    transform-origin: left center;
+    animation: grow-x linear both;
+    animation-timeline: view();
+    animation-range: entry 5% entry 80%;
+  }
+}
+
 /* ---------------------------------------------------------------- accessibility */
 a:focus-visible,
 button:focus-visible,

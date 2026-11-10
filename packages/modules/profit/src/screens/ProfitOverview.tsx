@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n, type TFn } from "@stayflow/i18n";
-import { AnimatedNumber, Skeleton, Sparkline, activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
+import { AnimatedNumber, PropertyPhoto, Skeleton, Sparkline, activeTabClass, cardClass, errorClass, idleTabClass } from "@stayflow/ui";
 import { monthlyComparison, netProfit, profitByProperty } from "../calc";
 import { formatMonth, formatMonthShort, formatPct, formatSignedPct } from "../format";
 import { formatMoney } from "../money";
@@ -15,7 +15,7 @@ interface Props {
   client: SupabaseClient;
   orgId: string;
   currency: string;
-  properties: { id: string; name: string }[];
+  properties: { id: string; name: string; photoUrl?: string | null }[];
 }
 
 const PERIOD_KEY = {
@@ -173,6 +173,7 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
   const bestNet = Math.max(1, ...ranking.map((r) => r.net));
   const months = monthlyComparison(incomes, expenses);
   const nameOf = (id: string) => properties.find((p) => p.id === id)?.name ?? t("properties.archived");
+  const photoOf = (id: string) => properties.find((p) => p.id === id)?.photoUrl ?? null;
   const noEntriesAtAll = ledger.incomes.length === 0 && ledger.expenses.length === 0;
   const emptyPeriod = incomes.length === 0 && expenses.length === 0;
   const showChart = months.length > 1;
@@ -224,25 +225,28 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
               <h2 className="text-sm font-medium">{t("overview.propertiesTitle")}</h2>
               <ul className="mt-4 space-y-5">
                 {ranking.map((p) => (
-                  <li key={p.propertyId}>
-                    <div className="flex items-baseline justify-between gap-3">
-                      <span className="truncate text-sm font-medium">{nameOf(p.propertyId)}</span>
-                      <span className={`font-display shrink-0 text-lg ${p.net < 0 ? "text-danger" : ""}`}>{money(p.net)}</span>
+                  <li key={p.propertyId} className="flex items-center gap-4">
+                    <PropertyPhoto url={photoOf(p.propertyId)} name={nameOf(p.propertyId)} className="h-20 w-28 rounded-xl" />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="truncate text-sm font-medium">{nameOf(p.propertyId)}</span>
+                        <span className={`font-display shrink-0 text-lg ${p.net < 0 ? "text-danger" : ""}`}>{money(p.net)}</span>
+                      </div>
+                      <div className="mt-2 h-1.5 rounded-full bg-bg" aria-hidden>
+                        <div
+                          className="h-full origin-left rounded-full"
+                          style={{
+                            width: `${Math.max(0, (p.net / bestNet) * 100)}%`,
+                            background: "linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)))",
+                            boxShadow: "0 0 14px rgb(var(--accent) / 0.6)",
+                            animation: "grow-x 1s var(--ease) both",
+                          }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-xs text-muted">
+                        {t("overview.margin", { pct: formatPct(p.marginPct, locale) })} · {t("entries.nights", { count: p.nights })}
+                      </p>
                     </div>
-                    <div className="mt-2 h-1.5 rounded-full bg-bg" aria-hidden>
-                      <div
-                        className="h-full origin-left rounded-full"
-                        style={{
-                          width: `${Math.max(0, (p.net / bestNet) * 100)}%`,
-                          background: "linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)))",
-                          boxShadow: "0 0 14px rgb(var(--accent) / 0.6)",
-                          animation: "grow-x 1s var(--ease) both",
-                        }}
-                      />
-                    </div>
-                    <p className="mt-1.5 text-xs text-muted">
-                      {t("overview.margin", { pct: formatPct(p.marginPct, locale) })} · {t("entries.nights", { count: p.nights })}
-                    </p>
                   </li>
                 ))}
               </ul>

@@ -10,9 +10,10 @@ function Nav({ children }: { children: ReactNode }) {
   return (
     <AppShell
       product="guest"
+      plansUrl={process.env.NEXT_PUBLIC_WEB_URL ? `${process.env.NEXT_PUBLIC_WEB_URL}#precios` : undefined}
       nav={[
-        { href: "/", label: t("nav.guides"), icon: "qr", description: t("navDesc.guides") },
-        { href: "/properties", label: t("nav.properties"), icon: "building", description: t("navDesc.properties") },
+        { href: "/", label: t("nav.guides"), icon: "qr", description: t("navDesc.guides"), group: t("navGroup.control") },
+        { href: "/properties", label: t("nav.properties"), icon: "building", description: t("navDesc.properties"), group: t("navGroup.manage") },
       ]}
     >
       {children}

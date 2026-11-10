@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { AccountProvider, AuthScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { BrandMark, FxProvider, Icon, PRODUCT_BRAND, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { Avatar, BrandMark, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { BellMenu, CommandPalette, UserMenu, type SearchItem, type ShellAlert } from "./chrome";
+
+export type { SearchItem, ShellAlert } from "./chrome";
 
 function MissingConfig() {
   const t = useT();
@@ -35,17 +38,56 @@ export interface NavItem {
   icon?: IconName;
   /** One line under the page title on desktop. */
   description?: string;
+  /** Small caption that starts a new block in the side menu ("Pilotaje"). */
+  group?: string;
+  /** Count shown at the right of the item. */
+  badge?: number;
+  /** The screen draws its own heading, so the shell skips the default one. */
+  ownHeading?: boolean;
 }
+
+export interface AppShellProps {
+  product: ProductKey;
+  nav: NavItem[];
+  children: ReactNode;
+  /** The one big button in the top bar ("Nueva reserva"). */
+  quickAction?: { label: string; href: string };
+  /** Things that need attention. Shown in the bell. */
+  alerts?: ShellAlert[];
+  /** Extra things the search can jump to (properties, guests…). */
+  searchItems?: SearchItem[];
+  /** Where "Ver planes" goes (the Digital Studio site). Hidden when missing. */
+  plansUrl?: string;
+}
+
+const TRIAL_DAYS = 14;
 
 /**
  * What every Stayflow app shows around its screens:
- * sign in -> business setup -> free trial / license -> the app (header, tabs, Digital Studio seal).
+ * sign in -> business setup -> free trial / license -> the app (side menu, top bar, Digital Studio seal).
  */
-export function AppShell({ product, nav, children }: { product: ProductKey; nav: NavItem[]; children: ReactNode }) {
+export function AppShell({ product, nav, children, quickAction, alerts = [], searchItems = [], plansUrl }: AppShellProps) {
   const t = useT();
   const { loading, error, session, org, licenses, can, signOut } = useAccount();
   const pathname = usePathname();
   const brand = PRODUCT_BRAND[product];
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setPaletteOpen((o) => !o);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const paletteItems = useMemo<SearchItem[]>(
+    () => [...nav.map((n) => ({ label: n.label, hint: n.description, href: n.href, icon: n.icon })), ...searchItems],
+    [nav, searchItems],
+  );
 
   if (loading) {
     return (
@@ -76,110 +118,168 @@ export function AppShell({ product, nav, children }: { product: ProductKey; nav:
     ? Math.max(0, Math.ceil((trial.currentPeriodEnd.getTime() - Date.now()) / 86_400_000))
     : null;
 
+  const meta = session.user.user_metadata as { full_name?: string } | undefined;
+  const email = session.user.email ?? "";
+  const userName = meta?.full_name?.trim() || email.split("@")[0] || org.name;
+
   const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`));
   const current = nav.find((n) => isActive(n.href));
 
   return (
-    <div className="lg:grid lg:min-h-screen lg:grid-cols-[17rem_1fr]">
+    <div className="lg:grid lg:min-h-screen lg:grid-cols-[16.5rem_1fr]">
       {/* Desktop: fixed side menu. This is how a host uses the installed app. */}
-      <aside className="sticky top-0 hidden h-screen flex-col border-r border-line/70 bg-surface/30 px-5 py-8 backdrop-blur-xl lg:flex">
-        <div className="flex items-center gap-3">
+      <aside className="sticky top-0 hidden h-screen flex-col border-r border-line/70 bg-surface/30 px-4 pb-4 pt-6 backdrop-blur-xl lg:flex">
+        <div className="flex items-center gap-3 px-2">
           <BrandMark />
           <div className="min-w-0">
-            <p className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name}</p>
-            <p className="font-display truncate text-lg leading-tight">{org.name}</p>
+            <p className="font-display truncate text-lg leading-tight">Stayflow</p>
+            <p className="truncate text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name.replace(/^Stayflow\s*/i, "")}</p>
           </div>
         </div>
-        <nav className="mt-10 flex flex-col gap-1" aria-label={t("common.sections")}>
-          {nav.map((n) => {
+
+        <nav className="mt-7 min-h-0 flex-1 overflow-y-auto pr-1" aria-label={t("common.sections")}>
+          {nav.map((n, i) => {
             const active = isActive(n.href);
+            const showGroup = n.group && n.group !== nav[i - 1]?.group;
             return (
-              <Link
-                key={n.href}
-                href={n.href}
-                aria-current={active ? "page" : undefined}
-                className={`group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-300 ${
-                  active ? "bg-accent/12 text-accent" : "text-muted hover:translate-x-0.5 hover:bg-surface/80 hover:text-fg"
-                }`}
-              >
-                {active && (
-                  <span aria-hidden className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-accent shadow-[0_0_14px_rgb(var(--accent))]" />
-                )}
-                {n.icon && <Icon name={n.icon} className="h-[18px] w-[18px] transition-transform duration-300 group-hover:scale-110" />}
-                {n.label}
-              </Link>
+              <div key={n.href}>
+                {showGroup && <p className={`mb-2 px-3 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted/70 ${i === 0 ? "mt-0" : "mt-6"}`}>{n.group}</p>}
+                <Link
+                  href={n.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`group relative mb-0.5 flex items-center gap-3 rounded-xl px-3 py-2.5 text-[13.5px] font-medium transition-all duration-300 ${
+                    active ? "bg-accent/12 text-accent" : "text-muted hover:translate-x-0.5 hover:bg-surface/80 hover:text-fg"
+                  }`}
+                >
+                  {active && <span aria-hidden className="absolute bottom-2 left-0 top-2 w-[3px] rounded-r-full bg-accent shadow-[0_0_14px_rgb(var(--accent))]" />}
+                  {n.icon && <Icon name={n.icon} className="h-[17px] w-[17px] transition-transform duration-300 group-hover:scale-110" />}
+                  <span className="min-w-0 flex-1 truncate">{n.label}</span>
+                  {typeof n.badge === "number" && n.badge > 0 && (
+                    <span className={`rounded-md px-1.5 py-0.5 text-[11px] tabular-nums ${active ? "bg-accent/20 text-accent" : "bg-line/70 text-muted"}`}>{n.badge}</span>
+                  )}
+                </Link>
+              </div>
             );
           })}
         </nav>
-        <div className="mt-auto space-y-5">
-          <ThemeSwitcher />
-          <button type="button" onClick={signOut} className="block text-sm text-muted underline-offset-4 hover:underline">
-            {t("common.signOut")}
-          </button>
-          <StudioSeal className="!flex-col !items-start !gap-2" />
+
+        <div className="mt-4 space-y-4">
+          {daysLeft !== null && (
+            <div className="fx-card rounded-2xl p-4">
+              <p className="flex items-center gap-2 text-sm font-medium"><Icon name="sparkles" className="h-4 w-4 text-accent" />{t("shell.trialTitle")}</p>
+              <p className="mt-1.5 text-xs text-muted">{t("common.trialDays", { count: daysLeft })}</p>
+              <div className="mt-3"><ProgressBar value={((TRIAL_DAYS - daysLeft) / TRIAL_DAYS) * 100} label={t("shell.trialTitle")} /></div>
+              {plansUrl && (
+                <a href={plansUrl} target="_blank" rel="noopener noreferrer" className="fx-btn mt-3 flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-onaccent">
+                  {t("shell.seePlans")} <Icon name="arrow" className="h-3.5 w-3.5" />
+                </a>
+              )}
+            </div>
+          )}
+          <div className="flex items-center gap-3 rounded-xl px-2">
+            <Avatar name={userName} className="h-9 w-9 text-xs" />
+            <div className="min-w-0 flex-1 leading-tight">
+              <p className="truncate text-[13px] font-medium">{userName}</p>
+              <p className="truncate text-[11px] text-muted">{org.name}</p>
+            </div>
+          </div>
+          <StudioSeal className="!flex-col !items-start !gap-2 px-2" />
         </div>
       </aside>
 
-      <main className="min-w-0 px-5 pb-16 pt-8 lg:px-10 lg:pt-12">
-        <div className="mx-auto max-w-5xl">
-          {/* Phone and small tablet: header + tabs. */}
-          <header className="flex items-start justify-between gap-4 lg:hidden">
-            <div className="flex items-center gap-3">
-              <BrandMark />
-              <div>
-                <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name}</p>
-                <h1 className="font-display text-2xl leading-tight">{org.name}</h1>
-              </div>
-            </div>
-            <div className="mt-1 flex flex-col items-end gap-3">
-              <ThemeSwitcher />
-              <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
-                {t("common.signOut")}
-              </button>
-            </div>
-          </header>
-
-          {daysLeft !== null && (
-            <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent lg:mt-0">
-              {t("common.trialDays", { count: daysLeft })}
-            </p>
-          )}
-
-          <nav className="fx-card mt-6 flex flex-wrap gap-1 rounded-xl p-1 lg:hidden" aria-label={t("common.sections")}>
-            {nav.map((n) => {
-              const active = isActive(n.href);
-              return (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  aria-current={active ? "page" : undefined}
-                  className={`min-w-[30%] flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-medium transition sm:min-w-0 ${
-                    active ? activeTabClass : idleTabClass
-                  }`}
-                >
-                  {n.label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {current && (
-            <div className="anim-in mt-4 hidden lg:block">
-              <h1 className="font-display text-[2rem] leading-tight">{current.label}</h1>
-              {current.description && <p className="mt-1.5 text-sm text-muted">{current.description}</p>}
-            </div>
-          )}
-
-          {/* Re-keyed by route so every screen change plays the entrance animation. */}
-          <div key={pathname} className="anim-in mt-6">
-            {children}
+      <div className="min-w-0">
+        {/* Desktop top bar: search, alerts, quick action, account. */}
+        <div className="sticky top-0 z-30 hidden h-[4.25rem] items-center gap-3 border-b border-line/70 bg-bg/70 px-8 backdrop-blur-xl lg:flex">
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="flex h-10 w-full max-w-md items-center gap-3 rounded-xl border border-line bg-surface/60 px-3.5 text-left text-sm text-muted transition hover:border-accent/50"
+          >
+            <Icon name="search" className="h-[17px] w-[17px]" />
+            <span className="flex-1 truncate">{t("shell.searchPlaceholder")}</span>
+            <kbd className="rounded-md border border-line px-1.5 py-0.5 text-[10px]">Ctrl K</kbd>
+          </button>
+          <div className="ml-auto flex items-center gap-3">
+            <ThemeSwitcher />
+            <BellMenu alerts={alerts} />
+            {quickAction && (
+              <Link href={quickAction.href} className="fx-btn inline-flex h-10 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-onaccent">
+                <Icon name="plus" className="h-4 w-4" />
+                {quickAction.label}
+              </Link>
+            )}
+            <UserMenu name={userName} detail={email || org.name} onSignOut={signOut} />
           </div>
-
-          <footer className="fx-card mt-10 rounded-card px-6 py-5 lg:hidden">
-            <StudioSeal className="justify-between" />
-          </footer>
         </div>
-      </main>
+
+        <main className="px-5 pb-16 pt-6 lg:px-8 lg:pt-8">
+          <div className="mx-auto max-w-[88rem]">
+            {/* Phone and small tablet: header + tabs. */}
+            <header className="flex items-start justify-between gap-4 lg:hidden">
+              <div className="flex items-center gap-3">
+                <BrandMark />
+                <div>
+                  <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-accent">{brand.name}</p>
+                  <h1 className="font-display text-2xl leading-tight">{org.name}</h1>
+                </div>
+              </div>
+              <div className="mt-1 flex flex-col items-end gap-3">
+                <div className="flex items-center gap-3">
+                  <ThemeSwitcher />
+                  <BellMenu alerts={alerts} />
+                </div>
+                <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
+                  {t("common.signOut")}
+                </button>
+              </div>
+            </header>
+
+            {daysLeft !== null && (
+              <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent lg:hidden">{t("common.trialDays", { count: daysLeft })}</p>
+            )}
+
+            <nav className="fx-card mt-6 flex flex-wrap gap-1 rounded-xl p-1 lg:hidden" aria-label={t("common.sections")}>
+              {nav.map((n) => {
+                const active = isActive(n.href);
+                return (
+                  <Link
+                    key={n.href}
+                    href={n.href}
+                    aria-current={active ? "page" : undefined}
+                    className={`min-w-[30%] flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-medium transition sm:min-w-0 ${active ? activeTabClass : idleTabClass}`}
+                  >
+                    {n.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {quickAction && (
+              <Link href={quickAction.href} className="fx-btn mt-4 flex h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold text-onaccent lg:hidden">
+                <Icon name="plus" className="h-4 w-4" />
+                {quickAction.label}
+              </Link>
+            )}
+
+            {current && !current.ownHeading && (
+              <div className="anim-in mt-2 hidden lg:block">
+                <h1 className="font-display text-[1.9rem] leading-tight">{current.label}</h1>
+                {current.description && <p className="mt-1.5 text-sm text-muted">{current.description}</p>}
+              </div>
+            )}
+
+            {/* Re-keyed by route so every screen change plays the entrance animation. */}
+            <div key={pathname} className="anim-in mt-6">
+              {children}
+            </div>
+
+            <footer className="fx-card mt-10 rounded-card px-6 py-5 lg:hidden">
+              <StudioSeal className="justify-between" />
+            </footer>
+          </div>
+        </main>
+      </div>
+      <CommandPalette items={paletteItems} open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   );
 }

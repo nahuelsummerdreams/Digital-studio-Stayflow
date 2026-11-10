@@ -1,22 +1,24 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney, formatMoneyExact, parseMoney } from "@stayflow/money";
-import { EmptyState, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
+import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
 import { addBooking, recordBookingIncome, removeBooking, setBookingStatus } from "../data";
 import { addDays, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
 import { isActive, nextStatuses, validateBooking } from "../logic";
-import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus } from "../types";
+import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus, type HostProperty } from "../types";
 import { useHostData } from "../useHostData";
 
 interface Props {
   client: SupabaseClient;
   orgId: string;
   currency: string;
-  properties: { id: string; name: string }[];
+  properties: HostProperty[];
+  /** Start from a day picked on the calendar, or just focus the form ("Nueva reserva"). */
+  prefill?: { propertyId?: string; checkIn?: string; nonce: number };
   onGoProperties: () => void;
   /** Shared data from the parent, so tabs do not refetch. */
   data: ReturnType<typeof useHostData>;
@@ -26,7 +28,7 @@ type Filter = "upcoming" | "all" | "past" | "canceled";
 const FILTERS: Filter[] = ["upcoming", "all", "past", "canceled"];
 const FILTER_KEY = { upcoming: "host.filterUpcoming", all: "host.filterAll", past: "host.filterPast", canceled: "host.filterCanceled" } as const;
 
-export function HostBookings({ client, orgId, currency, properties, onGoProperties, data }: Props) {
+export function HostBookings({ client, orgId, currency, properties, prefill, onGoProperties, data }: Props) {
   const { t, locale } = useI18n();
   const today = localToday();
   const { bookings, loading, reload } = data;
@@ -47,8 +49,21 @@ export function HostBookings({ client, orgId, currency, properties, onGoProperti
   const [filter, setFilter] = useState<Filter>("upcoming");
   const [visible, setVisible] = useState(20);
 
+  useEffect(() => {
+    if (!prefill) return;
+    if (prefill.propertyId) setPropertyId(prefill.propertyId);
+    if (prefill.checkIn) {
+      setCheckIn(prefill.checkIn);
+      setCheckOut(addDays(prefill.checkIn, 3));
+    }
+    const el = document.getElementById("booking-guest");
+    el?.scrollIntoView({ block: "center", behavior: "smooth" });
+    el?.focus({ preventScroll: true });
+  }, [prefill?.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const selected = propertyId || properties[0]?.id || "";
   const nameOf = (id: string) => properties.find((p) => p.id === id)?.name ?? t("properties.archived");
+  const photoOf = (id: string) => properties.find((p) => p.id === id)?.photoUrl ?? null;
 
   const rows = useMemo(() => {
     const list = bookings.filter((b) => {
@@ -159,7 +174,7 @@ export function HostBookings({ client, orgId, currency, properties, onGoProperti
         </label>
         <label className={labelClass}>
           {t("host.guestName")}
-          <input className={inputClass} value={guestName} onChange={(e) => setGuestName(e.target.value)} maxLength={120} required />
+          <input id="booking-guest" className={inputClass} value={guestName} onChange={(e) => setGuestName(e.target.value)} maxLength={120} required />
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className={labelClass}>
@@ -235,7 +250,10 @@ export function HostBookings({ client, orgId, currency, properties, onGoProperti
         ) : (
           <ul className="space-y-3">
             {rows.slice(0, visible).map((b) => (
-              <li key={b.id} className={`${cardClass} !p-5`}>
+              <li key={b.id} className={`${cardClass} !p-4 sm:!p-5`}>
+                <div className="flex gap-4">
+                  <PropertyPhoto url={photoOf(b.propertyId)} name={nameOf(b.propertyId)} className="hidden h-28 w-40 rounded-xl sm:block" />
+                  <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="flex flex-wrap items-center gap-2">
@@ -268,6 +286,8 @@ export function HostBookings({ client, orgId, currency, properties, onGoProperti
                   <button type="button" className={`${ghostButtonClass} ml-auto`} onClick={() => remove(b)} aria-label={`${t("host.delete")} ${b.guestName}`}>
                     {t("host.delete")}
                   </button>
+                </div>
+                  </div>
                 </div>
               </li>
             ))}
