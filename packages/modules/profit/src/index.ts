@@ -9,3 +9,4 @@ export { ProfitOverview } from "./screens/ProfitOverview";
 export { ProfitEntries } from "./screens/ProfitEntries";
 export { ProfitFixed } from "./screens/ProfitFixed";
 export { ProfitCalculator } from "./screens/ProfitCalculator";
+export * from "./csv";

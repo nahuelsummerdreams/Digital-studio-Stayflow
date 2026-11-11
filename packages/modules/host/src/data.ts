@@ -227,3 +227,62 @@ export async function syncCalendars(client: SupabaseClient, propertyId?: string)
   if (!res.ok) throw new Error(`sync ${res.status}`);
   return ((await res.json()) as { results: SyncResult[] }).results;
 }
+
+export async function updateBooking(client: SupabaseClient, id: string, b: NewBooking): Promise<void> {
+  const { error } = await client
+    .from("bookings")
+    .update({
+      property_id: b.propertyId,
+      guest_name: b.guestName.trim(),
+      guest_email: b.guestEmail.trim(),
+      guest_phone: b.guestPhone.trim(),
+      guests_count: b.guestsCount,
+      check_in: b.checkIn,
+      check_out: b.checkOut,
+      source: b.source,
+      amount_minor: b.amount,
+      paid_minor: b.paid ?? 0,
+      notes: b.notes.trim(),
+    })
+    .eq("id", id);
+  if (error) throw error;
+}
+
+// ---------------------------------------------------------------- sample data
+/** Ids of the sample properties, so they can be told apart from the host's own and removed in one click. */
+export async function loadDemoPropertyIds(client: SupabaseClient, orgId: string): Promise<string[]> {
+  const { data } = await client.from("properties").select("id").eq("org_id", orgId).eq("is_demo", true).returns<{ id: string }[]>();
+  return (data ?? []).map((r) => r.id);
+}
+
+/** Two sample properties with stays around today (one same-day turnover, partial payments), to try everything with. */
+export async function seedDemo(client: SupabaseClient, orgId: string, today: string, addDays: (iso: string, n: number) => string): Promise<void> {
+  const { data: props, error } = await client
+    .from("properties")
+    .insert([
+      { org_id: orgId, name: "Casa del Árbol (ejemplo)", city: "Sierra de Gredos", is_demo: true },
+      { org_id: orgId, name: "Villa Palmera (ejemplo)", city: "Marbella", is_demo: true },
+    ])
+    .select("id")
+    .returns<{ id: string }[]>();
+  if (error) throw error;
+  const [a, b] = props ?? [];
+  if (!a || !b) return;
+  const stay = (property_id: string, guest_name: string, from: number, to: number, amount: number, paid: number, source: string, status = "confirmed", guests = 2) => ({
+    org_id: orgId, property_id, guest_name, check_in: addDays(today, from), check_out: addDays(today, to), amount_minor: amount, paid_minor: paid, source, status, guests_count: guests,
+  });
+  const { error: e2 } = await client.from("bookings").insert([
+    stay(a.id, "Familia Ortega", -1, 4, 48000, 48000, "airbnb", "checked_in", 5),
+    stay(a.id, "Jorge Ruiz", 6, 11, 62000, 20000, "booking"),
+    stay(a.id, "Ana Prieto", 16, 21, 55000, 0, "direct"),
+    stay(b.id, "Marta López", 2, 7, 71000, 71000, "airbnb"),
+    stay(b.id, "Diego Fernández", 7, 9, 30000, 0, "direct"),
+    stay(b.id, "Clara Soto", 14, 18, 44000, 10000, "vrbo"),
+  ]);
+  if (e2) throw e2;
+}
+
+export async function removeDemo(client: SupabaseClient, orgId: string): Promise<void> {
+  const { error } = await client.from("properties").delete().eq("org_id", orgId).eq("is_demo", true);
+  if (error) throw error;
+}

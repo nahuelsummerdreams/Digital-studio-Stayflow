@@ -2,16 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useAccount } from "@stayflow/auth";
-import { HostDashboard, useHostData } from "@stayflow/module-host";
+import { HostDashboard, HostGettingStarted, useHostData } from "@stayflow/module-host";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { org, properties, session } = useAccount();
+  const { client, org, properties, session, refresh } = useAccount();
   const data = useHostData();
   if (!org) return null;
   const meta = session?.user.user_metadata as { full_name?: string } | undefined;
   const userName = meta?.full_name?.trim() || session?.user.email?.split("@")[0] || org.name;
+  const gs = (
+    <HostGettingStarted client={client} orgId={org.id} properties={properties} bookings={data.bookings} onGo={(href) => router.push(href)} onChanged={async () => { await refresh(); await data.reload(); }} />
+  );
+  if (properties.length === 0) return gs;
   return (
+    <div className="space-y-6">
+    {gs}
     <HostDashboard
       currency={org.currency}
       userName={userName}
@@ -26,5 +32,6 @@ export default function DashboardPage() {
       onGoProperties={() => router.push("/properties")}
       onNewBooking={() => router.push("/bookings?new=1")}
     />
+    </div>
   );
 }

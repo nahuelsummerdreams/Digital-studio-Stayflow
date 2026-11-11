@@ -7,6 +7,7 @@ export { HostDashboard, alertText } from "./screens/HostDashboard";
 export { HostBookings } from "./screens/HostBookings";
 export { HostCalendar } from "./screens/HostCalendar";
 export { HostGuests } from "./screens/HostGuests";
+export { HostGettingStarted } from "./screens/HostGettingStarted";
 export { HostMessages } from "./screens/HostMessages";
 export { HostReports } from "./screens/HostReports";
 export { HostSync } from "./screens/HostSync";

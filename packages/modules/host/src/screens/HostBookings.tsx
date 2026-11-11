@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney, formatMoneyExact, parseMoney } from "@stayflow/money";
 import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
-import { addBooking, recordBookingIncome, removeBooking, setBookingPaid, setBookingStatus } from "../data";
+import { addBooking, recordBookingIncome, removeBooking, setBookingPaid, setBookingStatus, updateBooking } from "../data";
 import { addDays, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
 import { isActive, nextStatuses, owed, paymentState, validateBooking } from "../logic";
@@ -43,6 +43,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [source, setSource] = useState<BookingSource>("airbnb");
   const [amount, setAmount] = useState("");
   const [paidIn, setPaidIn] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [payValue, setPayValue] = useState("");
   const [notes, setNotes] = useState("");
@@ -110,14 +111,16 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       setError(t("hx.payErr"));
       return;
     }
-    const problem = validateBooking(input, [...bookings, ...data.blocks]);
+    const problem = validateBooking(input, [...bookings, ...data.blocks].filter((x) => x.id !== editingId));
     if (problem) {
       setError(t(problem));
       return;
     }
     setBusy(true);
     try {
-      await addBooking(client, orgId, input);
+      if (editingId) await updateBooking(client, editingId, input);
+      else await addBooking(client, orgId, input);
+      setEditingId(null);
       setGuestName("");
       setGuestEmail("");
       setGuestPhone("");
@@ -155,6 +158,33 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
     }
   }
 
+  function startEdit(b: Booking) {
+    setEditingId(b.id);
+    setPropertyId(b.propertyId);
+    setGuestName(b.guestName);
+    setGuestEmail(b.guestEmail);
+    setGuestPhone(b.guestPhone);
+    setGuestsCount(String(b.guestsCount));
+    setCheckIn(b.checkIn);
+    setCheckOut(b.checkOut);
+    setSource(b.source);
+    setAmount(b.amount > 0 ? String(b.amount / 100).replace(".", ",") : "");
+    setPaidIn(b.paid > 0 ? String(b.paid / 100).replace(".", ",") : "");
+    setNotes(b.notes);
+    setError(null);
+    document.getElementById("booking-guest")?.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+
+  function cancelEdit() {
+    setEditingId(null);
+    setGuestName("");
+    setGuestEmail("");
+    setGuestPhone("");
+    setAmount("");
+    setPaidIn("");
+    setNotes("");
+  }
+
   async function savePaid(b: Booking, minor: number | null) {
     setError(null);
     if (minor === null || minor < 0) return setError(t("hx.payErr"));
@@ -185,7 +215,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   return (
     <div className="space-y-6 lg:grid lg:grid-cols-[22rem_1fr] lg:items-start lg:gap-6 lg:space-y-0">
       <form onSubmit={submit} className={`${cardClass} space-y-4 lg:sticky lg:top-8`}>
-        <h2 className="text-sm font-medium">{t("host.newBooking")}</h2>
+        <h2 className="text-sm font-medium">{editingId ? t("hx.editBooking") : t("host.newBooking")}</h2>
         <label className={labelClass}>
           {t("host.property")}
           <select className={inputClass} value={selected} onChange={(e) => setPropertyId(e.target.value)}>
@@ -245,7 +275,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
           <textarea className={`${inputClass} min-h-16`} rows={2} value={notes} onChange={(e) => setNotes(e.target.value)} maxLength={2000} />
         </label>
         {error && <p role="alert" className={errorClass}>{error}</p>}
-        <button className={`${buttonClass} w-full`} disabled={busy}>{busy ? t("host.adding") : t("host.add")}</button>
+        <button className={`${buttonClass} w-full`} disabled={busy}>{busy ? t("host.adding") : editingId ? t("hx.saveChanges") : t("host.add")}</button>
+        {editingId && <button type="button" className={`${ghostButtonClass} w-full`} onClick={cancelEdit}>{t("host.cancel")}</button>}
       </form>
 
       <section className="space-y-4">
@@ -328,7 +359,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                       {t("host.recordIncome")}
                     </button>
                   )}
-                  <button type="button" className={`${ghostButtonClass} ml-auto`} onClick={() => remove(b)} aria-label={`${t("host.delete")} ${b.guestName}`}>
+                  <button type="button" className={`${ghostButtonClass} ml-auto`} onClick={() => startEdit(b)}>{t("hx.edit")}</button>
+                  <button type="button" className={ghostButtonClass} onClick={() => remove(b)} aria-label={`${t("host.delete")} ${b.guestName}`}>
                     {t("host.delete")}
                   </button>
                 </div>

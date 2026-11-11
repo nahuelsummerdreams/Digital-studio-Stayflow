@@ -13,6 +13,7 @@ import {
   type ExpenseCategory,
   type IncomeSource,
 } from "../data";
+import { entriesCsv } from "../csv";
 import { formatDate } from "../format";
 import { formatMoneyExact, parseMoney } from "../money";
 import { useLedger } from "../useLedger";
@@ -221,7 +222,30 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
       </form>
 
       <section className={cardClass}>
-        <h2 className="text-sm font-medium">{t("entries.recent")}</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-medium">{t("entries.recent")}</h2>
+          {rows.length > 0 && (
+            <button
+              type="button"
+              className={ghostButtonClass}
+              onClick={() => {
+                const csv = entriesCsv(
+                  rows.map((r) => ({ date: r.date, kind: r.kind, property: nameOf(r.propertyId), detail: r.title, amount: r.amount })),
+                  { date: t("entries.csvDate"), type: t("entries.csvType"), property: t("entries.csvProperty"), detail: t("entries.csvDetail"), amount: t("entries.csvAmount"), income: t("entries.csvIncome"), expense: t("entries.csvExpense") },
+                  locale,
+                );
+                const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `stayflow-profit-${today}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              {t("entries.exportCsv")}
+            </button>
+          )}
+        </div>
         {loading ? (
           <p className="mt-3 text-sm text-muted">{t("common.loading")}</p>
         ) : loadError ? (

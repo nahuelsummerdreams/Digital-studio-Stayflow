@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { AccountProvider, AuthScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
+import { AccountDialog, AccountProvider, AuthScreen, ResetPasswordScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
 import { Avatar, BrandMark, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
@@ -68,10 +68,11 @@ const TRIAL_DAYS = 14;
  */
 export function AppShell({ product, nav, children, quickAction, alerts = [], searchItems = [], plansUrl }: AppShellProps) {
   const t = useT();
-  const { loading, error, session, org, licenses, can, signOut } = useAccount();
+  const { loading, error, session, org, licenses, can, signOut, recovery } = useAccount();
   const pathname = usePathname();
   const brand = PRODUCT_BRAND[product];
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -102,6 +103,7 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
       </main>
     );
   }
+  if (session && recovery) return <ResetPasswordScreen />;
   if (!session) return <AuthScreen productName={brand.name} tagline={brand.tagline} />;
   if (error) {
     return (
@@ -214,7 +216,7 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
                 {quickAction.label}
               </Link>
             )}
-            <UserMenu name={userName} detail={email || org.name} onSignOut={signOut} />
+            <UserMenu name={userName} detail={email || org.name} onSignOut={signOut} onAccount={() => setAccountOpen(true)} />
           </div>
         </div>
 
@@ -234,6 +236,9 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
                   <ThemeSwitcher />
                   <BellMenu alerts={alerts} />
                 </div>
+                <button type="button" onClick={() => setAccountOpen(true)} className="text-sm text-muted underline-offset-4 hover:underline">
+                  {t("shell.account")}
+                </button>
                 <button type="button" onClick={signOut} className="text-sm text-muted underline-offset-4 hover:underline">
                   {t("common.signOut")}
                 </button>
@@ -286,6 +291,7 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
         </main>
       </div>
       <CommandPalette items={paletteItems} open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      {accountOpen && <AccountDialog onClose={() => setAccountOpen(false)} />}
     </div>
   );
 }

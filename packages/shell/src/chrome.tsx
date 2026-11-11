@@ -93,7 +93,7 @@ export function BellMenu({ alerts }: { alerts: ShellAlert[] }) {
   );
 }
 
-export function UserMenu({ name, detail, onSignOut }: { name: string; detail: string; onSignOut: () => void }) {
+export function UserMenu({ name, detail, onSignOut, onAccount }: { name: string; detail: string; onSignOut: () => void; onAccount: () => void }) {
   const t = useT();
   const { open, setOpen, ref } = usePopover();
   return (
@@ -116,6 +116,10 @@ export function UserMenu({ name, detail, onSignOut }: { name: string; detail: st
         <div className="anim-in fx-card absolute right-0 top-12 z-50 w-56 rounded-2xl p-2 shadow-2xl">
           <p className="truncate px-3 pb-1 pt-2 text-sm font-medium">{name}</p>
           <p className="truncate px-3 pb-2 text-xs text-muted">{detail}</p>
+          <button type="button" onClick={() => { setOpen(false); onAccount(); }} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition hover:bg-bg/60 hover:text-fg">
+            <Icon name="settings" className="h-4 w-4" />
+            {t("shell.account")}
+          </button>
           <button type="button" onClick={onSignOut} className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted transition hover:bg-bg/60 hover:text-fg">
             <Icon name="logout" className="h-4 w-4" />
             {t("common.signOut")}

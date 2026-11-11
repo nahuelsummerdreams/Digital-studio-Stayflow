@@ -4,3 +4,4 @@ export { AuthScreen } from "./screens/AuthScreen";
 export { CreateOrgScreen } from "./screens/CreateOrgScreen";
 export { TrialScreen } from "./screens/TrialScreen";
 export { PropertiesScreen } from "./screens/PropertiesScreen";
+export { AccountDialog, ResetPasswordScreen } from "./screens/AccountPanels";

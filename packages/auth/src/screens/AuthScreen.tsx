@@ -9,7 +9,7 @@ import { useAccount } from "../account";
 export function AuthScreen({ productName, tagline }: { productName: string; tagline: string }) {
   const t = useT();
   const { client } = useAccount();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +23,11 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
     setError(null);
     setInfo(null);
     try {
-      if (mode === "signup") {
+      if (mode === "forgot") {
+        const { error: err } = await client.auth.resetPasswordForEmail(email.trim(), { redirectTo: window.location.origin });
+        if (err) throw err;
+        setInfo(t("auth.resetSent"));
+      } else if (mode === "signup") {
         const { data, error: err } = await client.auth.signUp({
           email: email.trim(),
           password,
@@ -43,6 +47,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
   }
 
   const signup = mode === "signup";
+  const forgot = mode === "forgot";
   return (
     <main className="anim-stagger mx-auto flex min-h-screen max-w-md flex-col justify-center px-5 py-14">
       <div className="flex items-center gap-3">
@@ -52,7 +57,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
       <h1 className="mt-6 font-display text-[2.5rem] leading-[1.08]">{tagline}</h1>
 
       <form onSubmit={submit} className={`${cardClass} fx-hero mt-8 space-y-4`}>
-        <h2 className="text-sm font-medium">{signup ? t("auth.signUpTitle") : t("auth.signInTitle")}</h2>
+        <h2 className="text-sm font-medium">{forgot ? t("auth.forgotTitle") : signup ? t("auth.signUpTitle") : t("auth.signInTitle")}</h2>
         {signup && (
           <label className={labelClass}>
             {t("auth.name")}
@@ -63,7 +68,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
           {t("auth.email")}
           <input className={inputClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
         </label>
-        <label className={labelClass}>
+        {!forgot && <label className={labelClass}>
           {t("auth.password")}
           <input
             className={inputClass}
@@ -74,24 +79,29 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
             minLength={8}
             required
           />
-        </label>
+        </label>}
         {error && <p role="alert" className={errorClass}>{error}</p>}
         {info && <p role="status" className={infoClass}>{info}</p>}
         <button className={`${buttonClass} w-full`} disabled={busy}>
-          {busy ? t("auth.busy") : signup ? t("auth.signUp") : t("auth.signIn")}
+          {busy ? t("auth.busy") : forgot ? t("auth.sendReset") : signup ? t("auth.signUp") : t("auth.signIn")}
         </button>
       </form>
 
+      {mode === "signin" && (
+        <button type="button" className="mt-4 block text-sm text-muted underline-offset-4 hover:underline" onClick={() => { setMode("forgot"); setError(null); setInfo(null); }}>
+          {t("auth.forgot")}
+        </button>
+      )}
       <button
         type="button"
-        className="mt-4 text-sm text-muted underline-offset-4 hover:underline"
+        className="mt-3 text-sm text-muted underline-offset-4 hover:underline"
         onClick={() => {
-          setMode(signup ? "signin" : "signup");
+          setMode(signup || forgot ? "signin" : "signup");
           setError(null);
           setInfo(null);
         }}
       >
-        {signup ? t("auth.haveAccount") : t("auth.newHere")}
+        {signup || forgot ? t("auth.haveAccount") : t("auth.newHere")}
       </button>
 
       <StudioSeal className="mt-14" logoClassName="h-10 w-auto text-fg" />

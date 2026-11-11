@@ -17,6 +17,9 @@ interface AccountState {
   can: (product: ProductKey) => boolean;
   refresh: () => Promise<void>;
   signOut: () => Promise<void>;
+  /** True when the person arrived from a "forgot my password" email and must choose a new one. */
+  recovery: boolean;
+  endRecovery: () => void;
 }
 
 const AccountContext = createContext<AccountState | null>(null);
@@ -29,6 +32,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
   const [licenses, setLicenses] = useState<License[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -38,7 +42,8 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       setSessionReady(true);
     });
     // Only store the session here: calling Supabase inside this callback can deadlock the client.
-    const { data: sub } = client.auth.onAuthStateChange((_event, next) => {
+    const { data: sub } = client.auth.onAuthStateChange((event, next) => {
+      if (event === "PASSWORD_RECOVERY") setRecovery(true);
       setSession(next);
       setSessionReady(true);
     });
@@ -100,8 +105,10 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       signOut: async () => {
         await client.auth.signOut();
       },
+      recovery,
+      endRecovery: () => setRecovery(false),
     }),
-    [client, sessionReady, accountReady, session, org, licenses, properties, error, load],
+    [client, sessionReady, accountReady, session, org, licenses, properties, error, load, recovery],
   );
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;
