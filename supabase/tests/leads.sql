@@ -28,6 +28,7 @@ begin
   exception when check_violation then null; end;
 
   insert into public.leads (email, source) values ('ad@test.invalid', 'ad-guest');
+  insert into public.leads (email, source) values ('sup@test.invalid', 'support');
   begin
     insert into public.leads (email, source) values ('ad2@test.invalid', 'ad-Guest; drop');
     raise exception 'FAIL 6: malformed ad source accepted';

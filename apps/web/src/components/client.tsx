@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Icon } from "@stayflow/ui";
 import { track } from "@/lib/analytics";
-import { LAUNCH_KIT, MULTIPACK_PERCENT, PACKS, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type PlanId, type ProductId } from "@/lib/catalog";
+import { LAUNCH_KIT, MULTIPACK_PERCENT, PACKS, SUPPORT_PRICE, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { saveLead, type LeadSource } from "@/lib/leads";
-import { usd } from "@/lib/pricing";
+import { supportTotal, usd } from "@/lib/pricing";
 import { fmt, plural } from "@/i18n";
 import { useMessages } from "@/i18n/client";
 import { Breakdown, CartButton, DiscountMeter, OffersList, useCart } from "./cart";
@@ -179,13 +179,44 @@ export function LeadForm({ source, items, compact = false }: { source: LeadSourc
   );
 }
 
-export function PlanCta({ plan }: { plan: PlanId }) {
+/** Optional monthly support, picked tool by tool. Not live yet: ends in an email capture. */
+export function SupportPicker() {
   const { m } = useMessages();
-  const [open, setOpen] = useState(false);
-  return open ? (
-    <LeadForm source={`plan-${plan}` as LeadSource} items={{ plan }} compact />
-  ) : (
-    <button type="button" onClick={() => setOpen(true)} className={`${btnGhost} w-full`}>{m.plans.notify}</button>
+  const [picked, setPicked] = useState<ProductId[]>([]);
+  const toggle = (id: ProductId) => setPicked((p) => (p.includes(id) ? p.filter((x) => x !== id) : [...p, id]));
+  const total = supportTotal(picked);
+  return (
+    <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+      <ul className="grid gap-3 sm:grid-cols-2" aria-label={m.support.pick}>
+        {PRODUCT_LIST.map((p) => {
+          const on = picked.includes(p.id);
+          return (
+            <li key={p.id}>
+              <button type="button" aria-pressed={on} onClick={() => toggle(p.id)} className={`fx-card flex w-full items-center gap-3 rounded-2xl p-4 text-left transition ${on ? "!border-accent bg-accent/10" : ""}`}>
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${on ? "border-accent bg-accent text-onaccent" : "border-line"}`}>{on && <Icon name="check" className="h-4 w-4" />}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold">{p.name}</span>
+                  {p.status !== "available" && <span className="block text-[11px] text-muted">{m.support.later}</span>}
+                </span>
+                <span className="whitespace-nowrap text-sm tabular-nums"><b>{usd(SUPPORT_PRICE[p.id])}</b><span className="text-muted">{m.support.perMonth}</span></span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="fx-card fx-hero h-fit rounded-3xl p-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{m.support.total}</p>
+        <p className="mt-2 flex items-baseline gap-1"><span className="font-display text-gradient text-5xl tabular-nums">{usd(total)}</span><span className="text-sm text-muted">{m.support.perMonth}</span></p>
+        {picked.length === 0 ? <p className="mt-3 text-sm text-muted">{m.support.none}</p> : (
+          <ul className="mt-3 space-y-1 text-sm text-muted">{picked.map((id) => <li key={id}>{PRODUCTS[id].name.replace("Stayflow ", "")}</li>)}</ul>
+        )}
+        <ul className="mt-5 space-y-2 border-t border-line pt-5">
+          {m.support.includes.map((x) => <li key={x} className="flex items-start gap-2.5 text-sm"><Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{x}</li>)}
+        </ul>
+        <p className="mt-5 text-xs font-medium text-accent">{m.support.soon}</p>
+        <div className="mt-3">{picked.length > 0 ? <LeadForm key={picked.join()} source="support" items={{ support: picked }} compact /> : <p className="text-xs text-muted">{m.support.pick}</p>}</div>
+      </div>
+    </div>
   );
 }
 
@@ -235,7 +266,7 @@ export function CheckoutView() {
   );
 }
 
-export { fmt, MULTIPACK_PERCENT, PLAN_IDS, PLAN_PRICE, ProductArt };
+export { fmt, MULTIPACK_PERCENT, ProductArt };
 
 /** Puts a ready-made pack in the cart (replacing the apps), so the 30% rule prices it. */
 export function AddPack({ pack }: { pack: import("@/lib/catalog").PackId }) {

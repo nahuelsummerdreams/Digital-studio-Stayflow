@@ -1,4 +1,4 @@
-import { CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, type PackId, type ProductId } from "./catalog";
+import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, type PackId, type ProductId } from "./catalog";
 
 export interface CartState {
   /** Apps in the cart. Each one is a single licence. */
@@ -117,4 +117,9 @@ export function offers(cart: CartState, limit = 2): Offer[] {
     }
   }
   return out.slice(0, limit);
+}
+
+/** Monthly cost of the support the customer picked, tool by tool. Unknown or repeated ids count once. */
+export function supportTotal(ids: ProductId[]): number {
+  return [...new Set(ids)].reduce((sum, id) => sum + (SUPPORT_PRICE[id] ?? 0), 0);
 }

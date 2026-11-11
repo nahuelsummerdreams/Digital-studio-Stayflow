@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { computeTotals, normalizeApps, offers, packTotals, recommendations } from "./pricing";
+import { computeTotals, normalizeApps, offers, packTotals, recommendations, supportTotal } from "./pricing";
+import { SUPPORT_PRICE } from "./catalog";
 
 describe("computeTotals", () => {
   it("an empty cart is zero and unlocks nothing", () => {
@@ -94,5 +95,13 @@ describe("offers (upsell and downsell)", () => {
   it("nothing to offer for an empty cart or the full megapack", () => {
     expect(offers({ apps: [], kit: false })).toEqual([]);
     expect(offers({ apps: [...Object.keys({}), "host", "guest", "ai", "profit", "operations", "listing", "academy", "experiences", "website"] as never, kit: false }).some((x) => x.kind === "pack")).toBe(false);
+  });
+});
+
+describe("supportTotal", () => {
+  it("adds the monthly support of each chosen tool once", () => {
+    expect(supportTotal([])).toBe(0);
+    expect(supportTotal(["host"])).toBe(SUPPORT_PRICE.host);
+    expect(supportTotal(["host", "profit", "host"])).toBe(SUPPORT_PRICE.host + SUPPORT_PRICE.profit);
   });
 });

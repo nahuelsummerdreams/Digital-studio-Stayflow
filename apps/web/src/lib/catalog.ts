@@ -55,9 +55,8 @@ export const CROSS_SELL: Record<ProductId, ProductId[]> = {
   experiences: ["guest"],
 };
 
-export const PLAN_IDS = ["starter", "pro", "business"] as const;
-export type PlanId = (typeof PLAN_IDS)[number];
-export const PLAN_PRICE: Record<PlanId, number> = { starter: 19, pro: 29, business: 59 };
+/** Optional monthly support, chosen per tool (USD/month). Provisional prices: confirm before opening sales. */
+export const SUPPORT_PRICE: Record<ProductId, number> = { host: 9, guest: 9, ai: 7, profit: 5, operations: 7, listing: 5, academy: 5, experiences: 7, website: 9 };
 
 /** Ready-made packs: the apps are the ones in the cart, so the 30% Multi-Pack rule prices them. */
 export const PACK_IDS = ["essential", "pro", "mega"] as const;

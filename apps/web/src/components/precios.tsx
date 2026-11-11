@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Icon, Pill } from "@stayflow/ui";
-import { LAUNCH_KIT, PACK_IDS, PACKS, PLAN_IDS, PLAN_PRICE, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { LAUNCH_KIT, PACK_IDS, PACKS, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
-import { AddPack, AddToCart, Builder, KitButton, PlanCta } from "./client";
+import { AddPack, AddToCart, Builder, KitButton, SupportPicker } from "./client";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
 
@@ -25,7 +25,7 @@ function Sub({ title, body }: { title: string; body?: string }) {
   );
 }
 
-/** A tool as a boxed product: the cover with the real system inside, then its price and the buy button. */
+/** A tool as a compact boxed card (used for cross-sell on product pages). */
 export function ProductCard({ id }: { id: ProductId }) {
   const p = PRODUCTS[id];
   const c = m.products[id];
@@ -39,6 +39,33 @@ export function ProductCard({ id }: { id: ProductId }) {
       <div className="mt-5 grid w-full grid-cols-[1.5fr_1fr] gap-2.5">
         <AddToCart id={id} className="!px-2 whitespace-nowrap !text-[13px]" />
         <Link href={`/products/${id}`} className={`${btnGhost} !px-3`}>{m.solution.learn}</Link>
+      </div>
+    </article>
+  );
+}
+
+/** A tool sold on its own: the box, the pain it solves, what it is for, what you get, and the add-to-cart. */
+export function ProductRow({ id, flip }: { id: ProductId; flip: boolean }) {
+  const p = PRODUCTS[id];
+  const c = m.products[id];
+  const sell = m.sell[id];
+  const live = p.status === "available";
+  return (
+    <article id={`p-${id}`} className="reveal fx-card relative grid items-center gap-8 overflow-hidden rounded-3xl p-6 md:p-10 lg:grid-cols-2 lg:gap-12" style={{ backgroundImage: `radial-gradient(70% 90% at ${flip ? "100%" : "0%"} 0%, hsl(${HUE[id]} 100% 50% / 0.22), transparent)` }}>
+      <div className={`flex justify-center ${flip ? "lg:order-2" : ""}`}><ProductCover id={id} size="lg" /></div>
+      <div>
+        <span className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold ${live ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{live ? m.solution.live : m.solution.preorder}</span>
+        <h3 className="font-display mt-3 text-3xl leading-tight md:text-4xl">{sell.pain}</h3>
+        <p className="mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-accent">{m.sell.forLabel}</p>
+        <p className="mt-2 text-base leading-relaxed text-muted">{sell.serves}</p>
+        <ul className="mt-5 space-y-2.5">
+          {c.benefits.map((b) => <li key={b} className="flex items-start gap-3 text-sm"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{b}</li>)}
+        </ul>
+        <p className="mt-6 flex items-baseline gap-2"><span className="font-display text-gradient text-5xl tabular-nums">{usd(p.price)}</span><span className="text-sm text-muted">{m.solution.oneTime}</span></p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <AddToCart id={id} className="!px-7 !py-3.5 !text-base" />
+          <Link href={`/products/${id}`} className={`${btnGhost} !py-3.5`}>{m.solution.learn}</Link>
+        </div>
       </div>
     </article>
   );
@@ -81,7 +108,7 @@ export function Precios() {
 
         <div id="herramientas" className="mt-16">
           <Sub title={m.prices.separateTitle} body={m.prices.separateBody} />
-          <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{PRODUCT_LIST.map((p) => <ProductCard key={p.id} id={p.id} />)}</div>
+          <div className="mt-8 space-y-6">{PRODUCT_LIST.map((p, i) => <ProductRow key={p.id} id={p.id} flip={i % 2 === 1} />)}</div>
         </div>
 
         <div id="packs" className="mt-24">
@@ -127,27 +154,9 @@ export function Precios() {
         </div>
 
         <div id="planes" className="mt-24">
-          <Sub title={m.plans.title} body={m.plans.body} />
-          <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {PLAN_IDS.map((id) => {
-              const p = m.plans.list[id];
-              const featured = id === "pro";
-              return (
-                <article key={id} className={`reveal fx-card relative flex flex-col rounded-3xl p-7 ${featured ? "fx-hero" : ""}`}>
-                  {featured && "badge" in p && <span className="absolute -top-3 left-7 rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent">{p.badge}</span>}
-                  <h4 className="font-display text-xl">{p.name}</h4>
-                  <p className="mt-1 text-sm text-muted">{p.for}</p>
-                  <p className="mt-5 flex items-baseline gap-1"><span className="font-display text-4xl tabular-nums">{usd(PLAN_PRICE[id])}</span><span className="text-sm text-muted">{m.plans.perMonth}</span></p>
-                  <ul className="mt-5 flex-1 space-y-2.5 border-t border-line pt-5">
-                    {p.features.map((f) => <li key={f} className="flex items-start gap-2.5 text-sm"><Icon name="check" className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{f}</li>)}
-                  </ul>
-                  <p className="mt-5 text-xs font-medium text-accent">{m.plans.soon}</p>
-                  <div className="mt-3"><PlanCta plan={id} /></div>
-                </article>
-              );
-            })}
-          </div>
-          <p className="mt-6 text-center text-sm text-muted">{m.plans.notice}</p>
+          <Sub title={m.support.title} body={m.support.body} />
+          <div className="reveal mt-8"><SupportPicker /></div>
+          <p className="mt-6 text-center text-sm text-muted">{m.support.notice}</p>
         </div>
 
         <p className="mx-auto mt-14 max-w-2xl text-center text-xs leading-relaxed text-muted">{m.prices.disclaimer}</p>

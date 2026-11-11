@@ -22,7 +22,7 @@ export const es = {
   meta: {
     productTitle: "{name} · Stayflow",
   },
-  nav: { tools: "Herramientas", toolkit: "Arma tu pack", kit: "Launch Kit", plans: "Planes", faq: "Preguntas", cart: "Carrito", menu: "Menú", close: "Cerrar" },
+  nav: { tools: "Herramientas", toolkit: "Arma tu pack", kit: "Launch Kit", plans: "Soporte", faq: "Preguntas", cart: "Carrito", menu: "Menú", close: "Cerrar" },
   products: {
     host: {
       tagline: "Tu centro de mando",
@@ -203,19 +203,31 @@ export const es = {
     status: "Preventa. Los archivos digitales llegan por email cuando estén listos. Sin fecha anunciada.",
     note: "No entra en el descuento del 30% del Multi-Pack.",
   },
-  plans: {
-    eyebrow: "Planes",
-    title: "Un plan para cuando lo necesites.",
-    body: "Las apps se compran una vez y son tuyas. Los planes son para los servicios en la nube que siguen funcionando cada mes.",
+  support: {
+    eyebrow: "Soporte opcional",
+    title: "Soporte, solo en lo que necesites.",
+    body: "Las apps son tuyas y funcionan sin soporte. Si quieres ayuda directa, actívala solo en las herramientas que elijas y paga por mes únicamente por esas. Cancelas cuando quieras.",
+    includes: ["Respuesta de una persona por email", "Ayuda para configurar tu cuenta", "Prioridad en tus consultas"],
     perMonth: "/mes",
-    soon: "Los planes se abren pronto",
-    notify: "Avísame",
-    notice: "Nunca necesitas una suscripción para usar las apps que compraste. Los planes suman servicios en la nube.",
-    list: {
-      starter: { name: "Starter", for: "Para anfitriones individuales", features: ["Acceso a funciones en la nube", "Almacenamiento", "Actualizaciones", "Soporte básico"] },
-      pro: { name: "Pro", for: "Para anfitriones con más necesidades operativas", features: ["Todo lo de Starter", "Automatizaciones", "Funciones avanzadas", "Herramientas ampliadas"], badge: "El más elegido" },
-      business: { name: "Business", for: "Para administradores y pequeños operadores", features: ["Todo lo de Pro", "Gestión de varias propiedades", "Funciones administrativas", "Herramientas para equipos"] },
-    },
+    pick: "Elige tu soporte",
+    total: "Tu soporte",
+    none: "Aún no elegiste ninguna herramienta.",
+    later: "Se activa cuando recibas la herramienta",
+    soon: "Los pagos mensuales se abren pronto. Deja tu email y te avisamos.",
+    notify: "Avísame cuando se abra",
+    notice: "No necesitas soporte para usar lo que compraste. Es opcional y lo eliges herramienta por herramienta.",
+  },
+  sell: {
+    forLabel: "Para qué sirve",
+    host: { pain: "¿Reservas en un lado, fechas en otro y tareas en tu cabeza?", serves: "Stayflow Host es tu centro de mando. Cargas cada reserva y ves en un cronograma quién llega, quién sale y qué fechas siguen libres. Sirve para no doblar reservas y empezar el día sabiendo qué hacer." },
+    guest: { pain: "¿Respondes cada día el Wi-Fi y cómo se entra?", serves: "Stayflow Guest arma la guía digital de cada propiedad con un QR: check-in, acceso, Wi-Fi, reglas y recomendaciones. Sirve para que tu huésped llegue y se ubique sin escribirte." },
+    ai: { pain: "¿Horas escribiendo las mismas respuestas?", serves: "Stayflow AI suma agentes que redactan respuestas, ordenan tareas y buscan huecos en tus fechas. Sirve para ganar tiempo; tú apruebas antes de que se aplique algo." },
+    profit: { pain: "¿Sabes lo que cobras, pero no lo que te queda?", serves: "Stayflow Profit registra ingresos y gastos, incluidos los fijos que se repiten, y muestra la ganancia de cada propiedad. Sirve para saber qué alojamiento deja y cuál no." },
+    operations: { pain: "¿Limpieza y check-ins manejados de memoria?", serves: "Stayflow Operations organiza la limpieza, el mantenimiento y los checklists por propiedad. Sirve para que nada se olvide cuando cambian los huéspedes." },
+    listing: { pain: "¿Tu publicación no cuenta qué hace especial a tu lugar?", serves: "Stayflow Listing te ayuda a escribir títulos y descripciones claras y comerciales. Sirve para que quien te encuentra entienda por qué elegirte." },
+    academy: { pain: "¿Aprendiendo a prueba y error?", serves: "Stayflow Academy son lecciones paso a paso, desde tu primer huésped hasta una operación profesional. Sirve para evitar errores que cuestan caro." },
+    experiences: { pain: "¿Tus huéspedes quieren más que una cama?", serves: "Stayflow Experiences es un catálogo de experiencias y servicios extra para ofrecer. Sirve para sumar ingresos complementarios y una estadía más memorable." },
+    website: { pain: "¿Dependes de una sola plataforma para que te encuentren?", serves: "Stayflow Website crea la web de tu alojamiento con galería, servicios y enlaces de reserva. Sirve para tener presencia propia." },
   },
   cart: {
     title: "Tu pack",

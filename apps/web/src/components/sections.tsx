@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from "react";
 import { Avatar, Icon, buttonClass, type IconName } from "@stayflow/ui";
 import { GUEST_URL, HOST_URL, PROFIT_URL, t } from "@/lib/t";
 import { CookieSettings } from "./consent";
-import { Motes, Tilt } from "./effects";
+import { GetHostButton } from "./client";
+import { CountUp, Motes, Tilt } from "./effects";
 import { BookingsMock, DashboardMock, GuestsMock, ProfitMock, ScheduleMock, TasksMock } from "./mock";
 
 const SECTION = "mx-auto max-w-6xl px-5 py-20 md:py-28";
@@ -41,9 +42,7 @@ export function Hero() {
           <p className="font-display mt-4 max-w-xl text-xl font-bold leading-snug md:text-2xl">{t("landing.hero.question")}</p>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted"><b className="font-extrabold text-fg">STAY</b><span className="font-semibold text-fg">flow</span> {t("landing.hero.brand")}</p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#sistema" className={`${buttonClass} gap-2 !px-6 !py-3.5 !text-base`}>
-              {t("landing.hero.cta")} <Icon name="arrow" className="h-4 w-4" />
-            </a>
+            <GetHostButton where="hero" />
             <a href="#herramientas" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">
               {t("landing.hero.secondary")}
             </a>
@@ -88,36 +87,32 @@ export function Hero() {
   );
 }
 
-/** The five promises as a strip, then the facts as numbers. No invented customer counts or ratings. */
+/** Four hard facts as big numbers (no invented customer counts), then the promises as chips. */
 export function Strip() {
-  const items: { icon: IconName; k: "one" | "two" | "three" | "four" | "five" }[] = [
-    { icon: "check", k: "one" },
-    { icon: "calendar", k: "two" },
-    { icon: "bell", k: "three" },
-    { icon: "wallet", k: "four" },
-    { icon: "key", k: "five" },
+  const cards: { k: "one" | "two" | "three" | "four"; prefix?: string; suffix?: string; hue: string }[] = [
+    { k: "one", hue: "var(--success)" },
+    { k: "two", hue: "var(--accent)" },
+    { k: "three", prefix: "USD ", hue: "var(--accent)" },
+    { k: "four", prefix: "−", suffix: "%", hue: "var(--success)" },
   ];
   return (
     <section aria-label="Resumen" className="mx-auto max-w-6xl px-5 pb-20">
-      <ul className="reveal fx-card grid gap-px overflow-hidden rounded-2xl bg-line/40 sm:grid-cols-2 lg:grid-cols-5">
-        {items.map((i) => (
-          <li key={i.k} className="flex items-center gap-3.5 bg-surface/90 p-5">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent/12 text-accent shadow-[0_0_24px_-6px_rgb(var(--accent))]"><Icon name={i.icon} className="h-5 w-5" /></span>
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold">{t(`landing.strip.${i.k}.title`)}</span>
-              <span className="block text-xs text-muted">{t(`landing.strip.${i.k}.body`)}</span>
-            </span>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => (
+          <li key={c.k} className="reveal fx-card relative overflow-hidden rounded-3xl p-6" style={{ backgroundImage: `radial-gradient(80% 70% at 0% 0%, rgb(${c.hue} / 0.18), transparent)` }}>
+            <p className="font-display text-gradient text-6xl tabular-nums leading-none">
+              <CountUp value={Number(t(`landing.strip.${c.k}.n`))} prefix={c.prefix} suffix={c.suffix} />
+            </p>
+            <p className="font-display mt-3 text-lg">{t(`landing.strip.${c.k}.title`)}</p>
+            <p className="mt-1.5 text-sm leading-snug text-muted">{t(`landing.strip.${c.k}.body`)}</p>
           </li>
         ))}
       </ul>
-      <dl className="mt-12 grid grid-cols-2 gap-8 text-center lg:grid-cols-4">
-        {(["one", "two", "three", "four"] as const).map((k) => (
-          <div key={k} className="reveal">
-            <dt className="font-display text-gradient text-5xl">{t(`landing.stats.${k}.n`)}</dt>
-            <dd className="mt-2 text-sm text-muted">{t(`landing.stats.${k}.l`)}</dd>
-          </div>
+      <ul className="reveal mt-6 flex flex-wrap justify-center gap-2.5">
+        {t("landing.strip.chips").split("|").map((x) => (
+          <li key={x} className="flex items-center gap-2 rounded-full border border-line bg-surface/60 px-4 py-2 text-sm backdrop-blur"><Icon name="check" className="h-4 w-4 text-success" />{x}</li>
         ))}
-      </dl>
+      </ul>
     </section>
   );
 }
