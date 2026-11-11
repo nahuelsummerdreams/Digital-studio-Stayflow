@@ -2,11 +2,13 @@
 
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { loadBookings, loadTasks } from "./data";
+import { loadBlocks, loadBookings, loadTasks } from "./data";
 import type { Booking, HostTask } from "./types";
 
 export interface HostData {
   bookings: Booking[];
+  /** Dates held for maintenance or own use. Kept apart: they never count as guests, income or occupancy. */
+  blocks: Booking[];
   tasks: HostTask[];
   loading: boolean;
   error: boolean;
@@ -21,6 +23,7 @@ const HostDataContext = createContext<HostData | null>(null);
  */
 export function HostDataProvider({ client, orgId, children }: { client: SupabaseClient; orgId: string; children: ReactNode }) {
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [blocks, setBlocks] = useState<Booking[]>([]);
   const [tasks, setTasks] = useState<HostTask[]>([]);
   const [loading, setLoading] = useState(Boolean(orgId));
   const [error, setError] = useState(false);
@@ -28,8 +31,9 @@ export function HostDataProvider({ client, orgId, children }: { client: Supabase
   const reload = useCallback(async () => {
     if (!orgId) return;
     try {
-      const [b, t] = await Promise.all([loadBookings(client, orgId), loadTasks(client, orgId)]);
+      const [b, k, t] = await Promise.all([loadBookings(client, orgId), loadBlocks(client, orgId), loadTasks(client, orgId)]);
       setBookings(b);
+      setBlocks(k);
       setTasks(t);
       setError(false);
     } catch {
@@ -43,7 +47,7 @@ export function HostDataProvider({ client, orgId, children }: { client: Supabase
     void reload();
   }, [reload]);
 
-  const value = useMemo(() => ({ bookings, tasks, loading, error, reload }), [bookings, tasks, loading, error, reload]);
+  const value = useMemo(() => ({ bookings, blocks, tasks, loading, error, reload }), [bookings, blocks, tasks, loading, error, reload]);
   return createElement(HostDataContext.Provider, { value }, children);
 }
 

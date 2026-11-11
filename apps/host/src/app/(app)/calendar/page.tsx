@@ -6,11 +6,15 @@ import { HostCalendar, useHostData } from "@stayflow/module-host";
 
 export default function CalendarPage() {
   const router = useRouter();
-  const { org, properties } = useAccount();
+  const { client, org, properties } = useAccount();
   const data = useHostData();
   if (!org) return null;
   return (
     <HostCalendar
+      client={client}
+      orgId={org.id}
+      blocks={data.blocks}
+      onChanged={data.reload}
       currency={org.currency}
       properties={properties}
       bookings={data.bookings}

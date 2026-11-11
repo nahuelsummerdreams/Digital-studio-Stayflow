@@ -5,10 +5,10 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney, formatMoneyExact, parseMoney } from "@stayflow/money";
 import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
-import { addBooking, recordBookingIncome, removeBooking, setBookingStatus } from "../data";
+import { addBooking, recordBookingIncome, removeBooking, setBookingPaid, setBookingStatus } from "../data";
 import { addDays, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
-import { isActive, nextStatuses, validateBooking } from "../logic";
+import { isActive, nextStatuses, owed, paymentState, validateBooking } from "../logic";
 import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus, type HostProperty } from "../types";
 import { useHostData } from "../useHostData";
 
@@ -42,6 +42,9 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [checkOut, setCheckOut] = useState(addDays(today, 3));
   const [source, setSource] = useState<BookingSource>("airbnb");
   const [amount, setAmount] = useState("");
+  const [paidIn, setPaidIn] = useState("");
+  const [payFor, setPayFor] = useState<string | null>(null);
+  const [payValue, setPayValue] = useState("");
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -100,9 +103,14 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       checkOut,
       source,
       amount: minor ?? -1,
+      paid: paidIn.trim() === "" ? 0 : (parseMoney(paidIn) ?? -1),
       notes,
     };
-    const problem = validateBooking(input, bookings);
+    if ((input.paid ?? 0) < 0) {
+      setError(t("hx.payErr"));
+      return;
+    }
+    const problem = validateBooking(input, [...bookings, ...data.blocks]);
     if (problem) {
       setError(t(problem));
       return;
@@ -114,6 +122,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       setGuestEmail("");
       setGuestPhone("");
       setAmount("");
+      setPaidIn("");
       setNotes("");
       await reload();
     } catch (err) {
@@ -140,6 +149,19 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
     setError(null);
     try {
       await removeBooking(client, b.id);
+      await reload();
+    } catch (err) {
+      setError(t(errorKey(err)));
+    }
+  }
+
+  async function savePaid(b: Booking, minor: number | null) {
+    setError(null);
+    if (minor === null || minor < 0) return setError(t("hx.payErr"));
+    try {
+      await setBookingPaid(client, b.id, minor);
+      setPayFor(null);
+      setPayValue("");
       await reload();
     } catch (err) {
       setError(t(errorKey(err)));
@@ -204,6 +226,10 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
           {t("host.amount", { currency })}
           <input className={inputClass} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0,00" />
         </label>
+        <label className={labelClass}>
+          {t("hx.payPaidLabel", { currency })}
+          <input className={inputClass} inputMode="decimal" value={paidIn} onChange={(e) => setPaidIn(e.target.value)} placeholder="0,00" />
+        </label>
         <div className="grid grid-cols-2 gap-3">
           <label className={labelClass}>
             {t("host.guestEmail")}
@@ -265,7 +291,15 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                     </p>
                     <p className="mt-0.5 text-sm text-muted">{nameOf(b.propertyId)} · {t(`sources.${b.source}`)}</p>
                   </div>
-                  <p className="font-display text-lg">{b.amount > 0 ? formatMoney(b.amount, currency, locale) : "—"}</p>
+                  <div className="text-right">
+                    <p className="font-display text-lg">{b.amount > 0 ? formatMoney(b.amount, currency, locale) : "—"}</p>
+                    {(() => {
+                      const st = paymentState(b);
+                      const label = st === "unpriced" ? t("hx.payUnpriced") : st === "unpaid" ? t("hx.payUnpaid") : st === "paid" ? t("hx.payPaid") : t("hx.payPartial", { paid: formatMoney(b.paid, currency, locale), owed: formatMoney(owed(b), currency, locale) });
+                      const tone = st === "paid" ? "bg-success/15 text-success" : st === "unpriced" ? "bg-line text-muted" : "bg-amber-400/10 text-amber-300";
+                      return <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${tone}`}>{label}</span>;
+                    })()}
+                  </div>
                 </div>
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   {nextStatuses(b.status).map((s) => (
@@ -278,6 +312,17 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                       {actionLabel(s)}
                     </button>
                   ))}
+                  {isActive(b) && b.amount > 0 && owed(b) > 0 && (
+                    payFor === b.id ? (
+                      <span className="flex flex-wrap items-center gap-2">
+                        <input aria-label={t("hx.payInput")} className={`${inputClass} !w-32 !py-2`} inputMode="decimal" value={payValue} onChange={(e) => setPayValue(e.target.value)} placeholder={t("hx.payInput")} />
+                        <button type="button" className={`${buttonClass} !px-3 !py-2`} onClick={() => savePaid(b, parseMoney(payValue))}>{t("hx.paySave")}</button>
+                        <button type="button" className={ghostButtonClass} onClick={() => savePaid(b, b.amount)}>{t("hx.payAll")}</button>
+                      </span>
+                    ) : (
+                      <button type="button" className={ghostButtonClass} onClick={() => { setPayFor(b.id); setPayValue(""); }}>{t("hx.payRegister")}</button>
+                    )
+                  )}
                   {isActive(b) && b.amount > 0 && (
                     <button type="button" className={ghostButtonClass} onClick={() => toProfit(b)} title={formatMoneyExact(b.amount, currency, locale)}>
                       {t("host.recordIncome")}

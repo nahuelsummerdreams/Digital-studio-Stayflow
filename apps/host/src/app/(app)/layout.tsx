@@ -3,7 +3,7 @@
 import { useMemo, type ReactNode } from "react";
 import { useAccount } from "@stayflow/auth";
 import { useT } from "@stayflow/i18n";
-import { HostDataProvider, alertText, guestsDirectory, hostAlerts, localToday, useHostData } from "@stayflow/module-host";
+import { HostDataProvider, alertText, guestsDirectory, hostAlerts, localToday, useAutoSync, useHostData } from "@stayflow/module-host";
 import { AppShell, StayflowProviders, type SearchItem, type ShellAlert } from "@stayflow/shell";
 import { AssistantChat } from "@/components/AssistantChat";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
@@ -11,7 +11,9 @@ import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
 function Frame({ children }: { children: ReactNode }) {
   const t = useT();
   const { properties } = useAccount();
-  const { bookings, tasks } = useHostData();
+  const { client, org } = useAccount();
+  const { bookings, tasks, reload } = useHostData();
+  useAutoSync(client, org?.id ?? "", reload);
   const today = localToday();
 
   const alerts = useMemo<ShellAlert[]>(
@@ -48,6 +50,9 @@ function Frame({ children }: { children: ReactNode }) {
         { href: "/calendar", label: t("nav.schedule"), icon: "calendar", description: t("navDesc.calendar") },
         { href: "/guests", label: t("nav.guests"), icon: "users", description: t("navDesc.guests"), group: t("navGroup.manage") },
         { href: "/tasks", label: t("nav.tasks"), icon: "tasks", description: t("navDesc.tasks"), badge: pending },
+        { href: "/messages", label: t("nav.messages"), icon: "message", description: t("navDesc.messages") },
+        { href: "/reports", label: t("nav.reports"), icon: "report", description: t("navDesc.reports") },
+        { href: "/sync", label: t("nav.sync"), icon: "refresh", description: t("navDesc.sync") },
         { href: "/properties", label: t("nav.properties"), icon: "building", description: t("navDesc.properties"), badge: properties.length },
       ]}
     >

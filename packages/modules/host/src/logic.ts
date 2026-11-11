@@ -1,5 +1,5 @@
 import { addDays, daysBetween, firstOfMonth, firstOfNextMonth, toDate } from "./dates";
-import type { Booking, BookingStatus, NewBooking } from "./types";
+import type { Booking, BookingStatus, HostTask, NewBooking } from "./types";
 
 /** A canceled booking holds no dates and counts for nothing. */
 export const isActive = (b: Pick<Booking, "status">): boolean => b.status !== "canceled";
@@ -136,4 +136,105 @@ export function validateBooking(input: NewBooking, existing: Booking[]): Booking
     (b) => isActive(b) && b.propertyId === input.propertyId && b.checkIn < input.checkOut && input.checkIn < b.checkOut,
   );
   return clash ? "host.errOverlap" : null;
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Half-day calendar. Every day has two halves: a guest checks in during the SECOND half (after noon) and
+// checks out during the FIRST half (before noon). So a stay Oct 9 -> Oct 15 fills the second half of the 9th
+// through the first half of the 15th, and the second half of the 15th is free for the next guest.
+// ---------------------------------------------------------------------------------------------------
+
+export interface HalfSegment {
+  bookingId: string;
+  label: string;
+  status: BookingStatus;
+  kind: "stay" | "block";
+  /** 0-based half-slot where the bar starts: day d, first half = 2(d-1), second half = 2(d-1)+1. */
+  startHalf: number;
+  /** How many half-slots the bar covers. */
+  spanHalves: number;
+  startsBefore: boolean;
+  endsAfter: boolean;
+}
+
+/** Bars for one property in one month, at half-day precision. Pass stays and blocks together. */
+export function monthHalfSegments(bookings: Booking[], propertyId: string, year: number, month: number): HalfSegment[] {
+  const from = firstOfMonth(year, month);
+  const to = firstOfNextMonth(year, month);
+  const days = daysBetween(from, to);
+  return bookings
+    .filter((b) => isActive(b) && b.propertyId === propertyId && b.checkIn < to && b.checkOut > from)
+    .flatMap((b) => {
+      const startsBefore = b.checkIn < from;
+      const endsAfter = b.checkOut >= to;
+      const startHalf = startsBefore ? 0 : 2 * (toDate(b.checkIn).getUTCDate() - 1) + 1;
+      const endHalf = endsAfter ? 2 * days : 2 * (toDate(b.checkOut).getUTCDate() - 1) + 1;
+      if (endHalf <= startHalf) return [];
+      return [{ bookingId: b.id, label: b.guestName, status: b.status, kind: b.kind, startHalf, spanHalves: endHalf - startHalf, startsBefore, endsAfter }];
+    })
+    .sort((a, b) => a.startHalf - b.startHalf);
+}
+
+/** Days of the month where one guest leaves and another arrives on the same property. */
+export function turnoverDays(bookings: Booking[], propertyId: string, from: string, to: string): string[] {
+  const mine = bookings.filter((b) => isActive(b) && b.kind === "stay" && b.propertyId === propertyId);
+  const arrivals = new Set(mine.map((b) => b.checkIn));
+  return [...new Set(mine.filter((b) => arrivals.has(b.checkOut) && b.checkOut >= from && b.checkOut < to).map((b) => b.checkOut))].sort();
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Payments
+// ---------------------------------------------------------------------------------------------------
+
+/** What is still owed for a stay. Never negative. */
+export const owed = (b: Pick<Booking, "amount" | "paid">): number => Math.max(0, b.amount - b.paid);
+
+export type PaymentState = "unpriced" | "unpaid" | "partial" | "paid";
+export function paymentState(b: Pick<Booking, "amount" | "paid">): PaymentState {
+  if (b.amount <= 0) return "unpriced";
+  if (b.paid <= 0) return "unpaid";
+  return b.paid >= b.amount ? "paid" : "partial";
+}
+
+/** Live stays that still owe money, the ones arriving soonest first. */
+export function pendingPayments(bookings: Booking[]): Booking[] {
+  return bookings
+    .filter((b) => isActive(b) && b.kind === "stay" && owed(b) > 0)
+    .sort((a, b) => a.checkIn.localeCompare(b.checkIn));
+}
+
+export function paymentTotals(bookings: Booking[], from: string, to: string): { billed: number; collected: number; pending: number } {
+  const live = bookings.filter((b) => isActive(b) && b.kind === "stay" && b.checkIn >= from && b.checkIn < to);
+  const billed = live.reduce((s, b) => s + b.amount, 0);
+  const collected = live.reduce((s, b) => s + Math.min(b.paid, b.amount), 0);
+  return { billed, collected, pending: billed - collected };
+}
+
+// ---------------------------------------------------------------------------------------------------
+// Today
+// ---------------------------------------------------------------------------------------------------
+
+export interface TodayPlan {
+  arrivals: Booking[];
+  departures: Booking[];
+  tomorrowArrivals: Booking[];
+  tasks: HostTask[];
+  overdue: HostTask[];
+  /** Arriving today or tomorrow with money still owed. */
+  collect: Booking[];
+}
+
+/** One list for the day: who arrives, who leaves, what to clean, what to collect. */
+export function todayPlan(bookings: Booking[], tasks: HostTask[], today: string): TodayPlan {
+  const live = bookings.filter((b) => isActive(b) && b.kind === "stay");
+  const tomorrow = addDays(today, 1);
+  const open = tasks.filter((t) => !t.done);
+  return {
+    arrivals: live.filter((b) => b.checkIn === today && b.status !== "checked_out"),
+    departures: live.filter((b) => b.checkOut === today),
+    tomorrowArrivals: live.filter((b) => b.checkIn === tomorrow),
+    tasks: open.filter((t) => t.dueOn === today),
+    overdue: open.filter((t) => t.dueOn !== null && t.dueOn < today),
+    collect: live.filter((b) => (b.checkIn === today || b.checkIn === tomorrow) && owed(b) > 0),
+  };
 }

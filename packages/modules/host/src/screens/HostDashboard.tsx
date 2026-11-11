@@ -1,5 +1,6 @@
 "use client";
 
+import { HostToday } from "./HostToday";
 import { useState, type ReactNode } from "react";
 import { useI18n, type TFn } from "@stayflow/i18n";
 import { formatMoney } from "@stayflow/money";
@@ -174,6 +175,8 @@ export function HostDashboard({ currency, userName, properties, bookings, tasks,
           <button type="button" className={`${buttonClass} gap-2`} onClick={onNewBooking}><Icon name="plus" className="h-4 w-4" />{t("host.newBookingShort")}</button>
         </div>
       </header>
+
+      <HostToday currency={currency} properties={properties} bookings={bookings} tasks={tasks} onGoBookings={onGoBookings} onGoTasks={onGoTasks} onGoCalendar={onGoCalendar} />
 
       <section aria-label={t("host.kpis")} className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard hero label={t("host.occupancy")} icon="dashboard" sub={t("host.occupancySub", { count: properties.length })}>

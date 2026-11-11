@@ -8,7 +8,7 @@ import type { Booking, NewBooking } from "./types";
 let n = 0;
 const bk = (over: Partial<Booking>): Booking => ({
   id: `b${++n}`, propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2,
-  checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-11-01T10:00:00Z", ...over,
+  checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-11-01T10:00:00Z", paid: 0, kind: "stay", externalUid: null, ...over,
 });
 
 describe("dates", () => {
@@ -125,7 +125,7 @@ import { changePct, hostAlerts, monthlyOccupancy, propertyState, sourceBreakdown
 describe("insights", () => {
   const mk = (over: Partial<Booking>): Booking => ({
     id: "x", propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2,
-    checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 10000, notes: "", createdAt: "2026-11-01T10:00:00Z", ...over,
+    checkIn: "2026-11-10", checkOut: "2026-11-14", nights: 4, source: "airbnb", status: "confirmed", amount: 10000, notes: "", createdAt: "2026-11-01T10:00:00Z", paid: 0, kind: "stay", externalUid: null, ...over,
   });
 
   it("changePct handles zero and normal cases", () => {
@@ -169,7 +169,7 @@ describe("insights", () => {
         mk({ id: "c", status: "confirmed", checkIn: "2026-11-20", checkOut: "2026-11-22", amount: 0 }),
         mk({ id: "d", status: "confirmed", checkIn: today, checkOut: "2026-11-12" }),
       ],
-      [{ id: "t1", propertyId: null, title: "Sábanas", dueOn: "2026-11-08", done: false }],
+      [{ id: "t1", propertyId: null, title: "Sábanas", dueOn: "2026-11-08", done: false, bookingId: null }],
       today,
     );
     expect(alerts.map((x) => x.kind).sort()).toEqual(["arrivalPending", "arrivalsToday", "departurePending", "noAmount", "overdueTask"]);

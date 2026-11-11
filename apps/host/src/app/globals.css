@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Monthly report: "Imprimir / guardar PDF" shows only the report, on white paper. */
+@media print {
+  body * { visibility: hidden !important; }
+  .print-area, .print-area * { visibility: visible !important; color: #111 !important; border-color: #ccc !important; background: transparent !important; box-shadow: none !important; }
+  .print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 0 !important; overflow: visible !important; }
+  body { background: #fff !important; }
+}

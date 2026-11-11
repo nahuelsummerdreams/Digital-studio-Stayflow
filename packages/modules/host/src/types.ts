@@ -22,7 +22,15 @@ export interface Booking {
   notes: string;
   /** ISO timestamp of when it was recorded. */
   createdAt: string;
+  /** Integer minor units already collected from the guest (deposit or full payment). */
+  paid: number;
+  /** 'stay' is a guest; 'block' holds dates (maintenance, own use) and `guestName` is the reason. */
+  kind: BookingKind;
+  /** Set when the stay came from a synced calendar (Airbnb, Booking...). */
+  externalUid: string | null;
 }
+
+export type BookingKind = "stay" | "block";
 
 export interface NewBooking {
   propertyId: string;
@@ -34,6 +42,8 @@ export interface NewBooking {
   checkOut: string;
   source: BookingSource;
   amount: number;
+  /** Collected so far. */
+  paid?: number;
   notes: string;
 }
 
@@ -43,6 +53,8 @@ export interface HostTask {
   title: string;
   dueOn: string | null;
   done: boolean;
+  /** Set when the task was created for a booking (cleaning after check-out). */
+  bookingId: string | null;
 }
 
 /** What the Host screens need to know about a property (photo included). */

@@ -5,13 +5,13 @@ import type { Booking } from "./types";
 let n = 0;
 const bk = (over: Partial<Booking>): Booking => ({
   id: `b${++n}`, propertyId: "p1", guestName: "Ana", guestEmail: "ana@example.test", guestPhone: "+34600", guestsCount: 2,
-  checkIn: "2026-12-05", checkOut: "2026-12-09", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-11-01T10:00:00Z", ...over,
+  checkIn: "2026-12-05", checkOut: "2026-12-09", nights: 4, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-11-01T10:00:00Z", paid: 0, kind: "stay", externalUid: null, ...over,
 });
 const snap: Snapshot = {
   today: "2026-11-10", currency: "EUR",
   properties: [{ id: "p1", name: "Casa del Árbol", city: "Gredos" }, { id: "p2", name: "Villa Palmera", city: "Marbella" }],
   bookings: [bk({}), bk({ checkIn: "2026-12-12", checkOut: "2026-12-14", nights: 2, guestName: "Beto" }), bk({ propertyId: "p2", checkIn: "2026-12-01", checkOut: "2026-12-03", nights: 2, guestName: "Carla" }), bk({ checkIn: "2026-12-09", checkOut: "2026-12-11", status: "canceled", guestName: "Cancelada" })],
-  tasks: [{ id: "t1", propertyId: "p1", title: "Cambiar sábanas", dueOn: "2026-11-08", done: false }, { id: "t2", propertyId: null, title: "Hecha", dueOn: null, done: true }],
+  tasks: [{ id: "t1", propertyId: "p1", title: "Cambiar sábanas", dueOn: "2026-11-08", done: false, bookingId: null }, { id: "t2", propertyId: null, title: "Hecha", dueOn: null, done: true, bookingId: null }],
 };
 
 describe("tools", () => {
