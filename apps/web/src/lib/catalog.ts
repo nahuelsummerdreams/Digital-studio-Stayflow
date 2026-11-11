@@ -64,11 +64,10 @@ export const CROSS_SELL: Record<ProductId, ProductId[]> = {
 /** Optional monthly support, chosen per tool (USD/month). Provisional prices: confirm before opening sales. */
 export const SUPPORT_PRICE: Record<ProductId, number> = { host: 9, guest: 9, ai: 7, profit: 5, operations: 7, listing: 5, academy: 5, experiences: 7, website: 9 };
 
-/** Ready-made packs. A pack is sold only when every app in it exists; the others are announced as "Próximamente". */
-export const PACK_IDS = ["essential", "pro", "mega"] as const;
+/** Ready-made packs. A pack is sold only when every app in it exists. The Megapack is every app that is on sale today. */
+export const PACK_IDS = ["essential", "mega"] as const;
 export type PackId = (typeof PACK_IDS)[number];
 export const PACKS: Record<PackId, { id: PackId; apps: ProductId[]; status: ProductStatus }> = {
   essential: { id: "essential", apps: ["host", "guest", "profit"], status: "available" },
-  pro: { id: "pro", apps: ["host", "guest", "profit", "operations"], status: "available" },
-  mega: { id: "mega", apps: [...PRODUCT_IDS], status: "soon" },
+  mega: { id: "mega", apps: PRODUCT_IDS.filter((id) => PRODUCTS[id].status === "available"), status: "available" },
 };

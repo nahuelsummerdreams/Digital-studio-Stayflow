@@ -14,11 +14,11 @@ describe("what is on sale", () => {
     expect(normalizeApps(["ai", "host", "website"])).toEqual(["host"]);
     expect(computeTotals({ apps: ["ai", "listing"], kit: false })).toMatchObject({ appCount: 0, total: 0 });
   });
-  it("only sells packs whose apps all exist", () => {
+  it("only sells packs whose apps all exist, and the Megapack is every app on sale", () => {
     expect(PACKS.essential.status).toBe("available");
-    expect(PACKS.pro.status).toBe("available");
-    expect(PACKS.mega.status).toBe("soon");
-    for (const id of ["essential", "pro"] as const) for (const app of PACKS[id].apps) expect(isAvailable(app)).toBe(true);
+    expect(PACKS.mega.status).toBe("available");
+    for (const id of ["essential", "mega"] as const) for (const app of PACKS[id].apps) expect(isAvailable(app)).toBe(true);
+    expect(PACKS.mega.apps).toEqual(AVAILABLE_LIST.map((p) => p.id));
   });
 });
 
@@ -75,7 +75,7 @@ describe("recommendations", () => {
 describe("packs", () => {
   it("prices the ready-made packs with the 30% rule", () => {
     expect(packTotals("essential")).toMatchObject({ appsSubtotal: 104, discount: 31.2, total: 72.8 });
-    expect(packTotals("pro")).toMatchObject({ appCount: 4, appsSubtotal: 133, discount: 39.9, total: 93.1 });
+    expect(packTotals("mega")).toMatchObject({ appCount: 4, appsSubtotal: 133, discount: 39.9, total: 93.1 });
   });
 });
 
@@ -89,13 +89,12 @@ describe("offers (upsell and downsell)", () => {
     const o = offers({ apps: ["host", "profit"], kit: false });
     expect(o[0]).toMatchObject({ kind: "pack", pack: "essential", moreApps: 1 });
   });
-  it("three apps: the next pack is the one with Operations", () => {
-    expect(offers({ apps: ["host", "guest", "profit"], kit: false })[0]).toMatchObject({ kind: "pack", pack: "pro", moreApps: 1 });
+  it("three apps: the next pack is the Megapack, one app more", () => {
+    expect(offers({ apps: ["host", "guest", "profit"], kit: false })[0]).toMatchObject({ kind: "pack", pack: "mega", moreApps: 1 });
   });
-  it("never offers the Megapack while it is not on sale", () => {
+  it("has no bigger pack to offer once you hold every app on sale", () => {
     const all = AVAILABLE_LIST.map((p) => p.id);
     expect(offers({ apps: all, kit: false }).some((x) => x.kind === "pack")).toBe(false);
-    expect(offers({ apps: ["host", "operations"], kit: false }).some((x) => x.kind === "pack" && x.pack === "mega")).toBe(false);
   });
   it("three or more apps: downsell drops the priciest and keeps the discount", () => {
     const o = offers({ apps: ["host", "guest", "profit", "operations"], kit: false }, 5);

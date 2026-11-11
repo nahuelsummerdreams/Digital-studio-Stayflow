@@ -130,7 +130,6 @@ export const es = {
     tag: "Próximamente",
     notify: "Avísame cuando salga",
     consent: "Solo usaremos tu email para avisarte de este lanzamiento.",
-    notifyPack: "Avísame del Megapack",
   },
   shelf: {
     hint: "Arrastra una app hasta tu pack, o tócala",
@@ -165,11 +164,9 @@ export const es = {
     apps_one: "{count} app",
     apps_other: "{count} apps",
     saves: "Ahorras {amount}",
-    soon: "Próximamente",
     list: {
       essential: { name: "Pack Esencial", for: "Reservas, guía para huéspedes y tus números: lo que más se usa.", badge: "" },
-      pro: { name: "Pack Profesional", for: "Las cuatro herramientas que ya funcionan hoy, con operaciones incluidas.", badge: "Más completo" },
-      mega: { name: "Megapack Anfitrión Premium", for: "Las 9 apps juntas, con el mayor ahorro. Sale cuando estén todas listas.", badge: "Próximamente" },
+      mega: { name: "Megapack Anfitrión Premium", for: "Todas las apps que ya funcionan hoy, con el mayor ahorro.", badge: "−30% · el más completo" },
     },
   },
   offers: {

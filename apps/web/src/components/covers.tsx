@@ -102,7 +102,7 @@ export function ProductCover({ id, size = "md" }: { id: ProductId; size?: BoxSiz
 /** A pack of products: the same square box, with every product inside it as a small square. */
 export function PackCover({ id, size = "md" }: { id: PackId; size?: BoxSize }) {
   const apps = PACKS[id].apps;
-  const hue = id === "mega" ? 196 : id === "pro" ? 292 : 142;
+  const hue = id === "mega" ? 292 : 142;
   const c = m.packs.list[id];
   const many = apps.length > 3;
   return (
@@ -112,7 +112,7 @@ export function PackCover({ id, size = "md" }: { id: PackId; size?: BoxSize }) {
         <Brand />
         <Seal hue={hue} text="−30%" />
         <div className="absolute left-[0.9em] top-[2.7em] z-10 max-w-[8.6em] rounded-[0.35em] px-[0.5em] py-[0.3em]" style={{ background: "linear-gradient(90deg, rgb(0 0 0 / 0.72), rgb(0 0 0 / 0.35))" }}>
-          <h4 className={`font-display ${many ? (id === "pro" ? "text-[1.2em]" : "text-[1.4em]") : "text-[1.9em]"} font-extrabold uppercase leading-[0.98] tracking-tight`} style={{ color: "#fff", textShadow: `0 0 0.18em hsl(${hue} 100% 62%), 0 0 0.55em hsl(${hue} 100% 55%), 0 0.06em 0.12em rgb(0 0 0 / 0.8)` }}>{c.name.replace("Anfitrión Premium", "").trim()}</h4>
+          <h4 className={`font-display ${many ? "text-[1.2em]" : "text-[1.9em]"} font-extrabold uppercase leading-[0.98] tracking-tight`} style={{ color: "#fff", textShadow: `0 0 0.18em hsl(${hue} 100% 62%), 0 0 0.55em hsl(${hue} 100% 55%), 0 0.06em 0.12em rgb(0 0 0 / 0.8)` }}>{c.name.replace("Anfitrión Premium", "").trim()}</h4>
         </div>
         <div className="absolute bottom-[2.4em] left-1/2 z-10 grid w-[88%] -translate-x-1/2 grid-cols-3 gap-[0.35em]">
           {apps.map((a) => (

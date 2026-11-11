@@ -3,7 +3,7 @@ import { Icon, Pill } from "@stayflow/ui";
 import { AVAILABLE_LIST, PACK_IDS, PACKS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
-import { AddPack, AddToCart, NotifyButton, SupportPicker } from "./client";
+import { AddPack, AddToCart, SupportPicker } from "./client";
 import { Shelf } from "./shelf";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
@@ -75,8 +75,7 @@ export function ProductRow({ id, flip }: { id: ProductId; flip: boolean }) {
 function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
   const c = m.packs.list[id];
   const t = packTotals(id);
-  const featured = id === "pro";
-  if (PACKS[id].status === "soon") return <SoonPackCard id={id} />;
+  const featured = id === "mega";
   return (
     <article className={`reveal fx-card relative flex flex-col items-center rounded-3xl px-6 pb-7 pt-3 text-center ${featured ? "fx-hero" : ""}`}>
       {c.badge && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent shadow-[0_0_24px_-4px_rgb(var(--accent))]">{c.badge}</span>}
@@ -91,22 +90,7 @@ function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
       <ul className="mt-5 flex flex-wrap justify-center gap-1.5">
         {PACKS[id].apps.map((a) => <li key={a} className="rounded-full border border-line bg-bg/50 px-2.5 py-1 text-[11px] text-muted">{PRODUCTS[a].name.replace("Stayflow ", "")} · {usd(PRODUCTS[a].price)}</li>)}
       </ul>
-      <div className="mt-6 w-full"><AddPack pack={id} /></div>
-    </article>
-  );
-}
-
-/** A pack that is announced, not sold: its cover, what it will hold, and a way to be told when it is out. */
-function SoonPackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
-  const c = m.packs.list[id];
-  return (
-    <article className="reveal fx-card relative flex flex-col items-center rounded-3xl border-dashed px-6 pb-7 pt-3 text-center">
-      <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-surface px-3 py-1 text-[11px] font-semibold text-muted">{c.badge}</span>
-      <div className="opacity-60 saturate-50"><PackCover id={id} /></div>
-      <h4 className="font-display mt-2 text-xl">{c.name}</h4>
-      <p className="mt-1 text-sm text-muted">{c.for}</p>
-      <p className="mt-4 text-sm font-medium text-accent">{m.packs.soon} · −30%</p>
-      <div className="mt-6 w-full"><NotifyButton id={id} className="w-full" label={m.soon.notifyPack} /></div>
+      <div className="mt-auto w-full pt-6"><AddPack pack={id} /></div>
     </article>
   );
 }
@@ -130,7 +114,7 @@ export function Precios() {
 
         <div id="packs" className="mt-24">
           <Sub title={m.prices.packsLast} body={m.packs.body} />
-          <div className="mt-8 grid items-stretch gap-5 lg:grid-cols-3">{PACK_IDS.map((id) => <PackCard key={id} id={id} />)}</div>
+          <div className="mt-8 grid items-stretch gap-5 md:grid-cols-2 lg:mx-auto lg:max-w-4xl">{PACK_IDS.map((id) => <PackCard key={id} id={id} />)}</div>
         </div>
 
         <div id="arma-tu-pack" className="mt-24">
