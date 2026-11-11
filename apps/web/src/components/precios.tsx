@@ -3,7 +3,8 @@ import { Icon, Pill } from "@stayflow/ui";
 import { LAUNCH_KIT, PACK_IDS, PACKS, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
-import { AddPack, AddToCart, Builder, KitButton, SupportPicker } from "./client";
+import { AddPack, AddToCart, KitButton, SupportPicker } from "./client";
+import { Shelf } from "./shelf";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
 
@@ -118,7 +119,7 @@ export function Precios() {
 
         <div id="arma-tu-pack" className="mt-24">
           <Sub title={m.prices.mixTitle} body={m.prices.mixBody} />
-          <div className="reveal mt-8"><Builder /></div>
+          <div className="reveal mt-8"><Shelf /></div>
           <div className="mt-10">
             <h4 className="reveal font-display text-xl">{m.prices.offersTitle}</h4>
             <div className="mt-4 grid gap-4 md:grid-cols-2">

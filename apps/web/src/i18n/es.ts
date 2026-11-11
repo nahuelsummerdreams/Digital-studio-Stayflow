@@ -149,6 +149,15 @@ export const es = {
     compareBody: "Suma una app más a tu carrito y el 30% se descuenta del subtotal de las apps.",
     openApp: "Ver la app funcionando",
   },
+  shelf: {
+    hint: "Arrastra una app hasta tu pack, o tócala",
+    inPack: "En tu pack",
+    basket: "Tu pack",
+    drop: "Suelta aquí tu primera app",
+    dropNow: "Suéltala aquí",
+    ticket: "Tu ticket",
+    ticketEmpty: "Cuando sumes una app, aquí ves el precio, el descuento y el total.",
+  },
   builder: {
     title: "Arma tu propio pack",
     pick: "Elige tus herramientas",
