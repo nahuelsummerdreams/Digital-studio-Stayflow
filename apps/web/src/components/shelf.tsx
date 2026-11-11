@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } f
 import { createPortal } from "react-dom";
 import { Icon } from "@stayflow/ui";
 import { track } from "@/lib/analytics";
-import { PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { AVAILABLE_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { usd } from "@/lib/pricing";
 import { useMessages } from "@/i18n/client";
 import { DiscountMeter, OffersList, useCart } from "./cart";
@@ -102,7 +102,7 @@ export function Shelf() {
 
         <div className="relative -mx-2 overflow-x-auto px-2 pb-2 [scrollbar-width:thin]" role="list" aria-label={m.builder.pick}>
           <div className="relative flex w-max snap-x gap-3 px-2 pt-2">
-            {PRODUCT_LIST.map((p) => {
+            {AVAILABLE_LIST.map((p) => {
               const on = cart.has(p.id);
               const lifted = drag?.id === p.id;
               return (

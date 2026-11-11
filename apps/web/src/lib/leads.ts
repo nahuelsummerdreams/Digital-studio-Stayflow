@@ -1,7 +1,7 @@
 /** Saves an email (and what was in the cart) so no interested visitor is lost while checkout is being connected. */
 import { getAttribution } from "./attribution";
 
-export type LeadSource = "checkout" | "support" | `ad-${string}`;
+export type LeadSource = "checkout" | "support" | `ad-${string}` | `notify-${string}`;
 
 const URL_ = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 const KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";

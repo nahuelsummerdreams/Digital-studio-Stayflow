@@ -9,7 +9,7 @@ export default function Page() {
       <section><h2>Quién es responsable</h2><p>Stayflow es una línea de productos de Digital Studio. Para cualquier consulta sobre tus datos escribe a <Contact />.</p></section>
       <section><h2>Qué datos recogemos</h2>
         <ul>
-          <li><strong>Tu email</strong>, cuando lo dejas en un formulario (avisos de apertura del pago, preventas, planes).</li>
+          <li><strong>Tu email</strong>, cuando lo dejas en un formulario (avisos de lanzamiento, soporte, apertura del pago).</li>
           <li><strong>El contenido de tu carrito</strong> y la página desde la que llegaste (por ejemplo, un anuncio), para saber qué te interesa.</li>
           <li><strong>Datos de uso del sitio</strong>, solo si aceptas las cookies de medición (ver abajo).</li>
           <li><strong>Datos de tu cuenta y de tu alojamiento</strong>, cuando usas las apps (reservas, huéspedes, fotos). Son tuyos: solo tú y tu organización pueden verlos.</li>

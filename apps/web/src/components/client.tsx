@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Icon } from "@stayflow/ui";
 import { track } from "@/lib/analytics";
-import { LAUNCH_KIT, MULTIPACK_PERCENT, PACKS, SUPPORT_PRICE, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { AVAILABLE_LIST, MULTIPACK_PERCENT, PACKS, SUPPORT_PRICE, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { saveLead, type LeadSource } from "@/lib/leads";
 import { supportTotal, usd } from "@/lib/pricing";
 import { fmt, plural } from "@/i18n";
@@ -69,76 +69,6 @@ export function CartBar() {
 
 export { CartButton };
 
-/** Pick any tools: the cart updates live, the discount unlocks at two apps. */
-export function Builder() {
-  const { m, locale } = useMessages();
-  const cart = useCart();
-  const { totals } = cart;
-  const missing = totals.appsToUnlock;
-  return (
-    <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-      <div>
-        <p className="mb-4 text-sm font-semibold">{m.builder.pick}</p>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {PRODUCT_LIST.map((p) => {
-            const on = cart.has(p.id);
-            return (
-              <li key={p.id}>
-                <button
-                  type="button"
-                  onClick={() => cart.toggle(p.id)}
-                  aria-pressed={on}
-                  className={`flex w-full items-center gap-3 rounded-2xl border p-3.5 text-left transition ${on ? "border-accent bg-accent/8 shadow-[0_0_0_3px_rgb(var(--accent)/0.12)]" : "border-line bg-surface hover:border-accent/50"}`}
-                >
-                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${on ? "border-accent bg-accent text-onaccent" : "border-line"}`}>{on && <Icon name="check" className="h-4 w-4" />}</span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-sm font-semibold">{p.name}</span>
-                    <span className="block truncate text-xs text-muted">{m.products[p.id].tagline}</span>
-                  </span>
-                  <span className="text-sm font-semibold tabular-nums">{usd(p.price)}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
-        <p className="mt-4 text-xs text-muted">{m.builder.note}</p>
-      </div>
-
-      <aside className="fx-card fx-hero h-fit rounded-3xl p-6 lg:sticky lg:top-24" aria-live="polite">
-        <h3 className="font-display text-xl">{m.builder.summary}</h3>
-        {totals.appCount === 0 ? (
-          <p className="mt-4 rounded-xl border border-dashed border-line p-5 text-center text-sm text-muted">{m.builder.empty}</p>
-        ) : (
-          <>
-            <ul className="mt-4 space-y-2 text-sm">
-              {totals.lines.map((l) => (
-                <li key={l.id} className="flex justify-between"><span>{l.name}</span><span className="tabular-nums text-muted">{usd(l.price)}</span></li>
-              ))}
-            </ul>
-            <div className="my-4 h-px bg-line" />
-            <DiscountMeter className="mb-4" />
-            <Breakdown totals={totals} labels={m.builder} />
-            <OffersList className="mt-5" />
-            <Link href="/checkout" className={`${btnPrimary} mt-5 w-full`}>{m.builder.checkout}</Link>
-          </>
-        )}
-        {missing > 0 && <p className="sr-only">{plural(m.builder, "more", missing, locale)}</p>}
-      </aside>
-    </div>
-  );
-}
-
-export function KitButton({ className = "" }: { className?: string }) {
-  const { m } = useMessages();
-  const { kit, setKit } = useCart();
-  return (
-    <button type="button" onClick={() => setKit(!kit)} aria-pressed={kit} className={`${kit ? "inline-flex items-center justify-center gap-2 rounded-xl border border-accent bg-accent/10 px-5 py-3 text-sm font-semibold text-accent" : btnPrimary} ${className}`}>
-      <Icon name={kit ? "check" : "plus"} className="h-4 w-4" />
-      {kit ? m.kit.inCart : `${m.kit.cta} · ${usd(LAUNCH_KIT.price)}`}
-    </button>
-  );
-}
-
 /** Email capture used by the plans and the checkout while payments are being connected. */
 export function LeadForm({ source, items, compact = false }: { source: LeadSource; items?: unknown; compact?: boolean }) {
   const { m } = useMessages();
@@ -188,7 +118,7 @@ export function SupportPicker() {
   return (
     <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
       <ul className="grid gap-3 sm:grid-cols-2" aria-label={m.support.pick}>
-        {PRODUCT_LIST.map((p) => {
+        {AVAILABLE_LIST.map((p) => {
           const on = picked.includes(p.id);
           return (
             <li key={p.id}>
@@ -196,7 +126,6 @@ export function SupportPicker() {
                 <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border ${on ? "border-accent bg-accent text-onaccent" : "border-line"}`}>{on && <Icon name="check" className="h-4 w-4" />}</span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold">{p.name}</span>
-                  {p.status !== "available" && <span className="block text-[11px] text-muted">{m.support.later}</span>}
                 </span>
                 <span className="whitespace-nowrap text-sm tabular-nums"><b>{usd(SUPPORT_PRICE[p.id])}</b><span className="text-muted">{m.support.perMonth}</span></span>
               </button>
@@ -245,7 +174,7 @@ export function CheckoutView() {
           {totals.lines.map((l) => (
             <li key={l.id} className="flex items-center gap-3 py-3.5">
               <div className="min-w-0 flex-1">
-                <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">{l.name}{l.preorder && <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium text-muted">{m.cart.preorderTag}</span>}</p>
+                <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">{l.name}</p>
                 <button type="button" onClick={() => (l.id === "kit" ? cart.setKit(false) : cart.remove(l.id))} className="text-xs text-muted underline-offset-4 hover:underline">{m.cart.remove}</button>
               </div>
               <span className="font-display tabular-nums">{usd(l.price)}</span>
@@ -255,7 +184,6 @@ export function CheckoutView() {
         <DiscountMeter className="my-5" />
         <Breakdown totals={totals} labels={m.cart} />
         <OffersList className="mt-6" />
-        <p className="mt-5 text-xs text-muted">{m.checkout.preorderNote}</p>
       </section>
       <section className="fx-card fx-hero rounded-3xl p-6 sm:p-8">
         <span className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent"><Icon name="clock" className="h-3.5 w-3.5" />{m.checkout.soonTitle}</span>
@@ -321,6 +249,23 @@ export function GetProductButton({ id, label, where, className = "" }: { id: Pro
     >
       {label}
       <Icon name="arrow" className="h-4 w-4" />
+    </button>
+  );
+}
+
+/** "Próximamente" products: nothing to buy, but you can ask to be told the day it is out. That list is also how we learn what to build first. */
+export function NotifyButton({ id, className = "", label }: { id: string; className?: string; label?: string }) {
+  const { m } = useMessages();
+  const [open, setOpen] = useState(false);
+  return open ? (
+    <div className={className}>
+      <LeadForm source={`notify-${id}` as LeadSource} items={{ product: id }} compact />
+      <p className="mt-2 text-xs text-muted">{m.soon.consent}</p>
+    </div>
+  ) : (
+    <button type="button" onClick={() => { setOpen(true); track("select_promotion", { where: "soon", item_id: id }); }} className={`${btnGhost} gap-2 ${className}`}>
+      <Icon name="bell" className="h-4 w-4" />
+      {label ?? m.soon.notify}
     </button>
   );
 }

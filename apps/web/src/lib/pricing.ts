@@ -1,4 +1,4 @@
-import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, type PackId, type ProductId } from "./catalog";
+import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, isAvailable, type PackId, type ProductId } from "./catalog";
 
 export interface CartState {
   /** Apps in the cart. Each one is a single licence. */
@@ -10,7 +10,6 @@ export interface CartLine {
   id: ProductId | "kit";
   name: string;
   price: number;
-  preorder: boolean;
 }
 
 export interface Totals {
@@ -33,17 +32,17 @@ export interface Totals {
 
 const cents = (n: number): number => Math.round(n * 100) / 100;
 
-/** Keeps the catalogue order and drops unknown ids and duplicates. */
+/** Keeps the catalogue order and drops unknown ids, duplicates and anything that is not on sale yet. */
 export function normalizeApps(ids: readonly string[]): ProductId[] {
   const set = new Set(ids);
-  return PRODUCT_IDS.filter((id) => set.has(id));
+  return PRODUCT_IDS.filter((id) => set.has(id) && isAvailable(id));
 }
 
 /** The whole price calculation. Pure: the cart UI, the product pages and the tests all use it. */
 export function computeTotals(cart: CartState): Totals {
   const apps = normalizeApps(cart.apps);
-  const lines: CartLine[] = apps.map((id) => ({ id, name: PRODUCTS[id].name, price: PRODUCTS[id].price, preorder: PRODUCTS[id].status === "preorder" }));
-  if (cart.kit) lines.push({ id: "kit", name: LAUNCH_KIT.name, price: LAUNCH_KIT.price, preorder: true });
+  const lines: CartLine[] = apps.map((id) => ({ id, name: PRODUCTS[id].name, price: PRODUCTS[id].price }));
+  if (cart.kit) lines.push({ id: "kit", name: LAUNCH_KIT.name, price: LAUNCH_KIT.price });
 
   const appsSubtotal = apps.reduce((s, id) => s + PRODUCTS[id].price, 0);
   const kitPrice = cart.kit ? LAUNCH_KIT.price : 0;
@@ -71,7 +70,7 @@ export function recommendations(apps: readonly ProductId[], limit = 3): ProductI
   const out: ProductId[] = [];
   for (const id of normalizeApps(apps)) {
     for (const next of CROSS_SELL[id]) {
-      if (!have.has(next) && !out.includes(next)) out.push(next);
+      if (isAvailable(next) && !have.has(next) && !out.includes(next)) out.push(next);
     }
   }
   return out.slice(0, limit);
@@ -98,13 +97,13 @@ export function offers(cart: CartState, limit = 2): Offer[] {
   const out: Offer[] = [];
 
   if (apps.length === 1) {
-    const cheapest = PRODUCT_IDS.filter((id) => !apps.includes(id)).sort((a, b) => PRODUCTS[a].price - PRODUCTS[b].price)[0];
+    const cheapest = PRODUCT_IDS.filter((id) => isAvailable(id) && !apps.includes(id)).sort((a, b) => PRODUCTS[a].price - PRODUCTS[b].price)[0];
     if (cheapest) out.push({ kind: "unlock", id: cheapest, extra: cents(computeTotals({ apps: [...apps, cheapest], kit: false }).total - now) });
   }
 
   if (apps.length >= MULTIPACK_MIN_APPS) {
     const next = PACK_IDS.map((id) => PACKS[id])
-      .filter((p) => p.apps.length > apps.length && apps.every((a) => p.apps.includes(a)))
+      .filter((p) => p.status === "available" && p.apps.length > apps.length && apps.every((a) => p.apps.includes(a)))
       .sort((a, b) => a.apps.length - b.apps.length)[0];
     if (next) out.push({ kind: "pack", pack: next.id, moreApps: next.apps.length - apps.length, extra: cents(packTotals(next.id).total - now) });
   }

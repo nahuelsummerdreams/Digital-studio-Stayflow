@@ -2,7 +2,7 @@
  * Textos de la web comercial (español, "tú" neutro). Es el idioma principal.
  * Otros idiomas se agregan como `en.ts` / `pt.ts` con esta misma forma: al tiparlos como `Messages`,
  * una línea faltante es un error de compilación, no un hueco en la página.
- * Los productos son honestos por construcción: las apps vivas dicen lo que hacen hoy; el resto dice "preventa".
+ * Los productos son honestos por construcción: las apps vivas dicen lo que hacen hoy; el resto dice "Próximamente" y no se vende.
  */
 interface ProductCopy {
   tagline: string;
@@ -15,7 +15,7 @@ interface ProductCopy {
   support: string;
 }
 
-const PREORDER = "Una app web en desarrollo: reserva ahora y recibirás el acceso por email apenas esté lista. Todavía no se anunció fecha de entrega.";
+const SOON = "En desarrollo. Todavía no está a la venta: déjanos tu email y te avisamos el día que salga.";
 const SUPPORT = "Guías de inicio y actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.";
 
 export const es = {
@@ -47,7 +47,7 @@ export const es = {
       problem: "Horas perdidas escribiendo las mismas respuestas y coordinando todo a mano.",
       benefits: ["Agentes de operaciones, cronograma y ventas a un @ de distancia", "Borradores de respuesta en segundos", "Tú apruebas antes de que algo se aplique"],
       features: ["Agente de Operaciones", "Agente de Cronograma", "Agente de Ventas", "Agente de Huéspedes", "Generación de respuestas y plantillas", "Ayuda para organizar tareas"],
-      delivery: PREORDER,
+      delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
       support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
     },
@@ -74,7 +74,7 @@ export const es = {
       problem: "Una publicación que no cuenta qué hace especial a tu lugar.",
       benefits: ["Títulos y descripciones redactados por ti", "Ideas para destacar lo único", "Textos claros y comerciales"],
       features: ["Generación de títulos", "Descripciones optimizadas", "Ideas para destacar tu propiedad", "Recomendaciones de presentación", "Sugerencias de contenido", "Textos comerciales"],
-      delivery: PREORDER,
+      delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
       support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
     },
@@ -83,7 +83,7 @@ export const es = {
       problem: "Aprender a prueba y error, un error costoso a la vez.",
       benefits: ["Lecciones paso a paso", "Desde tu primer huésped hasta una operación profesional", "A tu ritmo"],
       features: ["Cómo comenzar en alquileres temporarios", "Cómo preparar una propiedad", "Cómo mejorar la experiencia del huésped", "Cómo organizar las operaciones", "Cómo mejorar las publicaciones", "Cómo controlar los gastos", "Cómo profesionalizar la administración"],
-      delivery: "Un área de aprendizaje online en desarrollo: reserva ahora y recibirás el acceso por email apenas esté lista. Todavía no se anunció fecha de entrega.",
+      delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
       support: "Acceso de por vida a las lecciones que compres. El soporte directo se incluye con un plan de suscripción.",
     },
@@ -92,7 +92,7 @@ export const es = {
       problem: "Los huéspedes quieren más que una cama y no tienes cómo ofrecérselo.",
       benefits: ["Un catálogo de experiencias para ofrecer", "Propuestas personalizadas para tus huéspedes", "Posibles ingresos complementarios"],
       features: ["Catálogo de experiencias", "Recomendaciones gastronómicas", "Actividades turísticas", "Servicios adicionales", "Propuestas personalizadas", "Ideas de ingresos complementarios"],
-      delivery: PREORDER,
+      delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
       support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
     },
@@ -101,39 +101,13 @@ export const es = {
       problem: "Depender de una sola plataforma para que te encuentren.",
       benefits: ["Presencia propia, más allá de las plataformas", "Una presentación profesional", "Enlaces de reserva directos"],
       features: ["Sitio web del alojamiento", "Presentación de propiedades", "Galería de fotografías", "Información de servicios", "Información de contacto", "Enlaces de reserva", "Presentación profesional"],
-      delivery: "Una app web para crear y publicar tu sitio, en desarrollo: reserva ahora y recibirás el acceso por email apenas esté lista. Todavía no se anunció fecha de entrega.",
+      delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
       support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
     },
   } satisfies Record<string, ProductCopy>,
-  agents: {
-    eyebrow: "Valor agregado",
-    title: "Tu equipo de agentes, a un @ de distancia.",
-    body: "Además del panel, Stayflow AI te suma agentes que trabajan contigo: los llamas por su nombre, les pides algo y te lo dejan resuelto o listo para aprobar. Están pensados para que tú apruebes antes de que algo se aplique.",
-    hint: "Escribe @ para llamar a un agente",
-    status: "En desarrollo · llegan con Stayflow AI (preventa)",
-    example: "Ejemplo ilustrativo",
-    soon: "Próximamente",
-    ask: "Pídele",
-    approve: "Aprobar",
-    cta: "Reservar Stayflow AI",
-    ctaSub: "Los agentes se incluyen en Stayflow AI, en preventa.",
-    list: {
-      ops: { name: "Agente de Operaciones", role: "Organiza la limpieza, el mantenimiento y los check-ins.", ask: "Prepara la limpieza del jueves" },
-      schedule: { name: "Agente de Cronograma", role: "Mira tus fechas, encuentra huecos y evita choques.", ask: "¿Qué fechas siguen libres en diciembre?" },
-      sales: { name: "Agente de Ventas", role: "Redacta ofertas y mensajes para llenar fechas libres.", ask: "Arma una oferta para el finde largo" },
-      guests: { name: "Agente de Huéspedes", role: "Responde las preguntas repetidas con tu guía.", ask: "Contesta al huésped que llega mañana" },
-      finance: { name: "Agente de Finanzas", role: "Resume tus números y te avisa si algo no cierra.", ask: "¿Cómo fue el mes de la Casa del Árbol?" },
-      listing: { name: "Agente de Publicaciones", role: "Mejora tus títulos y descripciones.", ask: "Reescribe mi título para destacar el bosque" },
-    },
-    scenes: [
-      { agent: "Operaciones", cmd: "@Operaciones prepara la limpieza del jueves", title: "Plan de limpieza · jueves", lines: ["Limpieza de Casa del Árbol a las 10:00", "Reponer sábanas y amenities", "Aviso al equipo de limpieza"] },
-      { agent: "Cronograma", cmd: "@Cronograma ¿qué fechas siguen libres en diciembre?", title: "Fechas libres · diciembre", lines: ["Villa Palmera: 2–6 y 14–20", "Casa del Árbol: 9–12 y 22–27", "Sugerencia: cubre el hueco del 14 con 3 noches"] },
-      { agent: "Ventas", cmd: "@Ventas arma una oferta para el finde largo", title: "Oferta · finde largo", lines: ["Texto listo: «Tres noches con el bosque a tu puerta»", "Ideal para publicar y enviar a huéspedes anteriores", "Revisa y aprueba antes de enviar"] },
-    ],
-  },
   hero: { getHost: "Conseguirlo por {price}", getHostSub: "Stayflow Host, pago único", see: "Ver cómo funciona" },
-  solution: { add: "Agregar al carrito", added: "En tu carrito", live: "Disponible ya", preorder: "Preventa", oneTime: "pago único", learn: "Ver más" },
+  solution: { add: "Agregar al carrito", added: "En tu carrito", live: "Disponible ya", soon: "Próximamente", oneTime: "pago único", learn: "Ver más" },
   productPage: {
     back: "Todas las herramientas",
     whatYouGet: "Lo que obtienes",
@@ -143,11 +117,20 @@ export const es = {
     support: "Soporte",
     availability: "Disponibilidad",
     liveNote: "Disponible ya. Acceso inmediato después de la compra.",
-    preorderNote: "Preventa. Se entrega cuando esté lista y te avisamos por email. Todavía sin fecha anunciada.",
+    soonNote: "Próximamente. Todavía no está a la venta: déjanos tu email y te avisamos el día que salga.",
     alsoNeed: "Combina bien con",
     compareTitle: "Combínala y ahorra 30%",
     compareBody: "Suma una app más a tu carrito y el 30% se descuenta del subtotal de las apps.",
     openApp: "Ver la app funcionando",
+  },
+  soon: {
+    eyebrow: "Próximamente",
+    title: "Lo que viene.",
+    body: "Estas herramientas todavía no están a la venta. Déjanos tu email en la que te interese y te avisamos el día que salga. Así también sabemos cuál construir primero.",
+    tag: "Próximamente",
+    notify: "Avísame cuando salga",
+    consent: "Solo usaremos tu email para avisarte de este lanzamiento.",
+    notifyPack: "Avísame del Megapack",
   },
   shelf: {
     hint: "Arrastra una app hasta tu pack, o tócala",
@@ -171,7 +154,7 @@ export const es = {
     saved: "Ahorras",
     total: "Total",
     checkout: "Revisar mi pedido",
-    note: "El descuento se aplica solo a las apps, nunca al Host Launch Kit.",
+    note: "El descuento se aplica al subtotal de las apps.",
   },
   packs: {
     title: "Packs listos para llevar",
@@ -182,10 +165,11 @@ export const es = {
     apps_one: "{count} app",
     apps_other: "{count} apps",
     saves: "Ahorras {amount}",
+    soon: "Próximamente",
     list: {
-      essential: { name: "Pack Esencial", for: "Lo que ya funciona hoy: reservas, huéspedes y números.", badge: "" },
-      pro: { name: "Pack Profesional", for: "Suma operaciones y asistente para crecer con orden.", badge: "Más elegido" },
-      mega: { name: "Megapack Anfitrión Premium", for: "Todo el ecosistema, con el mayor ahorro.", badge: "−30% · el más completo" },
+      essential: { name: "Pack Esencial", for: "Reservas, guía para huéspedes y tus números: lo que más se usa.", badge: "" },
+      pro: { name: "Pack Profesional", for: "Las cuatro herramientas que ya funcionan hoy, con operaciones incluidas.", badge: "Más completo" },
+      mega: { name: "Megapack Anfitrión Premium", for: "Las 9 apps juntas, con el mayor ahorro. Sale cuando estén todas listas.", badge: "Próximamente" },
     },
   },
   offers: {
@@ -199,18 +183,6 @@ export const es = {
     add: "Agregar",
     switch: "Cambiar",
     remove: "Quitar",
-  },
-  kit: {
-    eyebrow: "Host Launch Kit",
-    title: "Empieza a recibir de forma inteligente.",
-    body: "Un paquete premium de recursos digitales para quien comienza o quiere profesionalizar su negocio de alquileres temporarios.",
-    includes: "Qué incluye",
-    items: ["Guía de lanzamiento", "Checklist de preparación", "Plantillas de mensajes", "Manual de atención", "Plantillas de reglas", "Checklist de limpieza", "Guía para optimizar publicaciones", "Recursos descargables"],
-    price: "pago único",
-    cta: "Quiero el Host Launch Kit",
-    inCart: "Kit en tu carrito",
-    status: "Preventa. Los archivos digitales llegan por email cuando estén listos. Sin fecha anunciada.",
-    note: "No entra en el descuento del 30% del Multi-Pack.",
   },
   support: {
     eyebrow: "Soporte opcional",
@@ -252,7 +224,6 @@ export const es = {
     addKit: "Agregar el Host Launch Kit",
     kitLine: "Recursos premium complementarios",
     review: "Revisar mi pedido",
-    preorderTag: "Preventa",
     remove: "Quitar",
     continue: "Seguir viendo",
     items_one: "{count} producto",
@@ -271,7 +242,6 @@ export const es = {
     thanks: "Gracias. Te escribiremos cuando se abra el pago.",
     error: "No pudimos guardar tu email. Inténtalo de nuevo.",
     consent: "Usaremos tu email solo para avisarte cuando se abra el pago.",
-    preorderNote: "Los productos marcados como Preventa se entregan cuando estén listos; te avisamos por email. No hay fechas anunciadas.",
   },
   prices: {
     host: {
@@ -285,8 +255,8 @@ export const es = {
       chipB: "3 llegadas esta semana",
       chipC: "Una fecha ocupada no se puede reservar dos veces",
     },
-    separateTitle: "Cada herramienta, por separado",
-    separateBody: "Cada una se compra sola y es tuya, con su precio a la vista. Las que están en desarrollo se reservan en preventa.",
+    separateTitle: "Las 4 herramientas que ya funcionan",
+    separateBody: "Cada una se compra sola, es tuya y la usas apenas pagas. Con el precio a la vista.",
     packsLast: "Packs listos para llevar",
     mixTitle: "Arma tu pack a tu medida",
     mixBody: "Elige las apps que quieras. Desde la segunda, el 30% se descuenta solo, y tu carrito te sugiere cómo ahorrar más.",
@@ -294,10 +264,10 @@ export const es = {
     upsellTitle: "Upsell: suma una app y ahorra",
     upsellBody: "Con Host solo pagas {a}. Si sumas Guest, se activa el 30%: las dos juntas salen {b} en vez de {c}. Ahorras {d} y te llevas una app más.",
     downsellTitle: "Downsell: ¿es mucho? Quita una",
-    downsellBody: "Con Host, Guest, AI y Operations pagas {a}. Si quitas Host, pagas {b} y mantienes el 30% de descuento.",
+    downsellBody: "Con Host, Guest, Profit y Operations pagas {a}. Si quitas Host, pagas {b} y mantienes el 30% de descuento.",
     eyebrow: "Precios",
     title: "Precios claros, sin letra chica.",
-    body: "Cada app se compra una sola vez y es tuya. Combina dos o más y el 30% se descuenta solo. Estos son todos los precios.",
+    body: "Cada app se compra una sola vez y es tuya. Combina dos o más y el 30% se descuenta solo. Estos son los precios de lo que ya funciona.",
     disclaimer: "Precios en USD, pago único, impuestos aparte. Stayflow te ayuda a ordenar y entender tu negocio; no garantiza reservas, ingresos ni ningún resultado financiero.",
   },
 };

@@ -5,7 +5,7 @@ import { CartButton } from "./client";
 const LINKS = [
   { href: "/#sistema", key: "landing.nav.system" },
   { href: "/#cronograma", key: "landing.nav.schedule" },
-  { href: "/#agentes", key: "landing.nav.agents" },
+  { href: "/#proximamente", key: "landing.nav.soon" },
   { href: "/#precios", key: "landing.nav.price" },
   { href: "/#preguntas", key: "landing.nav.faq" },
 ] as const;
@@ -48,7 +48,7 @@ export function Header() {
             {t("landing.nav.login")}
           </a>
           <CartButton />
-          <a href="/#precios" className={`${buttonClass} hidden !px-3.5 !py-2 sm:inline-flex`}>
+          <a href="/#precios" className={`${buttonClass} hidden whitespace-nowrap !px-3.5 !py-2 sm:inline-flex`}>
             {t("landing.nav.buy")}
           </a>
         </div>

@@ -830,9 +830,9 @@ export const es = {
     meta: {
       title: "Stayflow · Pon orden en tu alojamiento. Un solo panel, precios claros",
       description:
-        "Reservas, cronograma, huéspedes, tareas y ganancias en un solo panel. Sin dobles reservas, sin olvidos y sin mensualidades. Apps desde USD 19 en pago único y 30% de descuento al combinarlas.",
+        "Reservas, cronograma, huéspedes, tareas y ganancias en un solo panel. Sin dobles reservas, sin olvidos y sin mensualidades. Apps desde USD 25 en pago único y 30% de descuento al combinarlas.",
     },
-    nav: { system: "Sistema", schedule: "Cronograma", agents: "Agentes", price: "Precios", faq: "Preguntas", login: "Entrar", buy: "Ver precios", by: "por" },
+    nav: { system: "Sistema", schedule: "Cronograma", agents: "Agentes", soon: "Próximamente", price: "Precios", faq: "Preguntas", login: "Entrar", buy: "Ver precios", by: "por" },
     hero: {
       eyebrow: "Para anfitriones que ya no quieren apagar incendios",
       title: "¿Tu Airbnb te está consumiendo",
@@ -956,7 +956,7 @@ export const es = {
       q1: "¿Qué significa pago único?",
       a1: "Pagas cada app una sola vez y la usas sin mensualidades ni renovaciones. Los planes de suscripción son opcionales.",
       q2: "¿Cuánto cuesta cada app?",
-      a2: "Los precios están en la sección Precios, app por app. Si combinas dos o más, el 30% se descuenta automáticamente del subtotal. Las apps que aún están en desarrollo se venden como preventa.",
+      a2: "Los precios están en la sección Precios, app por app. Si combinas dos o más, el 30% se descuenta automáticamente del subtotal. Las apps que todavía están en desarrollo aparecen como Próximamente y no se venden hasta que existan.",
       q3: "¿Se conecta con Airbnb o Booking?",
       a3: "Hoy registras tus reservas a mano, en segundos. La importación desde los archivos de ganancias de Airbnb y Booking está en camino.",
       q4: "¿Procesan los pagos de mis huéspedes?",

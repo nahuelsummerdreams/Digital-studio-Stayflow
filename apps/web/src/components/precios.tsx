@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { Icon, Pill } from "@stayflow/ui";
-import { LAUNCH_KIT, PACK_IDS, PACKS, PRODUCT_LIST, PRODUCTS, type ProductId } from "@/lib/catalog";
+import { AVAILABLE_LIST, PACK_IDS, PACKS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
-import { AddPack, AddToCart, KitButton, SupportPicker } from "./client";
+import { AddPack, AddToCart, NotifyButton, SupportPicker } from "./client";
 import { Shelf } from "./shelf";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
@@ -33,7 +33,7 @@ export function ProductCard({ id }: { id: ProductId }) {
   return (
     <article className="reveal fx-card group relative flex flex-col items-center overflow-hidden rounded-3xl px-5 pb-6 pt-3 text-center" style={{ backgroundImage: `radial-gradient(90% 55% at 50% 0%, hsl(${HUE[id]} 100% 50% / 0.3), transparent)` }}>
       <ProductCover id={id} />
-      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.preorder}</span>
+      <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${p.status === "available" ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{p.status === "available" ? m.solution.live : m.solution.soon}</span>
       <h3 className="font-display mt-3 text-xl">{p.name}</h3>
       <p className="mt-1 max-w-[17rem] text-sm text-muted">{c.problem}</p>
       <p className="mt-4 flex items-baseline justify-center gap-2"><span className="font-display text-gradient text-4xl tabular-nums">{usd(p.price)}</span><span className="text-xs text-muted">{m.solution.oneTime}</span></p>
@@ -55,7 +55,7 @@ export function ProductRow({ id, flip }: { id: ProductId; flip: boolean }) {
     <article id={`p-${id}`} className="reveal fx-card relative grid items-center gap-8 overflow-hidden rounded-3xl p-6 md:p-10 lg:grid-cols-2 lg:gap-12" style={{ backgroundImage: `radial-gradient(70% 90% at ${flip ? "100%" : "0%"} 0%, hsl(${HUE[id]} 100% 50% / 0.22), transparent)` }}>
       <div className={`flex justify-center ${flip ? "lg:order-2" : ""}`}><ProductCover id={id} size="lg" /></div>
       <div>
-        <span className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold ${live ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{live ? m.solution.live : m.solution.preorder}</span>
+        <span className={`inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold ${live ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{live ? m.solution.live : m.solution.soon}</span>
         <h3 className="font-display mt-3 text-3xl leading-tight md:text-4xl">{sell.pain}</h3>
         <p className="mt-2 text-sm font-semibold uppercase tracking-[0.14em] text-accent">{m.sell.forLabel}</p>
         <p className="mt-2 text-base leading-relaxed text-muted">{sell.serves}</p>
@@ -75,7 +75,8 @@ export function ProductRow({ id, flip }: { id: ProductId; flip: boolean }) {
 function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
   const c = m.packs.list[id];
   const t = packTotals(id);
-  const featured = id === "mega";
+  const featured = id === "pro";
+  if (PACKS[id].status === "soon") return <SoonPackCard id={id} />;
   return (
     <article className={`reveal fx-card relative flex flex-col items-center rounded-3xl px-6 pb-7 pt-3 text-center ${featured ? "fx-hero" : ""}`}>
       {c.badge && <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-accent px-3 py-1 text-[11px] font-semibold text-onaccent shadow-[0_0_24px_-4px_rgb(var(--accent))]">{c.badge}</span>}
@@ -95,7 +96,22 @@ function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
   );
 }
 
-/** Everything about money in one place: ready-made packs, each tool's price, a live pack builder, the Launch Kit and the plans. */
+/** A pack that is announced, not sold: its cover, what it will hold, and a way to be told when it is out. */
+function SoonPackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
+  const c = m.packs.list[id];
+  return (
+    <article className="reveal fx-card relative flex flex-col items-center rounded-3xl border-dashed px-6 pb-7 pt-3 text-center">
+      <span className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-line bg-surface px-3 py-1 text-[11px] font-semibold text-muted">{c.badge}</span>
+      <div className="opacity-60 saturate-50"><PackCover id={id} /></div>
+      <h4 className="font-display mt-2 text-xl">{c.name}</h4>
+      <p className="mt-1 text-sm text-muted">{c.for}</p>
+      <p className="mt-4 text-sm font-medium text-accent">{m.packs.soon} · −30%</p>
+      <div className="mt-6 w-full"><NotifyButton id={id} className="w-full" label={m.soon.notifyPack} /></div>
+    </article>
+  );
+}
+
+/** Everything about money in one place: ready-made packs, each tool's price, a live pack shelf and the optional support. */
 export function Precios() {
   return (
     <section id="precios" className="relative overflow-hidden border-t border-line/60 bg-surface/30">
@@ -109,7 +125,7 @@ export function Precios() {
 
         <div id="herramientas" className="mt-16">
           <Sub title={m.prices.separateTitle} body={m.prices.separateBody} />
-          <div className="mt-8 space-y-6">{PRODUCT_LIST.map((p, i) => <ProductRow key={p.id} id={p.id} flip={i % 2 === 1} />)}</div>
+          <div className="mt-8 space-y-6">{AVAILABLE_LIST.map((p, i) => <ProductRow key={p.id} id={p.id} flip={i % 2 === 1} />)}</div>
         </div>
 
         <div id="packs" className="mt-24">
@@ -134,23 +150,6 @@ export function Precios() {
                 <p className="mt-2 text-sm leading-relaxed text-muted">{fmt(m.prices.downsellBody, { a: usd(downA.total), b: usd(downB.total) })}</p>
               </div>
             </div>
-          </div>
-        </div>
-
-        <div id="kit" className="mt-24 grid items-center gap-10 lg:grid-cols-2">
-          <div className="reveal">
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{m.kit.eyebrow}</p>
-            <h3 className="font-display mt-3 text-3xl leading-tight md:text-4xl">{m.kit.title}</h3>
-            <p className="mt-4 text-muted">{m.kit.body}</p>
-            <p className="mt-6 flex items-baseline gap-2"><span className="font-display text-gradient text-6xl">{usd(LAUNCH_KIT.price)}</span><span className="text-sm text-muted">{m.kit.price}</span></p>
-            <KitButton className="mt-5 !px-6 !py-3.5 !text-base" />
-            <p className="mt-4 text-xs leading-relaxed text-muted">{m.kit.status}<br />{m.kit.note}</p>
-          </div>
-          <div className="reveal fx-card rounded-3xl p-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{m.kit.includes}</p>
-            <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
-              {m.kit.items.map((x) => <li key={x} className="flex items-center gap-3 rounded-xl border border-line bg-bg/50 px-3.5 py-3 text-sm"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent"><Icon name="check" className="h-3.5 w-3.5" /></span>{x}</li>)}
-            </ul>
           </div>
         </div>
 

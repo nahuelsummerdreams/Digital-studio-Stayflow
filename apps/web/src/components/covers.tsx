@@ -76,7 +76,7 @@ export function ProductCover({ id, size = "md" }: { id: ProductId; size?: BoxSiz
       <div className="absolute inset-0 bg-[#05070d]">
         <PhotoBg src={`/packs/${id}.jpg`} hue={hue} />
         <Brand />
-        <Seal hue={hue} text={p.status === "available" ? "YA|LISTO" : "PRE|VENTA"} />
+        <Seal hue={hue} text={p.status === "available" ? "YA|LISTO" : "PRÓXIMA|MENTE"} />
         {/* A window onto the system itself. */}
         <div className="absolute right-[0.9em] top-[3.9em] z-10 overflow-hidden rounded-[0.5em] border border-white/25 bg-[#05070d] shadow-[0_0.7em_1.6em_rgb(0_0_0/0.65)]" style={{ width: "6.9em", height: "4.4em", transform: "rotate(2.5deg)" }}>
           {shot ? (

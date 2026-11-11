@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as Partial<CartState>;
-        setState({ apps: normalizeApps(Array.isArray(parsed.apps) ? parsed.apps : []), kit: parsed.kit === true });
+        setState({ apps: normalizeApps(Array.isArray(parsed.apps) ? parsed.apps : []), kit: false }); // anything not on sale (an old preorder, the kit) is dropped
       }
     } catch {
       /* a broken saved cart is just an empty cart */
@@ -194,7 +194,7 @@ export function OffersList({ className = "" }: { className?: string }) {
   );
 }
 
-/** Slide-over cart with live prices, upsells that don't get in the way, and the Launch Kit add-on. */
+/** Slide-over cart with live prices and upsells that don't get in the way. */
 export function CartDrawer() {
   const { m, locale } = useMessages();
   const cart = useCart();
@@ -234,7 +234,7 @@ export function CartDrawer() {
                 {totals.lines.map((l) => (
                   <li key={l.id} className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-3.5">
                     <div className="min-w-0 flex-1">
-                      <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">{l.name}{l.preorder && <span className="rounded-full border border-line px-2 py-0.5 text-[10px] font-medium text-muted">{m.cart.preorderTag}</span>}</p>
+                      <p className="flex flex-wrap items-center gap-2 text-sm font-semibold">{l.name}</p>
                       <button type="button" onClick={() => (l.id === "kit" ? cart.setKit(false) : cart.remove(l.id))} className="mt-0.5 text-xs text-muted underline-offset-4 hover:underline">{m.cart.remove}</button>
                     </div>
                     <span className="font-display text-base tabular-nums">{usd(l.price)}</span>
@@ -263,13 +263,6 @@ export function CartDrawer() {
 
           <OffersList />
 
-          {!cart.kit && (
-            <button type="button" onClick={() => cart.setKit(true)} className="flex w-full items-center gap-3 rounded-2xl border border-dashed border-accent/50 bg-accent/5 p-3.5 text-left transition hover:bg-accent/10">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent"><Icon name="plus" className="h-5 w-5" /></span>
-              <span className="min-w-0 flex-1"><span className="block text-sm font-semibold">{m.cart.addKit}</span><span className="block text-xs text-muted">{m.cart.kitLine}</span></span>
-              <span className="text-sm font-semibold tabular-nums">{usd(LAUNCH_KIT.price)}</span>
-            </button>
-          )}
         </div>
 
         {totals.lines.length > 0 && (
