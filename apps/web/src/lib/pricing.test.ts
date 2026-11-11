@@ -10,12 +10,12 @@ describe("computeTotals", () => {
 
   it("one app pays full price and asks for one more", () => {
     const t = computeTotals({ apps: ["guest"], kit: false });
-    expect(t).toMatchObject({ appsSubtotal: 49, discount: 0, total: 49, appsToUnlock: 1, discountActive: false });
+    expect(t).toMatchObject({ appsSubtotal: 25, discount: 0, total: 25, appsToUnlock: 1, discountActive: false });
   });
 
   it("two or more apps get exactly 30% off the apps subtotal", () => {
-    const t = computeTotals({ apps: ["guest", "profit"], kit: false }); // 49 + 19 = 68
-    expect(t).toMatchObject({ appsSubtotal: 68, discountActive: true, discount: 20.4, saved: 20.4, total: 47.6, appsToUnlock: 0 });
+    const t = computeTotals({ apps: ["guest", "profit"], kit: false }); // 25 + 30 = 55
+    expect(t).toMatchObject({ appsSubtotal: 55, discountActive: true, discount: 16.5, saved: 16.5, total: 38.5, appsToUnlock: 0 });
   });
 
   it("the discount is the same 30% from 2 up to all 9 apps", () => {
@@ -29,13 +29,13 @@ describe("computeTotals", () => {
 
   it("the Launch Kit is added at full price and is never discounted", () => {
     const t = computeTotals({ apps: ["guest", "profit"], kit: true });
-    expect(t).toMatchObject({ kitPrice: 159, originalTotal: 227, discount: 20.4, total: 206.6 });
+    expect(t).toMatchObject({ kitPrice: 159, originalTotal: 214, discount: 16.5, total: 197.5 });
     const kitOnly = computeTotals({ apps: [], kit: true });
     expect(kitOnly).toMatchObject({ discountActive: false, total: 159, appCount: 0 });
   });
 
   it("an app plus the kit does not unlock the discount", () => {
-    expect(computeTotals({ apps: ["profit"], kit: true })).toMatchObject({ discountActive: false, total: 178 });
+    expect(computeTotals({ apps: ["profit"], kit: true })).toMatchObject({ discountActive: false, total: 189 });
   });
 
   it("ignores unknown ids and duplicates", () => {
@@ -67,17 +67,17 @@ describe("recommendations", () => {
 
 describe("packs", () => {
   it("prices the ready-made packs with the 30% rule", () => {
-    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 117, discount: 35.1, total: 81.9 });
-    expect(packTotals("pro")).toMatchObject({ appsSubtotal: 175, total: 122.5 });
-    expect(packTotals("mega")).toMatchObject({ appCount: 9, appsSubtotal: 281, total: 196.7 });
+    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 104, discount: 31.2, total: 72.8 });
+    expect(packTotals("pro")).toMatchObject({ appsSubtotal: 162, total: 113.4 });
+    expect(packTotals("mega")).toMatchObject({ appCount: 9, appsSubtotal: 268, total: 187.6 });
   });
 });
 
 describe("offers (upsell and downsell)", () => {
-  it("one app: suggests the cheapest other app, and it can even lower the price", () => {
+  it("one app: suggests the cheapest other app and says how much more that costs", () => {
     const [o] = offers({ apps: ["guest"], kit: false });
-    expect(o).toMatchObject({ kind: "unlock", id: "profit" });
-    expect((o as { extra: number }).extra).toBeLessThan(0); // 49 -> 47.60
+    expect(o).toMatchObject({ kind: "unlock", id: "listing" });
+    expect((o as { extra: number }).extra).toBeCloseTo(5.8, 2); // 25 -> 30.80 for two apps (the cheapest other app is a 19)
   });
   it("two apps: suggests the smallest pack that contains them", () => {
     const o = offers({ apps: ["host", "profit"], kit: false });

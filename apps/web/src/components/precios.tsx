@@ -11,8 +11,8 @@ const m = getMessages();
 const SECTION = "mx-auto max-w-6xl px-5 py-16 md:py-24";
 
 /** Real numbers for the upsell and downsell examples, from the same price rules the cart uses. */
-const upA = computeTotals({ apps: ["guest"], kit: false });
-const upB = computeTotals({ apps: ["guest", "profit"], kit: false });
+const upA = computeTotals({ apps: ["host"], kit: false });
+const upB = computeTotals({ apps: ["host", "guest"], kit: false });
 const downA = computeTotals({ apps: ["host", "guest", "ai", "operations"], kit: false });
 const downB = computeTotals({ apps: ["guest", "ai", "operations"], kit: false });
 
@@ -125,7 +125,7 @@ export function Precios() {
               <div className="reveal fx-card rounded-3xl border-accent/30 p-6">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent"><Icon name="trendUp" className="h-5 w-5" /></span>
                 <h5 className="font-display mt-4 text-lg">{m.prices.upsellTitle}</h5>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{fmt(m.prices.upsellBody, { a: usd(upA.total), b: usd(upB.total), c: usd(upA.total - upB.total) })}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{fmt(m.prices.upsellBody, { a: usd(upA.total), b: usd(upB.total), c: usd(upB.originalTotal), d: usd(upB.saved) })}</p>
               </div>
               <div className="reveal fx-card rounded-3xl p-6">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-line/60 text-muted"><Icon name="trendDown" className="h-5 w-5" /></span>

@@ -283,7 +283,7 @@ export const es = {
     mixBody: "Elige las apps que quieras. Desde la segunda, el 30% se descuenta solo, y tu carrito te sugiere cómo ahorrar más.",
     offersTitle: "Súbelo o bájalo cuando quieras",
     upsellTitle: "Upsell: suma una app y ahorra",
-    upsellBody: "Con Guest solo pagas {a}. Si sumas Profit, se activa el 30% y pagas {b}: {c} menos, y con una app más.",
+    upsellBody: "Con Host solo pagas {a}. Si sumas Guest, se activa el 30%: las dos juntas salen {b} en vez de {c}. Ahorras {d} y te llevas una app más.",
     downsellTitle: "Downsell: ¿es mucho? Quita una",
     downsellBody: "Con Host, Guest, AI y Operations pagas {a}. Si quitas Host, pagas {b} y mantienes el 30% de descuento.",
     eyebrow: "Precios",
