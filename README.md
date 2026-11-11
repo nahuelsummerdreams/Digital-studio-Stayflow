@@ -10,6 +10,7 @@ apps/
   profit/        Stayflow Profit (PWA)                http://localhost:3001
   guest/         Stayflow Guest (PWA + public /g/<link>)  http://localhost:3002
   host/          Stayflow Host (bookings, calendar, guests, tasks)  http://localhost:3003
+  operations/    Stayflow Operations (jobs, checklists, team links, maintenance)  http://localhost:3004
   guest/ host/   next
   suite/         loads every module (built last)
 packages/
@@ -32,6 +33,13 @@ Profit alone and Profit inside the Suite run the same code; the license decides 
 2. `packages/modules/<name>`: data layer, screens, pure logic with tests.
 3. `apps/<name>`: copy `apps/guest`, set `product="<name>"` in `AppShell`, list its nav items.
 Sign-in, trial, license check, theme switcher and the Digital Studio seal come from `@stayflow/shell`.
+
+## Operations
+Cleaning, maintenance and check-in jobs per property (`0017_operations.sql`, tests in `supabase/tests/operations.sql`).
+- Cleaning jobs are created from the Host bookings by `ops_sync_bookings` (idempotent; works without a Host license) and follow date changes and cancellations.
+- Recurring maintenance becomes a job a week before it is due (`ops_generate_recurring`).
+- The team has no accounts: each person gets a private link `/t/<token>`. The database only lets that token read and tick **their own** jobs (`ops_staff_jobs`, `ops_staff_update`).
+- `pnpm dev:operations` runs it on http://localhost:3004.
 
 ## Host bookings
 
