@@ -180,7 +180,7 @@ export function Blocks() {
 export function Apps() {
   const apps: { name: string; body: string; href: string; icon: IconName }[] = [
     { name: "Stayflow Host", body: t("landing.apps.host"), href: HOST_URL, icon: "dashboard" },
-    { name: "Stayflow Profit", body: t("landing.apps.profit"), href: PROFIT_URL, icon: "chart" },
+    { name: "Stayflow Business", body: t("landing.apps.profit"), href: PROFIT_URL, icon: "chart" },
     { name: "Stayflow Guest", body: t("landing.apps.guest"), href: GUEST_URL, icon: "qr" },
   ];
   const soon = [

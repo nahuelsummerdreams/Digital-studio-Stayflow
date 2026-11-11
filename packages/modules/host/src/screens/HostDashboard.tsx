@@ -416,7 +416,7 @@ export function HostDashboard({ currency, userName, properties, bookings, tasks,
 
           <Card title={t("host.tools")}>
             <div className="space-y-3">
-              <Tool icon="chart" name="Stayflow Profit" body={t("host.toolProfit")} href={links.profit} label={t("host.open")} />
+              <Tool icon="chart" name="Stayflow Business" body={t("host.toolProfit")} href={links.profit} label={t("host.open")} />
               <Tool icon="qr" name="Stayflow Guest" body={t("host.toolGuest")} href={links.guest} label={t("host.open")} />
             </div>
           </Card>

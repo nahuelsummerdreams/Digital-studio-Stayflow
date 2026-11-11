@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: brand.tagline,
   manifest: "/manifest.webmanifest",
   applicationName: brand.name,
-  appleWebApp: { capable: true, title: "Profit", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "Business", statusBarStyle: "default" },
   icons: { icon: "/icon.svg", apple: "/icons/apple-touch-icon.png" },
 };
 

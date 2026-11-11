@@ -5,7 +5,7 @@ import { translate } from "./index";
 describe("translate", () => {
   it("returns plain text and fills variables", () => {
     expect(translate("es", "auth.signIn")).toBe("Iniciar sesión");
-    expect(translate("es", "trial.endedTitle", { product: "Stayflow Profit" })).toBe("Tu plan de Stayflow Profit terminó.");
+    expect(translate("es", "trial.endedTitle", { product: "Stayflow Business" })).toBe("Tu plan de Stayflow Business terminó.");
   });
   it("picks singular and plural by count", () => {
     expect(translate("es", "entries.nights", { count: 1 })).toBe("1 noche");

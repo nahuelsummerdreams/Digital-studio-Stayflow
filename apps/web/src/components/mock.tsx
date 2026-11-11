@@ -72,7 +72,7 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
         {[
           { icon: "bed" as IconName, tone: "bg-accent/15 text-accent", title: "Nueva reserva", sub: "Jorge Ruiz · 5 noches", delay: "0s" },
           { icon: "qr" as IconName, tone: "bg-success/15 text-success", title: "Guía abierta por QR", sub: "Villa Palmera", delay: "4s" },
-          { icon: "wallet" as IconName, tone: "bg-amber-300/15 text-amber-300", title: "Ingreso registrado", sub: "+ 650 € en Profit", delay: "8s" },
+          { icon: "wallet" as IconName, tone: "bg-amber-300/15 text-amber-300", title: "Ingreso registrado", sub: "+ 650 € en Business", delay: "8s" },
         ].map((n) => (
           <div key={n.title} className="toast-cycle absolute inset-0 flex items-center gap-2 rounded-xl border border-line bg-surface/95 px-2.5 shadow-xl backdrop-blur" style={{ animationDelay: n.delay }}>
             <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${n.tone}`}><Icon name={n.icon} className="h-3.5 w-3.5" /></span>

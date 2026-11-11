@@ -1,6 +1,6 @@
 /** Names and taglines of every Stayflow product. The accent color is chosen by each user (see themes). */
 export const PRODUCT_BRAND = {
-  profit: { name: "Stayflow Profit", tagline: "Descubre cuánto ganas de verdad." },
+  profit: { name: "Stayflow Business", tagline: "Descubre cuánto ganas de verdad." },
   guest: { name: "Stayflow Guest", tagline: "Una bienvenida cálida, antes de que lleguen." },
   host: { name: "Stayflow Host", tagline: "Todo tu alquiler, en un solo lugar." },
   ai: { name: "Stayflow AI", tagline: "Tu asistente para hablar con cada huésped." },

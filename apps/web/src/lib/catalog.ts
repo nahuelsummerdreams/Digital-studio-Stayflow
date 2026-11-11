@@ -26,7 +26,7 @@ export const PRODUCTS: Record<ProductId, Product> = {
   host: { id: "host", name: "Stayflow Host", price: 49, status: "available", appUrl: HOST_URL },
   guest: { id: "guest", name: "Stayflow Guest", price: 25, status: "available", appUrl: GUEST_URL },
   ai: { id: "ai", name: "Stayflow AI", price: 29, status: "soon" },
-  profit: { id: "profit", name: "Stayflow Profit", price: 30, status: "available", appUrl: PROFIT_URL },
+  profit: { id: "profit", name: "Stayflow Business", price: 30, status: "available", appUrl: PROFIT_URL },
   operations: { id: "operations", name: "Stayflow Operations", price: 29, status: "available", appUrl: OPERATIONS_URL },
   listing: { id: "listing", name: "Stayflow Listing", price: 19, status: "soon" },
   academy: { id: "academy", name: "Stayflow Academy", price: 19, status: "soon" },

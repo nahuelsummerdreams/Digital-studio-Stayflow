@@ -7,7 +7,7 @@ Modular tools for vacation rental hosts. Each app is sold on its own; the **Suit
 ```
 apps/
   web/           Landing page (static, Spanish)       http://localhost:3000
-  profit/        Stayflow Profit (PWA)                http://localhost:3001
+  profit/        Stayflow Business (PWA)                http://localhost:3001
   guest/         Stayflow Guest (PWA + public /g/<link>)  http://localhost:3002
   host/          Stayflow Host (bookings, calendar, guests, tasks)  http://localhost:3003
   operations/    Stayflow Operations (jobs, checklists, team links, maintenance)  http://localhost:3004
