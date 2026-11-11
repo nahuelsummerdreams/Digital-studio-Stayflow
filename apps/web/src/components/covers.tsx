@@ -11,7 +11,7 @@ const m = getMessages();
 /** One colour per product, so a shelf of boxes reads as a family. */
 export const HUE: Record<ProductId, number> = { host: 203, guest: 276, ai: 312, profit: 142, operations: 26, listing: 185, academy: 54, experiences: 342, website: 160 };
 /** Real screenshots of the apps that exist today. The rest show a preview drawn in code. */
-const SHOT: Partial<Record<ProductId, string>> = { host: "/covers/host.webp", profit: "/covers/profit.webp", guest: "/covers/guest.webp" };
+const SHOT: Partial<Record<ProductId, string>> = { host: "/covers/host.webp", profit: "/covers/profit.webp", guest: "/covers/guest.webp", operations: "/covers/operations.webp" };
 const WORD: Record<ProductId, string> = { host: "HOST", guest: "GUEST", ai: "AI", profit: "PROFIT", operations: "OPERATIONS", listing: "LISTING", academy: "ACADEMY", experiences: "EXPERIENCES", website: "WEBSITE" };
 const KEYWORDS: Record<ProductId, string> = {
   host: "RESERVAS · CRONOGRAMA · TAREAS",
