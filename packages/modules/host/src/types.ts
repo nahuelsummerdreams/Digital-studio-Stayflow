@@ -63,4 +63,14 @@ export interface HostProperty {
   name: string;
   city?: string | null;
   photoUrl?: string | null;
+  /** Set when this is a room or a bed that hangs from an establishment (hotel / hostel). */
+  parentId?: string | null;
+  unitKind?: UnitKind | null;
+  roomCategory?: string | null;
+  /** Suggested nightly rate, integer minor units. */
+  baseRate?: number | null;
 }
+
+export const LODGING_TYPES = ["rental", "hotel", "hostel"] as const;
+export type LodgingType = (typeof LODGING_TYPES)[number];
+export type UnitKind = "room" | "bed";

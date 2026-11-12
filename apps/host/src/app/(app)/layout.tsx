@@ -48,6 +48,7 @@ function Frame({ children }: { children: ReactNode }) {
         { href: "/", label: t("nav.dashboard"), icon: "dashboard", description: t("navDesc.dashboard"), group: t("navGroup.control"), ownHeading: true },
         { href: "/bookings", label: t("nav.bookings"), icon: "bed", description: t("navDesc.bookings"), badge: upcoming },
         { href: "/calendar", label: t("nav.schedule"), icon: "calendar", description: t("navDesc.calendar") },
+        ...(org && org.lodgingType !== "rental" ? [{ href: "/reception", label: t("nav.reception"), icon: "key" as const, description: t("navDesc.reception") }] : []),
         { href: "/guests", label: t("nav.guests"), icon: "users", description: t("navDesc.guests"), group: t("navGroup.manage") },
         { href: "/tasks", label: t("nav.tasks"), icon: "tasks", description: t("navDesc.tasks"), badge: pending },
         { href: "/messages", label: t("nav.messages"), icon: "message", description: t("navDesc.messages") },

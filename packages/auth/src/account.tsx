@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { hasProductAccess, type License, type ProductKey } from "@stayflow/licensing";
-import { fetchLicenses, fetchOrganizations, fetchProperties, type Organization, type Property } from "./api";
+import { fetchLicenses, fetchOrganizations, fetchProperties, reservableProperties, type Organization, type Property } from "./api";
 
 interface AccountState {
   client: SupabaseClient;
@@ -12,7 +12,10 @@ interface AccountState {
   session: Session | null;
   org: Organization | null;
   licenses: License[];
+  /** What can be reserved: properties (rental), rooms (hotel) or beds (hostel). Every app works with this flat list. */
   properties: Property[];
+  /** Everything, including establishments that only hold rooms or beds. Used to manage the structure. */
+  allProperties: Property[];
   error: string | null;
   can: (product: ProductKey) => boolean;
   refresh: () => Promise<void>;
@@ -30,7 +33,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
   const [accountReady, setAccountReady] = useState(false);
   const [org, setOrg] = useState<Organization | null>(null);
   const [licenses, setLicenses] = useState<License[]>([]);
-  const [properties, setProperties] = useState<Property[]>([]);
+  const [allProperties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [recovery, setRecovery] = useState(false);
 
@@ -91,6 +94,8 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
     };
   }, [sessionReady, load]);
 
+  const properties = useMemo(() => reservableProperties(allProperties, org?.lodgingType ?? "rental"), [allProperties, org?.lodgingType]);
+
   const value = useMemo<AccountState>(
     () => ({
       client,
@@ -99,6 +104,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       org,
       licenses,
       properties,
+      allProperties,
       error,
       can: (product) => hasProductAccess(licenses, product),
       refresh: load,
@@ -108,7 +114,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       recovery,
       endRecovery: () => setRecovery(false),
     }),
-    [client, sessionReady, accountReady, session, org, licenses, properties, error, load, recovery],
+    [client, sessionReady, accountReady, session, org, licenses, properties, allProperties, error, load, recovery],
   );
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;

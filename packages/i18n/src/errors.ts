@@ -26,6 +26,8 @@ export function errorKey(e: unknown): MessageKey {
   if (code && BY_CODE[code]) return BY_CODE[code];
   if (message === "photo-type") return "errors.photoType";
   if (message === "photo-size") return "errors.photoSize";
+  if (message === "units-count") return "errors.unitsCount";
+  if (/remove the rooms and beds/i.test(message)) return "errors.typeLocked";
   if (/invalid login credentials/i.test(message)) return "errors.invalidCredentials";
   if (/already registered/i.test(message)) return "errors.userExists";
   if (/row-level security|permission denied|only owners and admins/i.test(message)) return "errors.noPermission";

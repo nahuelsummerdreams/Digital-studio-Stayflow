@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
 import { buttonClass, cardClass, errorClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { createOrganization } from "../api";
+import { LODGING_TYPES, createOrganization, setLodgingType, type LodgingType } from "../api";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "MXN", "BRL", "ARS"];
 
@@ -14,6 +14,7 @@ export function CreateOrgScreen() {
   const { client, refresh, signOut } = useAccount();
   const [name, setName] = useState("");
   const [currency, setCurrency] = useState("USD");
+  const [type, setType] = useState<LodgingType>("rental");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -22,7 +23,8 @@ export function CreateOrgScreen() {
     setBusy(true);
     setError(null);
     try {
-      await createOrganization(client, name.trim(), currency);
+      const orgId = await createOrganization(client, name.trim(), currency);
+      if (type !== "rental") await setLodgingType(client, orgId, type);
       await refresh();
     } catch (err) {
       setError(t(errorKey(err)));
@@ -38,6 +40,16 @@ export function CreateOrgScreen() {
         <label className={labelClass}>
           {t("org.name")}
           <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("org.namePlaceholder")} maxLength={120} required />
+        </label>
+        <label className={labelClass}>
+          {t("org.lodgingType")}
+          <select className={inputClass} value={type} onChange={(e) => setType(e.target.value as LodgingType)}>
+            {LODGING_TYPES.map((k) => (
+              <option key={k} value={k}>
+                {t(`lodging.${k}`)}
+              </option>
+            ))}
+          </select>
         </label>
         <label className={labelClass}>
           {t("org.currency")}
