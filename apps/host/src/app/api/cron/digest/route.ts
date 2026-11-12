@@ -24,9 +24,12 @@ export async function GET(req: Request) {
   const db = createClient(url, service, { auth: { persistSession: false, autoRefreshToken: false } });
   const today = localToday();
   const { data: licenses } = await db.from("licenses").select("org_id").eq("product", "host").in("status", ["trialing", "active"]);
+  const { data: off } = await db.from("organizations").select("id").eq("digest_enabled", false);
+  const muted = new Set(((off ?? []) as { id: string }[]).map((o) => o.id));
   let sent = 0;
   let skipped = 0;
   for (const { org_id } of (licenses ?? []) as { org_id: string }[]) {
+    if (muted.has(org_id)) continue;
     try {
       const { data: org } = await db.from("organizations").select("name, currency").eq("id", org_id).single();
       const [bookings, tasks, props, members] = await Promise.all([

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useAccount } from "@stayflow/auth";
-import { HostDashboard, HostGettingStarted, useHostData } from "@stayflow/module-host";
+import { HostDashboard, HostDigestToggle, HostGettingStarted, useHostData } from "@stayflow/module-host";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -32,6 +32,7 @@ export default function DashboardPage() {
       onGoProperties={() => router.push("/properties")}
       onNewBooking={() => router.push("/bookings?new=1")}
     />
+    <HostDigestToggle client={client} orgId={org.id} />
     </div>
   );
 }

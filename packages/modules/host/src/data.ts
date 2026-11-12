@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import type { ImportRow } from "./importer";
 import type { Booking, BookingKind, BookingSource, BookingStatus, HostTask, NewBooking } from "./types";
 
 interface BookingDb {
@@ -246,6 +247,68 @@ export async function updateBooking(client: SupabaseClient, id: string, b: NewBo
     })
     .eq("id", id);
   if (error) throw error;
+}
+
+// ---------------------------------------------------------------- import from a file
+export interface ImportItem {
+  propertyId: string;
+  row: ImportRow;
+  source: BookingSource;
+}
+export interface ImportResult {
+  added: number;
+  /** Already imported before (same confirmation code). */
+  duplicates: number;
+  /** Overlap with a reservation that already exists. */
+  conflicts: number;
+  canceled: number;
+  failed: number;
+}
+
+/**
+ * Saves reservations read from a platform export. Safe to run twice: rows already imported are skipped.
+ * Stays that already ended are saved as checked out and their cleaning task is closed, so history does not pile up as overdue work.
+ */
+export async function importBookings(client: SupabaseClient, orgId: string, items: ImportItem[], today: string, guestLabel: string): Promise<ImportResult> {
+  const result: ImportResult = { added: 0, duplicates: 0, conflicts: 0, canceled: 0, failed: 0 };
+  const pastIds: string[] = [];
+  const live = items.filter((i) => (i.row.canceled ? (result.canceled++, false) : true));
+  for (let i = 0; i < live.length; i += 8) {
+    await Promise.all(
+      live.slice(i, i + 8).map(async ({ propertyId, row, source }) => {
+        const past = row.checkOut < today;
+        const { data, error } = await client
+          .from("bookings")
+          .insert({
+            org_id: orgId,
+            property_id: propertyId,
+            guest_name: row.guest || guestLabel,
+            guest_email: row.email,
+            guest_phone: row.phone,
+            guests_count: row.guests,
+            check_in: row.checkIn,
+            check_out: row.checkOut,
+            source,
+            status: past ? "checked_out" : "confirmed",
+            amount_minor: row.amount,
+            paid_minor: past ? row.amount : 0,
+            external_uid: `file:${row.code}`.slice(0, 300),
+          })
+          .select("id")
+          .single();
+        if (!error) {
+          result.added++;
+          if (past && data) pastIds.push((data as { id: string }).id);
+        } else if (error.code === "23505") result.duplicates++;
+        else if (error.code === "23P01") result.conflicts++;
+        else result.failed++;
+      }),
+    );
+  }
+  for (let i = 0; i < pastIds.length; i += 100) {
+    await client.from("host_tasks").update({ done: true, done_at: new Date().toISOString() }).in("booking_id", pastIds.slice(i, i + 100));
+  }
+  return result;
 }
 
 // ---------------------------------------------------------------- sample data
