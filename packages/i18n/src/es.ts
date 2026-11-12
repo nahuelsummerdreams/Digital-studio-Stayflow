@@ -569,6 +569,9 @@ export const es = {
     lodgingType: "¿Qué tipo de alojamiento tienes?",
     currency: "Moneda",
     continue: "Continuar",
+    create: "Crear mi panel",
+    step: "Paso {n} de {total}",
+    changeCategory: "Cambiar categoría",
     creating: "Creando…",
   },
   activate: {
