@@ -16,7 +16,7 @@ interface ProductCopy {
 }
 
 const SOON = "En desarrollo. Todavía no está a la venta: déjanos tu email y te avisamos el día que salga.";
-const SUPPORT = "Guías de inicio y actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.";
+const SUPPORT = "Guías de inicio y 12 meses de actualizaciones incluidas; después renuevas cuando quieras por USD 10 al año. El soporte directo es un plan opcional.";
 
 export const es = {
   meta: {
@@ -49,7 +49,7 @@ export const es = {
       features: ["Agente de Operaciones", "Agente de Cronograma", "Agente de Ventas", "Agente de Huéspedes", "Generación de respuestas y plantillas", "Ayuda para organizar tareas"],
       delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
-      support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
+      support: SUPPORT,
     },
     profit: {
       tagline: "Sabe cuánto te queda de verdad",
@@ -76,7 +76,7 @@ export const es = {
       features: ["Generación de títulos", "Descripciones optimizadas", "Ideas para destacar tu propiedad", "Recomendaciones de presentación", "Sugerencias de contenido", "Textos comerciales"],
       delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
-      support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
+      support: SUPPORT,
     },
     academy: {
       tagline: "Aprende a recibir como un profesional",
@@ -85,7 +85,7 @@ export const es = {
       features: ["Cómo comenzar en alquileres temporarios", "Cómo preparar una propiedad", "Cómo mejorar la experiencia del huésped", "Cómo organizar las operaciones", "Cómo mejorar las publicaciones", "Cómo controlar los gastos", "Cómo profesionalizar la administración"],
       delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
-      support: "Acceso de por vida a las lecciones que compres. El soporte directo se incluye con un plan de suscripción.",
+      support: SUPPORT,
     },
     experiences: {
       tagline: "Convierte una estadía en una experiencia",
@@ -94,7 +94,7 @@ export const es = {
       features: ["Catálogo de experiencias", "Recomendaciones gastronómicas", "Actividades turísticas", "Servicios adicionales", "Propuestas personalizadas", "Ideas de ingresos complementarios"],
       delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
-      support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
+      support: SUPPORT,
     },
     website: {
       tagline: "Un hogar en la web para tu propiedad",
@@ -103,7 +103,7 @@ export const es = {
       features: ["Sitio web del alojamiento", "Presentación de propiedades", "Galería de fotografías", "Información de servicios", "Información de contacto", "Enlaces de reserva", "Presentación profesional"],
       delivery: SOON,
       requirements: "Un navegador moderno y conexión a internet.",
-      support: "Actualizaciones de por vida. El soporte directo se incluye con un plan de suscripción.",
+      support: SUPPORT,
     },
   } satisfies Record<string, ProductCopy>,
   hero: { getHost: "Conseguirlo por {price}", getHostSub: "Stayflow Host, pago único", see: "Ver cómo funciona" },

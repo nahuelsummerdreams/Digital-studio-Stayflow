@@ -7,7 +7,8 @@ export default function Page() {
   return (
     <LegalPage title="Términos y condiciones" updated="noviembre de 2026">
       <section><h2>El servicio</h2><p>Stayflow ofrece aplicaciones web para gestionar alojamientos de alquiler temporal. Cada herramienta se vende por separado o en packs, con pago único.</p></section>
-      <section><h2>Qué incluye tu compra</h2><ul><li>Acceso a la herramienta comprada y sus actualizaciones mientras exista.</li><li>Uso para tus propios alojamientos. No puedes revenderla ni compartir tu acceso con terceros.</li></ul></section>
+      <section><h2>Qué incluye tu compra</h2><ul><li>Acceso a la herramienta comprada mientras el servicio exista, y 12 meses de actualizaciones y mejoras.</li><li>Uso para tus propios alojamientos. No puedes revenderla ni compartir tu acceso con terceros.</li></ul></section>
+      <section><h2>Actualizaciones y renovación</h2><p>Tu compra incluye 12 meses de actualizaciones y mejoras. Pasado ese plazo, la herramienta sigue funcionando con normalidad: no se bloquea ni se desactiva. Si quieres seguir recibiendo mejoras nuevas, puedes renovar cuando quieras por USD 10 al año. Renovar es opcional.</p></section>
       <section><h2>Próximamente</h2><p>Los productos marcados como «Próximamente» no están a la venta. Dejar tu email solo sirve para avisarte cuando salgan: no es una compra ni una reserva, y no anunciamos ni garantizamos fechas.</p></section>
       <section><h2>Resultados</h2><p>Las herramientas te ayudan a organizarte. No garantizamos ocupación, ingresos ni ningún resultado económico concreto: dependen de tu negocio.</p></section>
       <section><h2>Tu cuenta y tus datos</h2><p>Eres responsable de la información que cargas y de mantener tu contraseña segura. Tus datos siguen siendo tuyos; ver la política de privacidad.</p></section>

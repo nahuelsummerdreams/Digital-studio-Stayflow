@@ -35,7 +35,7 @@ Reglas:
 **Stayflow** es un ecosistema de aplicaciones web (PWA instalables) para **anfitriones de alquiler temporal** (Airbnb, Booking, VRBO, directo). Lo produce **Digital Studio** (el sello de la productora aparece junto a la marca en todas partes). Idioma principal: **español** (tuteo neutro; algunos textos pegados por el dueño usan voseo, hay una mezcla que hay que unificar).
 
 **Modelo comercial decidido:**
-- Cada app se vende **por separado, con pago único** (no suscripción) y "actualizaciones de por vida" prometidas.
+- Cada app se vende **por separado, con pago único** (no suscripción), con **12 meses de actualizaciones incluidas**; después la app sigue funcionando igual y se puede **renovar cuando el cliente quiera por USD 10 al año** (opcional). *El mecanismo técnico que distingue "con actualizaciones" de "sin actualizaciones" aún NO está construido.*
 - **Multi-Pack:** 30% de descuento sobre el subtotal de apps cuando el carrito tiene 2 o más apps.
 - **Soporte mensual opcional**, elegido por herramienta (precios provisionales).
 - Se vende **solo lo que ya existe**. Lo que no existe se muestra como "Próximamente" con un formulario "Avísame cuando salga" (también sirve para medir demanda).
@@ -74,7 +74,7 @@ Sitio estático/SSR en Next.js. Tema oscuro con acentos neón, efectos (aurora, 
 
 **Estructura de la home (en orden):**
 1. Portada: titular de dolor, chips de dolores, pantalla animada de ejemplo (panel "Buenos días Lucía" con notificaciones), botón principal **"Conseguirlo por USD 49"** (agrega Host al carrito y abre el carrito) y botón secundario "Ver todas las herramientas".
-2. Franja de 4 tarjetas con números (0 dobles reservas · 1 panel para todo · USD 49 y Host es tuyo · −30% al combinar) + sellos (Actualizaciones de por vida · Se instala como app · Garantía de 14 días · Soporte opcional).
+2. Franja de 4 tarjetas con números (0 dobles reservas · 1 panel para todo · USD 49 y Host es tuyo · −30% al combinar) + sellos (12 meses de actualizaciones · Se instala como app · Garantía de 14 días · Soporte opcional).
 3. Ticker, sección "El problema" (antes/después) y bloques de funciones con mockups de las pantallas reales.
 4. **Las 4 herramientas a la venta**: cada una con caja 3D, pregunta de dolor, "Para qué sirve", 3 beneficios, precio, botón "Agregar al carrito", enlace "Ver más".
 5. **Packs** (Esencial y Megapack).
@@ -95,7 +95,7 @@ Sitio estático/SSR en Next.js. Tema oscuro con acentos neón, efectos (aurora, 
 
 **Leads:** tabla `leads` en Postgres; el navegador solo puede insertar (anon), nunca leer. Orígenes permitidos por una restricción: `checkout`, `support`, `ad-<producto>`, `notify-<producto>`. Hay un campo trampa anti-bots.
 
-**Afirmaciones públicas que hay que auditar** (las puse yo, sin confirmar con un abogado): "Garantía de 14 días", "Actualizaciones de por vida", "Se instala como app", "0 dobles reservas" (cierto en Host a nivel base de datos), "Pago único", precios en USD "impuestos aparte".
+**Afirmaciones públicas que hay que auditar** (las puse yo, sin confirmar con un abogado): "Garantía de 14 días", "12 meses de actualizaciones, renovación opcional por USD 10/año", "Se instala como app", "0 dobles reservas" (cierto en Host a nivel base de datos), "Pago único", precios en USD "impuestos aparte".
 
 ---
 
@@ -215,7 +215,7 @@ supabase/migrations/0001…0018   supabase/tests/*.sql (9 archivos)
 - "Garantía de 14 días" y reembolso total antes de la entrega.
 - Qué incluye el soporte (respuesta por email, ayuda de configuración, prioridad) y su plazo.
 - Si el Megapack incluye las apps futuras.
-- Que "actualizaciones de por vida" es sostenible económicamente.
+- Que 12 meses de actualizaciones + renovación opcional de USD 10/año es sostenible y que la app nunca se bloquea por no renovar.
 - Que el 30% de descuento solo aplica a apps (no a soporte).
 - País/mercado inicial y moneda (no definidos); impuestos de venta digital según país.
 - Plataforma de cobro (en evaluación: una tienda local argentina "Impultienda", cuya funcionalidad no pude verificar; alternativas: Lemon Squeezy o Paddle como comerciante de registro).
@@ -231,7 +231,7 @@ Cobro + webhook de licencias · página de gracias · emails de bienvenida · in
 ## 11. Preguntas concretas para la auditoría
 
 **Producto y negocio**
-1. ¿Tiene sentido vender pago único con "actualizaciones de por vida" + soporte mensual opcional? ¿Qué riesgos de caja/soporte ves? ¿Qué modelo recomiendas?
+1. ¿Tiene sentido vender pago único con 12 meses de actualizaciones + renovación opcional de USD 10/año + soporte mensual opcional? ¿Qué riesgos de caja/soporte ves? ¿Qué modelo recomiendas?
 2. ¿Los precios (49/25/30/29, packs 72,80 y 93,10) son coherentes con el valor y con competidores (PMS/channel managers, hojas de cálculo)? ¿Qué pasa si el cliente solo usa Host?
 3. ¿La separación en 4 apps con packs es buena o conviene un producto único con planes? ¿La app "Business" y "Operations" justifican producto aparte?
 4. ¿Qué validaría antes de construir las 5 apps restantes?
@@ -258,7 +258,7 @@ Cobro + webhook de licencias · página de gracias · emails de bienvenida · in
 
 **Legal y comercial**
 19. Impuestos de venta digital (IVA/ventas) según país del comprador; ¿conviene un comerciante de registro (Lemon Squeezy/Paddle) frente a una pasarela local?
-20. Revisa términos/reembolsos/privacidad: huecos, promesas arriesgadas ("de por vida", "garantía 14 días"), requisitos para anuncios de Meta y tiendas de apps (si algún día se empaqueta como app).
+20. Revisa términos/reembolsos/privacidad: huecos, promesas arriesgadas ("12 meses de actualizaciones", "no se bloquea si no renuevas", "garantía 14 días"), requisitos para anuncios de Meta y tiendas de apps (si algún día se empaqueta como app).
 
 ---
 
