@@ -93,14 +93,14 @@ export function TeamScreen() {
     "booking.deleted": "team.act_booking_deleted",
     "payment.refund": "team.act_payment_refund",
   } as const;
+  const ROLE_KEYS = ["owner", "admin", "member", "viewer"] as const;
+  const detailLabel = (d: string) => d.split(" → ").map((p) => ((ROLE_KEYS as readonly string[]).includes(p) ? roleLabel(p as OrgRole) : p)).join(" → ");
   const actionLabel = (a: string) => (a in ACTIONS ? t(ACTIONS[a as keyof typeof ACTIONS]) : a);
 
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-3xl">{t("team.title")}</h1>
-        <p className="mt-2 max-w-2xl text-sm text-muted">{t("team.subtitle")}</p>
-        {role && <p className="mt-2 text-xs text-muted">{t("team.yourRole", { role: roleLabel(role) })}</p>}
+        {role && <p className="text-xs text-muted">{t("team.yourRole", { role: roleLabel(role) })}</p>}
       </header>
 
       {!manages ? (
@@ -180,7 +180,7 @@ export function TeamScreen() {
                     {audit.map((a) => (
                       <li key={a.id} className="flex flex-wrap gap-x-2">
                         <span className="font-medium">{actionLabel(a.action)}</span>
-                        <span className="text-muted">{a.target}{a.detail ? ` · ${a.detail}` : ""}</span>
+                        <span className="text-muted">{a.target}{a.detail ? ` · ${detailLabel(a.detail)}` : ""}</span>
                         <span className="ml-auto text-xs text-muted">{a.actor} · {new Date(a.at).toLocaleString(undefined, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
                       </li>
                     ))}

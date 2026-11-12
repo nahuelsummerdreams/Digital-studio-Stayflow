@@ -35,8 +35,7 @@ export function HostPropertyDetails({ client, orgId, properties, unitsLabel }: P
   return (
     <section className="space-y-5">
       <div className="max-w-2xl">
-        <h2 className="font-display text-2xl">{t("sheet.title")}</h2>
-        <p className="mt-1.5 text-sm text-muted">{t("sheet.body", { units: unitsLabel })}</p>
+        <p className="text-sm text-muted">{t("sheet.body", { units: unitsLabel })}</p>
       </div>
       {error && <p role="alert" className={errorClass}>{error}</p>}
       <ul className="grid gap-4 lg:grid-cols-2">
