@@ -3,20 +3,23 @@
 import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n } from "@stayflow/i18n";
-import { loadBookingEvents, type BookingEvent } from "../data";
+import { formatMoney } from "@stayflow/money";
+import { loadBookingEvents, loadPayments, type BookingEvent, type BookingPayment } from "../data";
 import { STATUS_KEY } from "../format";
 import type { BookingStatus } from "../types";
 
 /** Small expandable timeline of a booking: created, status, dates, amount and unit changes. */
-export function BookingHistory({ client, bookingId, nameOf, version }: { client: SupabaseClient; bookingId: string; nameOf: (id: string) => string; version: unknown }) {
+export function BookingHistory({ client, bookingId, nameOf, version, currency }: { client: SupabaseClient; bookingId: string; nameOf: (id: string) => string; version: unknown; currency: string }) {
   const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState<BookingEvent[] | null>(null);
+  const [payments, setPayments] = useState<BookingPayment[]>([]);
 
   useEffect(() => {
     if (!open) return;
     let alive = true;
     loadBookingEvents(client, bookingId).then((e) => alive && setEvents(e)).catch(() => alive && setEvents([]));
+    loadPayments(client, bookingId).then((p) => alive && setPayments(p)).catch(() => alive && setPayments([]));
     return () => { alive = false; };
   }, [open, client, bookingId, version]);
 
@@ -37,6 +40,16 @@ export function BookingHistory({ client, bookingId, nameOf, version }: { client:
         {open ? t("hist.hide") : t("hist.show")}
       </button>
       {open && (
+        <>
+        {payments.length > 0 && (
+          <ul className="mt-2 space-y-1 border-l border-accent/40 pl-3 text-xs text-muted">
+            {payments.map((p) => (
+              <li key={p.id}>
+                <span className="text-text">{p.amount > 0 ? "+" : "−"} {formatMoney(Math.abs(p.amount), currency, locale)}</span> · {t(`pay.${p.method}`)}{p.note ? ` · ${p.note}` : ""} · {new Date(p.paidOn + "T12:00:00").toLocaleDateString(locale, { day: "numeric", month: "short" })}
+              </li>
+            ))}
+          </ul>
+        )}
         <ol className="mt-2 space-y-1 border-l border-line pl-3 text-xs text-muted">
           {events === null ? <li>…</li> : events.length === 0 ? <li>{t("hist.none")}</li> : events.map((e) => (
             <li key={e.id}>
@@ -44,6 +57,7 @@ export function BookingHistory({ client, bookingId, nameOf, version }: { client:
             </li>
           ))}
         </ol>
+        </>
       )}
     </div>
   );

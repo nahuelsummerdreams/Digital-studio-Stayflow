@@ -128,7 +128,7 @@ export const es = {
     payRegister: "Registrar cobro",
     payAll: "Cobrado completo",
     paySave: "Guardar",
-    payInput: "Cobrado hasta ahora",
+    payInput: "Monto cobrado",
     payErr: "Ingresa un monto válido.",
     // today
     todayTitle: "Tu día",
@@ -579,6 +579,15 @@ export const es = {
     invalid: "Ese código no es válido o ya se usó. Revisa que esté completo.",
     noCode: "¿Todavía no tienes código?",
     buy: "Consigue {product}",
+  },
+  pay: {
+    method: "Medio de cobro",
+    cash: "Efectivo",
+    transfer: "Transferencia",
+    card: "Tarjeta",
+    platform: "Plataforma",
+    other: "Otro",
+    adjust: "Ajuste",
   },
   hist: {
     show: "Ver historial",

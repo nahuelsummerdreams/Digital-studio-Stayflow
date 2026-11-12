@@ -98,6 +98,36 @@ export async function addBooking(client: SupabaseClient, orgId: string, b: NewBo
   if (error) throw error;
 }
 
+export const PAYMENT_METHODS = ["cash", "transfer", "card", "platform", "other"] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+export interface BookingPayment {
+  id: string;
+  amount: number;
+  method: PaymentMethod | "adjust";
+  note: string;
+  paidOn: string;
+  at: string;
+}
+
+/** Registers a collection (positive) or a refund (negative) on a booking. The running total follows the ledger. */
+export async function recordPayment(client: SupabaseClient, bookingId: string, amount: number, method: PaymentMethod, note = ""): Promise<void> {
+  const { error } = await client.rpc("record_booking_payment", { p_booking: bookingId, p_amount: amount, p_method: method, p_note: note });
+  if (error) throw error;
+}
+
+export async function loadPayments(client: SupabaseClient, bookingId: string): Promise<BookingPayment[]> {
+  const { data, error } = await client
+    .from("booking_payments")
+    .select("id, amount_minor, method, note, paid_on, created_at")
+    .eq("booking_id", bookingId)
+    .order("created_at", { ascending: false })
+    .limit(50)
+    .returns<{ id: string; amount_minor: number | string; method: BookingPayment["method"]; note: string; paid_on: string; created_at: string }[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ id: r.id, amount: Number(r.amount_minor), method: r.method, note: r.note, paidOn: r.paid_on, at: r.created_at }));
+}
+
 export async function setBookingStatus(client: SupabaseClient, id: string, status: BookingStatus): Promise<void> {
   const { error } = await client.from("bookings").update({ status }).eq("id", id);
   if (error) throw error;

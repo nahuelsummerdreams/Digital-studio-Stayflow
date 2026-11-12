@@ -5,7 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney, formatMoneyExact, parseMoney } from "@stayflow/money";
 import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
-import { addBooking, recordBookingIncome, removeBooking, setBookingPaid, setBookingStatus, updateBooking } from "../data";
+import { addBooking, recordBookingIncome, removeBooking, recordPayment, setBookingStatus, updateBooking, PAYMENT_METHODS, type PaymentMethod } from "../data";
 import { addDays, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
 import { BookingHistory } from "./BookingHistory";
@@ -48,6 +48,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [editingId, setEditingId] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [payValue, setPayValue] = useState("");
+  const [payMethod, setPayMethod] = useState<PaymentMethod>("cash");
+  const [payTick, setPayTick] = useState(0);
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -190,9 +192,10 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
 
   async function savePaid(b: Booking, minor: number | null) {
     setError(null);
-    if (minor === null || minor < 0) return setError(t("hx.payErr"));
+    if (minor === null || minor <= 0) return setError(t("hx.payErr"));
     try {
-      await setBookingPaid(client, b.id, minor);
+      await recordPayment(client, b.id, minor, payMethod);
+      setPayTick((n) => n + 1);
       setPayFor(null);
       setPayValue("");
       await reload();
@@ -360,8 +363,11 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                     payFor === b.id ? (
                       <span className="flex flex-wrap items-center gap-2">
                         <input aria-label={t("hx.payInput")} className={`${inputClass} !w-32 !py-2`} inputMode="decimal" value={payValue} onChange={(e) => setPayValue(e.target.value)} placeholder={t("hx.payInput")} />
+                        <select aria-label={t("pay.method")} className={`${inputClass} !w-auto !py-2`} value={payMethod} onChange={(e) => setPayMethod(e.target.value as PaymentMethod)}>
+                          {PAYMENT_METHODS.map((m) => <option key={m} value={m}>{t(`pay.${m}`)}</option>)}
+                        </select>
                         <button type="button" className={`${buttonClass} !px-3 !py-2`} onClick={() => savePaid(b, parseMoney(payValue))}>{t("hx.paySave")}</button>
-                        <button type="button" className={ghostButtonClass} onClick={() => savePaid(b, b.amount)}>{t("hx.payAll")}</button>
+                        <button type="button" className={ghostButtonClass} onClick={() => savePaid(b, owed(b))}>{t("hx.payAll")}</button>
                       </span>
                     ) : (
                       <button type="button" className={ghostButtonClass} onClick={() => { setPayFor(b.id); setPayValue(""); }}>{t("hx.payRegister")}</button>
@@ -377,7 +383,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                     {t("host.delete")}
                   </button>
                 </div>
-                <BookingHistory client={client} bookingId={b.id} nameOf={nameOf} version={b.status + b.checkIn + b.checkOut + b.amount + b.propertyId} />
+                <BookingHistory client={client} bookingId={b.id} nameOf={nameOf} currency={currency} version={b.status + b.checkIn + b.checkOut + b.amount + b.propertyId + b.paid + payTick} />
                   </div>
                 </div>
               </li>
