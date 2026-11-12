@@ -1,0 +1,16 @@
+STAYFLOW  ·  un producto de Digital Studio
+Descargas de prueba
+
+Cada carpeta contiene una app:
+  Stayflow-Host         reservas, cronograma, mensajes, cobros
+  Stayflow-Guest        guía digital con QR para tus huéspedes
+  Stayflow-Business     ingresos, gastos y ganancia real
+  Stayflow-Operations   limpieza, equipo y mantenimiento
+
+Dentro de cada una:
+  1  Guía de inicio en PDF (lo que se envía al cliente al comprar)
+  2  Acceso directo para abrir la app (Windows / Mac / Linux)
+  3  Cómo instalarla como app en la computadora y el celular
+
+Las apps funcionan en línea: se abren desde esos accesos y se pueden instalar
+como app desde Chrome, Edge o Safari (instrucciones en cada carpeta).

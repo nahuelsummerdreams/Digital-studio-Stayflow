@@ -1,0 +1,30 @@
+STAYFLOW BUSINESS  ·  un producto de Digital Studio
+Descubre cuánto ganas de verdad.
+Ingresos, gastos, margen por propiedad y calculadora de tarifa.
+
+TU DIRECCIÓN
+https://stayflow-profit.vercel.app
+
+CÓMO ABRIRLA (30 segundos)
+  Haz doble clic en "2-Abrir-Stayflow-Business" (el archivo de tu sistema: Windows o Mac)
+  y se abre en tu navegador. Inicia sesión o crea tu cuenta.
+
+CÓMO INSTALARLA COMO APP EN TU COMPUTADORA
+  Windows o Mac con Chrome o Edge:
+    1. Abre la dirección de arriba e inicia sesión.
+    2. En el extremo derecho de la barra de direcciones aparece un ícono para INSTALAR.
+    3. Pulsa "Instalar". Se abre en su propia ventana, con su ícono, sin barras del navegador.
+    4. Queda en tu escritorio o en el menú de inicio.
+  Mac con Safari:
+    1. Abre la dirección e inicia sesión.
+    2. Menú Archivo > "Añadir al Dock".
+  Celular:
+    Android (Chrome): menú de los tres puntos > "Instalar app" o "Añadir a pantalla de inicio".
+    iPhone (Safari): botón compartir > "Añadir a pantalla de inicio".
+
+IMPORTANTE
+  - Es la misma app y los mismos datos, la abras en el navegador o instalada.
+  - Una sola cuenta sirve para todas las apps Stayflow.
+  - Para empezar con calma, lee la guía en PDF de esta carpeta (empieza por la página 3).
+
+Un producto de Digital Studio.
