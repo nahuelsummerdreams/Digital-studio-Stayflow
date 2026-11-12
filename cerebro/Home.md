@@ -18,7 +18,7 @@ actualizado: 2026-11-12
 [[Avatar - Anfitrión]] · [[Dolores y deseos]] · [[Objeciones]] · [[Lenguaje del cliente]]
 
 ## Marketing y ventas
-[[Embudo de venta]] · [[Landing - estructura y copy]] · [[Anuncios Meta]] · [[Email - secuencias]] · [[Contenido]] · [[Oferta y garantía]] · [[Legal y cumplimiento]]
+[[Embudo de venta]] · [[Landing - estructura y copy]] · [[Anuncios Meta]] · [[Email - secuencias]] · [[Contenido]] · [[Oferta y garantía]] · [[Entrega de licencias]] · [[Legal y cumplimiento]]
 
 ## Operación
 [[Infraestructura]] · [[Backlog técnico]] · [[Soporte - respuestas rápidas]]

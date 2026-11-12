@@ -35,3 +35,15 @@ actualizado: 2026-11-12
 
 ## Entrevista a un cliente
 "Prepárame 10 preguntas para una entrevista de 15 min a un anfitrión (sin sesgar), y cómo anotar las frases textuales en `Lenguaje del cliente`."
+
+## Entregar una compra (licencia)
+"Entrega una compra: <producto o pack>, orden <NNNN>, cliente <nombre>. Sigue `Entrega de licencias`: emite el código con Supabase (nota solo 'Orden NNNN'), arma el correo con la plantilla `Correo de entrega`, dime qué carpetas adjuntar y deja el borrador sin enviar. Registra la entrega en el diario sin código ni datos del cliente."
+
+## Lote de códigos
+"Emite <N> códigos de <producto> para <plataforma>, con la nota 'Lote <plataforma>'. Devuélvemelos en una tabla para copiar. No los guardes en el vault."
+
+## Estado de licencias
+"Muéstrame los códigos de los últimos 30 días: cuáles se usaron, por qué negocio y cuáles siguen sin usar. Resume cuántos hay de cada producto."
+
+## Reembolso
+"El cliente de la orden <NNNN> pide reembolso dentro de los 14 días. Busca su código, revócalo con `revoke_license_code` y dime si se había usado. Prepara la respuesta al cliente."
