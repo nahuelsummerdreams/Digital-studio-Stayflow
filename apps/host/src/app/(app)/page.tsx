@@ -12,7 +12,7 @@ export default function DashboardPage() {
   const meta = session?.user.user_metadata as { full_name?: string } | undefined;
   const userName = meta?.full_name?.trim() || session?.user.email?.split("@")[0] || org.name;
   const gs = (
-    <HostGettingStarted allowDemo={org.lodgingType === "rental"} client={client} orgId={org.id} properties={properties} bookings={data.bookings} onGo={(href) => router.push(href)} onChanged={async () => { await refresh(); await data.reload(); }} />
+    <HostGettingStarted allowDemo={org.lodgingType === "rental" || org.lodgingType === "cabins"} client={client} orgId={org.id} properties={properties} bookings={data.bookings} onGo={(href) => router.push(href)} onChanged={async () => { await refresh(); await data.reload(); }} />
   );
   if (properties.length === 0) return gs;
   return (

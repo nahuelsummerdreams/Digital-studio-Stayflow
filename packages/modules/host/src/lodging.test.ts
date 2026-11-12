@@ -31,6 +31,9 @@ describe("bookableIds", () => {
   it("rental: top-level properties only", () => {
     expect(bookableIds([prop("a"), prop("b")], "rental")).toEqual(["a", "b"]);
   });
+  it("cabins: the cabins themselves, like a rental (they are top-level properties)", () => {
+    expect(bookableIds([prop("c1"), prop("c2")], "cabins")).toEqual(["c1", "c2"]);
+  });
   it("hotel: rooms, never the building", () => {
     expect(bookableIds(hotel, "hotel")).toEqual(["r1", "r2"]);
   });

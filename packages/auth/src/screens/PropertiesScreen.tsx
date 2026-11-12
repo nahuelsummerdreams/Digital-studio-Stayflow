@@ -4,7 +4,8 @@ import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
 import { Icon, Pill, PropertyPhoto, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { LODGING_TYPES, archiveProperty, createProperty, createUnits, removePropertyPhoto, setLodgingType, setPropertyPhoto, type LodgingType, type Property } from "../api";
+import { archiveProperty, createProperty, createUnits, removePropertyPhoto, setPropertyPhoto, type LodgingType, type Property } from "../api";
+import { LodgingCategory } from "./LodgingCategory";
 
 /** Rooms (and beds in a hostel) of one establishment, with a form to add more. */
 function UnitsPanel({ establishment, type, all, onChanged, onError }: { establishment: Property; type: LodgingType; all: Property[]; onChanged: () => Promise<void>; onError: (m: string | null) => void }) {
@@ -191,6 +192,8 @@ export function PropertiesScreen() {
   const t = useT();
   const { client, org, allProperties, refresh } = useAccount();
   const lodging = org?.lodgingType ?? "rental";
+  /** Hotels and hostels reserve rooms or beds; rentals and cabins reserve the properties themselves. */
+  const usesUnits = lodging === "hotel" || lodging === "hostel";
   const topLevel = allProperties.filter((p) => !p.parentId);
   const hasUnits = allProperties.some((p) => p.parentId);
   const [name, setName] = useState("");
@@ -215,31 +218,11 @@ export function PropertiesScreen() {
     }
   }
 
-  async function changeType(next: LodgingType) {
-    if (!org || next === lodging) return;
-    setError(null);
-    try {
-      await setLodgingType(client, org.id, next);
-      await refresh();
-    } catch (err) {
-      setError(t(errorKey(err)));
-    }
-  }
-
   return (
     <div className="space-y-6">
       {error && <p role="alert" className={errorClass}>{error}</p>}
-      <label className={`${labelClass} ${cardClass} block`}>
-        {t("lodging.typeTitle")}
-        <select className={inputClass} value={lodging} disabled={hasUnits} onChange={(e) => void changeType(e.target.value as LodgingType)}>
-          {LODGING_TYPES.map((k) => (
-            <option key={k} value={k}>
-              {t(`lodging.${k}`)}
-            </option>
-          ))}
-        </select>
-        <span className="mt-1 block text-xs text-muted">{hasUnits ? t("lodging.typeHint") : lodging === "rental" ? "" : t("lodging.noCapacityHint")}</span>
-      </label>
+      <LodgingCategory onError={setError} />
+      {(hasUnits || usesUnits) && <p className="-mt-3 text-xs text-muted">{hasUnits ? t("lodging.typeHint") : t("lodging.noCapacityHint")}</p>}
       <div className="grid gap-6 xl:grid-cols-[1fr_20rem] xl:items-start">
         <section aria-label={t("properties.yourProperties")}>
           {topLevel.length === 0 ? (
@@ -248,7 +231,7 @@ export function PropertiesScreen() {
             <ul className="anim-stagger grid gap-4 sm:grid-cols-2">
               {topLevel.map((p) => (
                 <PropertyCard key={p.id} property={p} onChanged={refresh} onError={setError}>
-                  {lodging !== "rental" && <UnitsPanel establishment={p} type={lodging} all={allProperties} onChanged={refresh} onError={setError} />}
+                  {usesUnits && <UnitsPanel establishment={p} type={lodging} all={allProperties} onChanged={refresh} onError={setError} />}
                 </PropertyCard>
               ))}
             </ul>

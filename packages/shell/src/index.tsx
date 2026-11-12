@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { visibleNav } from "@stayflow/licensing";
 import { AccountDialog, AccountProvider, AuthScreen, ResetPasswordScreen, CreateOrgScreen, ActivateScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
@@ -34,6 +35,8 @@ export function StayflowProviders({ url, anonKey, children }: { url?: string; an
 
 export interface NavItem {
   href: string;
+  /** Module key (0027_org_modules.sql). When the organization does not have it, the item is not shown. */
+  module?: string;
   label: string;
   icon?: IconName;
   /** One line under the page title on desktop. */
@@ -65,9 +68,11 @@ export interface AppShellProps {
  * What every Stayflow app shows around its screens:
  * sign in -> business setup -> license code -> the app (side menu, top bar, Digital Studio seal).
  */
-export function AppShell({ product, nav, children, quickAction, alerts = [], searchItems = [], plansUrl }: AppShellProps) {
+export function AppShell({ product, nav: navAll, children, quickAction, alerts = [], searchItems = [], plansUrl }: AppShellProps) {
   const t = useT();
-  const { loading, error, session, org, licenses, can, signOut, recovery } = useAccount();
+  const { loading, error, session, org, licenses, modules, can, signOut, recovery } = useAccount();
+  // The menu follows the category: only the modules this organization has.
+  const nav = useMemo(() => visibleNav(navAll, modules), [navAll, modules]);
   const pathname = usePathname();
   const brand = PRODUCT_BRAND[product];
   const [paletteOpen, setPaletteOpen] = useState(false);

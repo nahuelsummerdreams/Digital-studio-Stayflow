@@ -31,7 +31,7 @@ export function establishmentTree(properties: HostProperty[]): EstablishmentNode
  * Containers that only hold units are never reserved and never count for occupancy.
  */
 export function bookableIds(properties: HostProperty[], type: LodgingType): string[] {
-  if (type === "rental") return properties.filter((p) => !p.parentId).map((p) => p.id);
+  if (type === "rental" || type === "cabins") return properties.filter((p) => !p.parentId).map((p) => p.id);
   const ids: string[] = [];
   for (const est of establishmentTree(properties)) {
     for (const room of est.rooms) {

@@ -71,6 +71,6 @@ export interface HostProperty {
   baseRate?: number | null;
 }
 
-export const LODGING_TYPES = ["rental", "hotel", "hostel"] as const;
+export const LODGING_TYPES = ["rental", "hotel", "cabins", "hostel"] as const;
 export type LodgingType = (typeof LODGING_TYPES)[number];
 export type UnitKind = "room" | "bed";

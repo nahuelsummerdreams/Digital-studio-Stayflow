@@ -44,8 +44,9 @@ export async function redeemLicenseCode(client: SupabaseClient, orgId: string, c
   return (data ?? []) as string[];
 }
 
-export type LodgingType = "rental" | "hotel" | "hostel";
-export const LODGING_TYPES: readonly LodgingType[] = ["rental", "hotel", "hostel"];
+export type LodgingType = "rental" | "hotel" | "cabins" | "hostel";
+/** The four categories, in the order they are offered. */
+export const LODGING_TYPES: readonly LodgingType[] = ["rental", "hotel", "cabins", "hostel"];
 
 export interface Organization {
   id: string;
@@ -73,7 +74,34 @@ export async function fetchOrganizations(client: SupabaseClient): Promise<Organi
   return (data ?? []).map((r) => ({ id: r.id, name: r.name, currency: r.currency, lodgingType: r.lodging_type ?? "rental" }));
 }
 
-/** Only allowed while the business has no rooms or beds (the database enforces it). */
+/** The modules this organization has, by key (0027_org_modules.sql). They follow its category. */
+export async function fetchOrgModules(client: SupabaseClient, orgId: string): Promise<string[]> {
+  const { data, error } = await client.from("org_modules").select("module").eq("org_id", orgId).eq("enabled", true).returns<{ module: string }[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => r.module);
+}
+
+export interface LodgingChangePreview {
+  current: LodgingType;
+  target: LodgingType;
+  allowed: boolean;
+  /** Why it is not allowed: units that the new category cannot hold. */
+  reason: "has_units" | "has_beds" | null;
+  rooms: number;
+  beds: number;
+  /** Modules that turn on / turn off. Data is never touched. */
+  enable: string[];
+  disable: string[];
+}
+
+/** What changing the category would do, without doing it. */
+export async function previewLodgingChange(client: SupabaseClient, orgId: string, type: LodgingType): Promise<LodgingChangePreview> {
+  const { data, error } = await client.rpc("lodging_change_preview", { p_org: orgId, p_type: type });
+  if (error) throw error;
+  return data as LodgingChangePreview;
+}
+
+/** Changes the category. The database adapts the modules and keeps every booking, guest and payment. */
 export async function setLodgingType(client: SupabaseClient, orgId: string, type: LodgingType): Promise<void> {
   const { error } = await client.from("organizations").update({ lodging_type: type }).eq("id", orgId);
   if (error) throw error;
@@ -138,7 +166,7 @@ export async function fetchProperties(client: SupabaseClient, orgId: string): Pr
  * Establishments that only hold units are left out, so every app keeps working with a flat list.
  */
 export function reservableProperties(all: Property[], type: LodgingType): Property[] {
-  if (type === "rental") return all.filter((p) => !p.parentId);
+  if (type === "rental" || type === "cabins") return all.filter((p) => !p.parentId);
   const byId = new Map(all.map((p) => [p.id, p]));
   const hasBeds = new Set(all.filter((p) => p.unitKind === "bed" && p.parentId).map((p) => p.parentId as string));
   const label = (p: Property): string => {

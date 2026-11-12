@@ -45,16 +45,16 @@ function Frame({ children }: { children: ReactNode }) {
       searchItems={searchItems}
       plansUrl={process.env.NEXT_PUBLIC_WEB_URL ? `${process.env.NEXT_PUBLIC_WEB_URL}#precios` : undefined}
       nav={[
-        { href: "/", label: t("nav.dashboard"), icon: "dashboard", description: t("navDesc.dashboard"), group: t("navGroup.control"), ownHeading: true },
-        { href: "/bookings", label: t("nav.bookings"), icon: "bed", description: t("navDesc.bookings"), badge: upcoming },
-        { href: "/calendar", label: t("nav.schedule"), icon: "calendar", description: t("navDesc.calendar") },
-        ...(org && org.lodgingType !== "rental" ? [{ href: "/reception", label: t("nav.reception"), icon: "key" as const, description: t("navDesc.reception") }] : []),
-        { href: "/guests", label: t("nav.guests"), icon: "users", description: t("navDesc.guests"), group: t("navGroup.manage") },
-        { href: "/tasks", label: t("nav.tasks"), icon: "tasks", description: t("navDesc.tasks"), badge: pending },
-        { href: "/messages", label: t("nav.messages"), icon: "message", description: t("navDesc.messages") },
-        { href: "/reports", label: t("nav.reports"), icon: "report", description: t("navDesc.reports") },
-        { href: "/sync", label: t("nav.sync"), icon: "refresh", description: t("navDesc.sync") },
-        { href: "/properties", label: t("nav.properties"), icon: "building", description: t("navDesc.properties"), badge: properties.length },
+        { href: "/", module: "dashboard", label: t("nav.dashboard"), icon: "dashboard", description: t("navDesc.dashboard"), group: t("navGroup.control"), ownHeading: true },
+        { href: "/bookings", module: "bookings", label: t("nav.bookings"), icon: "bed", description: t("navDesc.bookings"), badge: upcoming },
+        { href: "/calendar", module: "calendar", label: t("nav.schedule"), icon: "calendar", description: t("navDesc.calendar") },
+        { href: "/reception", module: "reception", label: t("nav.reception"), icon: "key", description: t("navDesc.reception") },
+        { href: "/guests", module: "guests", label: t("nav.guests"), icon: "users", description: t("navDesc.guests"), group: t("navGroup.manage") },
+        { href: "/tasks", module: "tasks", label: t("nav.tasks"), icon: "tasks", description: t("navDesc.tasks"), badge: pending },
+        { href: "/messages", module: "messages", label: t("nav.messages"), icon: "message", description: t("navDesc.messages") },
+        { href: "/reports", module: "reports", label: t("nav.reports"), icon: "report", description: t("navDesc.reports") },
+        { href: "/sync", module: "channels", label: t("nav.sync"), icon: "refresh", description: t("navDesc.sync") },
+        { href: "/properties", module: "properties", label: org?.lodgingType === "hostel" ? t("nav.roomsBeds") : org?.lodgingType === "hotel" ? t("nav.rooms") : t("nav.properties"), icon: "building", description: t("navDesc.properties"), badge: properties.length },
       ]}
     >
       {children}

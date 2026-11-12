@@ -9,7 +9,7 @@ export default function ReceptionPage() {
   const router = useRouter();
   const { client, org, properties, allProperties } = useAccount();
   const data = useHostData();
-  const isRental = !org || org.lodgingType === "rental";
+  const isRental = !org || (org.lodgingType !== "hotel" && org.lodgingType !== "hostel");
   useEffect(() => {
     if (org && isRental) router.replace("/");
   }, [org, isRental, router]);

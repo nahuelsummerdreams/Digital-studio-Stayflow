@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { hasProductAccess, type License, type ProductKey } from "@stayflow/licensing";
-import { fetchLicenses, fetchOrganizations, fetchProperties, reservableProperties, type Organization, type Property } from "./api";
+import { fetchLicenses, fetchOrgModules, fetchOrganizations, fetchProperties, reservableProperties, type Organization, type Property } from "./api";
 
 interface AccountState {
   client: SupabaseClient;
@@ -12,6 +12,8 @@ interface AccountState {
   session: Session | null;
   org: Organization | null;
   licenses: License[];
+  /** Modules this organization has (follow its category). Empty until loaded: the menu then shows everything. */
+  modules: string[];
   /** What can be reserved: properties (rental), rooms (hotel) or beds (hostel). Every app works with this flat list. */
   properties: Property[];
   /** Everything, including establishments that only hold rooms or beds. Used to manage the structure. */
@@ -33,6 +35,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
   const [accountReady, setAccountReady] = useState(false);
   const [org, setOrg] = useState<Organization | null>(null);
   const [licenses, setLicenses] = useState<License[]>([]);
+  const [modules, setModules] = useState<string[]>([]);
   const [allProperties, setProperties] = useState<Property[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [recovery, setRecovery] = useState(false);
@@ -62,6 +65,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
     if (!userId) {
       setOrg(null);
       setLicenses([]);
+      setModules([]);
       setProperties([]);
       return;
     }
@@ -70,11 +74,13 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       const first = (await fetchOrganizations(client))[0] ?? null;
       setOrg(first);
       if (first) {
-        const [lic, props] = await Promise.all([fetchLicenses(client, first.id), fetchProperties(client, first.id)]);
+        const [lic, props, mods] = await Promise.all([fetchLicenses(client, first.id), fetchProperties(client, first.id), fetchOrgModules(client, first.id).catch(() => [] as string[])]);
         setLicenses(lic);
+        setModules(mods);
         setProperties(props);
       } else {
         setLicenses([]);
+        setModules([]);
         setProperties([]);
       }
     } catch {
@@ -103,6 +109,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       session,
       org,
       licenses,
+      modules,
       properties,
       allProperties,
       error,
@@ -114,7 +121,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       recovery,
       endRecovery: () => setRecovery(false),
     }),
-    [client, sessionReady, accountReady, session, org, licenses, properties, allProperties, error, load, recovery],
+    [client, sessionReady, accountReady, session, org, licenses, modules, properties, allProperties, error, load, recovery],
   );
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;
