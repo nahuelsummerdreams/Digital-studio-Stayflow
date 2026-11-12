@@ -28,13 +28,13 @@ const NAV: { icon: IconName; label: string; active?: boolean; badge?: number }[]
 export function DashboardMock({ compact = false }: { compact?: boolean }) {
   const kpis: { l: string; v: React.ReactNode; d: string; icon: IconName; hero?: boolean }[] = [
     { l: t("host.occupancy"), v: <CountUp value={68.4} decimals={1} suffix=" %" />, d: "+12,4 %", icon: "dashboard" as IconName, hero: true },
-    { l: t("host.monthRevenue"), v: <CountUp value={4280} suffix=" €" delay={650} />, d: "+8,1 %", icon: "wallet" as IconName },
+    { l: t("host.monthRevenue"), v: <CountUp value={4280} prefix="US$ " delay={650} />, d: "+8,1 %", icon: "wallet" as IconName },
     { l: t("host.arrivalsWeek"), v: <CountUp value={4} delay={800} />, d: "", icon: "key" as IconName },
     { l: t("host.pendingTasks"), v: <CountUp value={3} delay={950} />, d: "", icon: "tasks" as IconName },
   ];
   const props: { name: string; city: string; pill: string; tone: "success" | "warning" | "muted"; occ: number; rev: string; v: 0 | 1 | 2 }[] = [
-    { name: "Casa del Árbol", city: "Sierra de Gredos", pill: t("host.stateOccupied"), tone: "success", occ: 74, rev: "2.270 €", v: 0 },
-    { name: "Villa Palmera", city: "Marbella", pill: t("host.stateArriving"), tone: "warning", occ: 51, rev: "1.400 €", v: 2 },
+    { name: "Casa del Árbol", city: "Sierra de Gredos", pill: t("host.stateOccupied"), tone: "success", occ: 74, rev: "US$ 2.270", v: 0 },
+    { name: "Villa Palmera", city: "Marbella", pill: t("host.stateArriving"), tone: "warning", occ: 51, rev: "US$ 1.400", v: 2 },
   ];
   return (
     <div className="fx-card fx-hero sheen overflow-hidden rounded-[28px] text-left">
@@ -72,7 +72,7 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
         {[
           { icon: "bed" as IconName, tone: "bg-accent/15 text-accent", title: "Nueva reserva", sub: "Jorge Ruiz · 5 noches", delay: "0s" },
           { icon: "qr" as IconName, tone: "bg-success/15 text-success", title: "Guía abierta por QR", sub: "Villa Palmera", delay: "4s" },
-          { icon: "wallet" as IconName, tone: "bg-amber-300/15 text-amber-300", title: "Ingreso registrado", sub: "+ 650 € en Business", delay: "8s" },
+          { icon: "wallet" as IconName, tone: "bg-amber-300/15 text-amber-300", title: "Ingreso registrado", sub: "+ US$ 650 en Business", delay: "8s" },
         ].map((n) => (
           <div key={n.title} className="toast-cycle absolute inset-0 flex items-center gap-2 rounded-xl border border-line bg-surface/95 px-2.5 shadow-xl backdrop-blur" style={{ animationDelay: n.delay }}>
             <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${n.tone}`}><Icon name={n.icon} className="h-3.5 w-3.5" /></span>
@@ -313,10 +313,10 @@ export function TasksMock() {
 /** "What you collect is not what you earn", drawn as bars that grow in. */
 export function ProfitMock() {
   const rows: { label: string; amount: string; width: number; tone: "accent" | "danger" | "net"; strong?: boolean }[] = [
-    { label: t("landing.blocks.profit.collected"), amount: "1.251 €", width: 100, tone: "accent" },
-    { label: t("landing.blocks.profit.expenses"), amount: "−200 €", width: 16, tone: "danger" },
-    { label: t("landing.blocks.profit.fixed"), amount: "−50 €", width: 4, tone: "danger" },
-    { label: t("landing.blocks.profit.net"), amount: "1.001 €", width: 80, tone: "net", strong: true },
+    { label: t("landing.blocks.profit.collected"), amount: "US$ 1.251", width: 100, tone: "accent" },
+    { label: t("landing.blocks.profit.expenses"), amount: "−US$ 200", width: 16, tone: "danger" },
+    { label: t("landing.blocks.profit.fixed"), amount: "−US$ 50", width: 4, tone: "danger" },
+    { label: t("landing.blocks.profit.net"), amount: "US$ 1.001", width: 80, tone: "net", strong: true },
   ];
   const fill = (tone: "accent" | "danger" | "net") =>
     tone === "danger" ? "rgb(var(--danger) / 0.75)" : tone === "net" ? "linear-gradient(90deg, rgb(var(--accent)), rgb(var(--accent-2)))" : "rgb(var(--accent) / 0.45)";
@@ -336,7 +336,7 @@ export function ProfitMock() {
         ))}
       </ul>
       <div className="mt-6 grid grid-cols-2 gap-3">
-        {[["Casa del Árbol", "1.126 €", false], ["Villa Palmera", "-125 €", true]].map(([n, v, neg]) => (
+        {[["Casa del Árbol", "US$ 1.126", false], ["Villa Palmera", "-US$ 125", true]].map(([n, v, neg]) => (
           <div key={n as string} className="rounded-2xl border border-line bg-bg/60 p-3.5">
             <p className="truncate text-[11px] font-medium">{n}</p>
             <p className={`font-display mt-1.5 text-xl tabular-nums ${neg ? "text-danger" : ""}`}>{v}</p>

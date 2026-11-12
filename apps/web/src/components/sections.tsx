@@ -4,6 +4,8 @@ import { getMessages } from "@/i18n";
 import { t } from "@/lib/t";
 import { CookieSettings } from "./consent";
 import { GetHostButton } from "./client";
+import { CategoryHero } from "./category-hero";
+import { ContactLink } from "./contact";
 import { Motes, Tilt } from "./effects";
 import { DashboardMock } from "./mock";
 
@@ -26,30 +28,7 @@ export function Hero() {
       <Motes />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-[680px]" style={{ background: "radial-gradient(60% 60% at 70% 10%, rgb(var(--accent) / 0.24), transparent 70%)" }} />
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:pt-20 lg:grid-cols-[0.95fr_1.05fr] lg:pb-24">
-        <div className="anim-stagger">
-          <p className="inline-flex max-w-full items-center gap-2 rounded-full border border-line bg-surface/60 px-3.5 py-1.5 text-xs text-muted backdrop-blur">
-            <span aria-hidden className="pulse-ring h-1.5 w-1.5 shrink-0 rounded-full bg-success" />
-            <span className="truncate">{t("landing.hero.eyebrow")}</span>
-          </p>
-          <h1 className="font-display mt-6 text-[1.95rem] font-extrabold uppercase leading-[1.16] tracking-tight sm:text-4xl xl:text-[2.5rem]">
-            {t("landing.hero.title")} <span className="text-gradient block">{t("landing.hero.accent")}</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg/85 md:text-xl">{m.funnel.hero.sub}</p>
-          <ul className="mt-6 space-y-2.5">
-            {m.funnel.hero.bullets.map((x) => (
-              <li key={x} className="flex items-start gap-3 text-[15px] md:text-base"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
-            ))}
-          </ul>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <GetHostButton where="hero" />
-            <a href="#sistema" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">
-              {m.funnel.hero.how}
-            </a>
-          </div>
-          <p className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-muted">
-            {m.funnel.hero.trust.map((x) => <span key={x} className="flex items-center gap-1.5"><Icon name="check" className="h-3.5 w-3.5 text-success" />{x}</span>)}
-          </p>
-        </div>
+        <CategoryHero />
 
         <div className="relative">
           <div aria-hidden className="absolute -inset-6 rounded-[56px] bg-accent/20 blur-3xl" />
@@ -142,7 +121,10 @@ export function FinalCta() {
         <div className="relative">
           <h2 className="font-display mx-auto max-w-2xl text-3xl leading-tight md:text-5xl">{m.funnel.cta.title}</h2>
           <p className="mx-auto mt-5 max-w-md text-lg text-muted">{m.funnel.cta.body}</p>
-          <GetHostButton where="final" className="mt-8" />
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <GetHostButton where="final" />
+            <ContactLink />
+          </div>
         </div>
       </div>
     </section>

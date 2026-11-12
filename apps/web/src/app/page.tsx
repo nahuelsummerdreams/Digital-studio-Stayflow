@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Precios } from "@/components/precios";
 import { Faq, FinalCta, Footer, Hero, Strip } from "@/components/sections";
+import { DailyOps } from "@/components/daily";
 import { Showcase } from "@/components/showcase";
 import { Proximamente } from "@/components/soon";
 import { StickyBuy } from "@/components/sticky";
@@ -14,6 +15,7 @@ export default function Home() {
         <Hero />
         <Strip />
         <Showcase />
+        <DailyOps />
         <Precios />
         <Proximamente />
         <Faq />

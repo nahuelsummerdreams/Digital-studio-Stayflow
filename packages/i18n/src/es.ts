@@ -1184,6 +1184,7 @@ export const es = {
     saveError: "No se pudo guardar. Inténtalo de nuevo.",
   },
   landing: {
+    contact: { cta: "Escríbenos", message: "Hola, quiero consultar sobre Stayflow." },
     meta: {
       title: "Stayflow · Pon orden en tu alojamiento. Un solo panel, precios claros",
       description:

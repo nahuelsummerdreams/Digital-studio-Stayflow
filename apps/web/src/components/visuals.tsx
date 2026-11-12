@@ -91,7 +91,7 @@ export function ProductArt({ id }: { id: ProductId }) {
     case "profit":
       return (
         <div className={panel}>
-          {[["Cobrado", 100, "rgb(var(--accent) / 0.5)", "1.251 €"], ["Gastos", 20, "rgb(var(--danger) / 0.8)", "−250 €"], ["Ganancia neta", 80, "rgb(var(--accent))", "1.001 €"]].map(([l, w, c, v]) => (
+          {[["Cobrado", 100, "rgb(var(--accent) / 0.5)", "US$ 1.251"], ["Gastos", 20, "rgb(var(--danger) / 0.8)", "−US$ 250"], ["Ganancia neta", 80, "rgb(var(--accent))", "US$ 1.001"]].map(([l, w, c, v]) => (
             <div key={l as string}>
               <p className="mb-1 flex justify-between text-[11px]"><span className="text-muted">{l}</span><span className="font-semibold tabular-nums">{v}</span></p>
               <div className="h-2 rounded-full bg-line/70"><div className="h-full rounded-full" style={{ width: `${w}%`, background: c as string }} /></div>

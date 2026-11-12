@@ -1,6 +1,7 @@
 import { BrandMark, ThemeSwitcher, buttonClass } from "@stayflow/ui";
 import { HOST_URL, t } from "@/lib/t";
 import { CartButton } from "./client";
+import { ContactLink } from "./contact";
 
 const LINKS = [
   { href: "/#sistema", key: "landing.nav.system" },
@@ -43,6 +44,7 @@ export function Header() {
         </nav>
         <div className="flex items-center gap-3 sm:gap-4">
           <span className="hidden sm:block"><ThemeSwitcher /></span>
+          <span className="hidden lg:inline"><ContactLink variant="text" /></span>
           <a href={HOST_URL} className="hidden text-sm text-muted transition hover:text-fg md:inline">
             {t("landing.nav.login")}
           </a>
