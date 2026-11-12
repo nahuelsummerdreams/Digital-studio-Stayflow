@@ -7,7 +7,8 @@ https://stayflow-profit.vercel.app
 
 CÓMO ABRIRLA (30 segundos)
   Haz doble clic en "2-Abrir-Stayflow-Business" (el archivo de tu sistema: Windows o Mac)
-  y se abre en tu navegador. Inicia sesión o crea tu cuenta.
+  y se abre en tu navegador. Crea tu cuenta (o inicia sesión) y pega el CÓDIGO DE LICENCIA
+  que recibiste con tu compra (SF-XXXX-XXXX-XXXX). Se activa al instante y no vence.
 
 CÓMO INSTALARLA COMO APP EN TU COMPUTADORA
   Windows o Mac con Chrome o Edge:

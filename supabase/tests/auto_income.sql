@@ -4,6 +4,7 @@ do $$
 declare
   u1 uuid := gen_random_uuid(); o1 uuid; p1 uuid; b1 uuid; b2 uuid; b3 uuid; n int; amt bigint;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'autoinc-1@test.invalid');
   perform set_config('request.jwt.claims', json_build_object('sub', u1, 'role', 'authenticated')::text, true);

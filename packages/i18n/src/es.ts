@@ -13,8 +13,6 @@ export const es = {
     loadError: "No pudimos cargar tu cuenta. Revisa tu conexión e inténtalo de nuevo.",
     setupTitle: "Falta configurar",
     setupBody: "Agrega NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en .env.local y reinicia.",
-    trialDays_one: "Prueba gratis: {count} día restante.",
-    trialDays_other: "Prueba gratis: {count} días restantes.",
   },
   themes: { blue: "Azul eléctrico", green: "Verde neón", coral: "Coral" },
   nav: {
@@ -359,8 +357,6 @@ export const es = {
     search: "Buscar",
     searchPlaceholder: "Buscar una pantalla, propiedad o huésped…",
     searchEmpty: "No encontramos nada con eso.",
-    trialTitle: "Prueba gratis",
-    seePlans: "Ver planes",
   },
   assistant: {
     title: "Asistente",
@@ -439,13 +435,17 @@ export const es = {
     continue: "Continuar",
     creating: "Creando…",
   },
-  trial: {
-    endedTitle: "Tu plan de {product} terminó.",
-    endedBody: "Tus datos están a salvo. Renueva tu plan para retomar justo donde lo dejaste.",
-    title: "Prueba {product} gratis durante 14 días.",
-    body: "Sin tarjeta. Agrega tus propiedades y mira tus números reales.",
-    start: "Empezar prueba gratis",
-    starting: "Iniciando…",
+  activate: {
+    title: "Activa {product}",
+    body: "Pega el código de licencia que recibiste con tu compra. Se activa al instante y no vence.",
+    endedTitle: "Tu licencia de {product} terminó.",
+    endedBody: "Tus datos están a salvo. Pega un código nuevo para retomar justo donde lo dejaste.",
+    code: "Código de licencia",
+    go: "Activar",
+    busy: "Activando…",
+    invalid: "Ese código no es válido o ya se usó. Revisa que esté completo.",
+    noCode: "¿Todavía no tienes código?",
+    buy: "Consigue {product}",
   },
   properties: {
     yourProperties: "Tus propiedades",

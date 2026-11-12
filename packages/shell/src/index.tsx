@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { AccountDialog, AccountProvider, AuthScreen, ResetPasswordScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
+import { AccountDialog, AccountProvider, AuthScreen, ResetPasswordScreen, CreateOrgScreen, ActivateScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { Avatar, BrandMark, BrandStage, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { Avatar, BrandMark, BrandStage, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
 import { BellMenu, CommandPalette, UserMenu, type SearchItem, type ShellAlert } from "./chrome";
 
 export type { SearchItem, ShellAlert } from "./chrome";
@@ -60,11 +60,10 @@ export interface AppShellProps {
   plansUrl?: string;
 }
 
-const TRIAL_DAYS = 14;
 
 /**
  * What every Stayflow app shows around its screens:
- * sign in -> business setup -> free trial / license -> the app (side menu, top bar, Digital Studio seal).
+ * sign in -> business setup -> license code -> the app (side menu, top bar, Digital Studio seal).
  */
 export function AppShell({ product, nav, children, quickAction, alerts = [], searchItems = [], plansUrl }: AppShellProps) {
   const t = useT();
@@ -107,12 +106,8 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
     );
   }
   if (!org) return <CreateOrgScreen />;
-  if (!can(product)) return <TrialScreen product={product} productName={brand.name} />;
+  if (!can(product)) return <ActivateScreen product={product} productName={brand.name} buyUrl={plansUrl?.split("#")[0]} />;
 
-  const trial = licenses.find((l) => l.product === product && l.status === "trialing");
-  const daysLeft = trial?.currentPeriodEnd
-    ? Math.max(0, Math.ceil((trial.currentPeriodEnd.getTime() - Date.now()) / 86_400_000))
-    : null;
 
   const meta = session.user.user_metadata as { full_name?: string } | undefined;
   const email = session.user.email ?? "";
@@ -167,18 +162,7 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
         </nav>
 
         <div className="mt-4 space-y-4">
-          {daysLeft !== null && (
-            <div className="fx-card rounded-2xl p-4">
-              <p className="flex items-center gap-2 text-sm font-medium"><Icon name="sparkles" className="h-4 w-4 text-accent" />{t("shell.trialTitle")}</p>
-              <p className="mt-1.5 text-xs text-muted">{t("common.trialDays", { count: daysLeft })}</p>
-              <div className="mt-3"><ProgressBar value={((TRIAL_DAYS - daysLeft) / TRIAL_DAYS) * 100} label={t("shell.trialTitle")} /></div>
-              {plansUrl && (
-                <a href={plansUrl} target="_blank" rel="noopener noreferrer" className="fx-btn mt-3 flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-xs font-semibold text-onaccent">
-                  {t("shell.seePlans")} <Icon name="arrow" className="h-3.5 w-3.5" />
-                </a>
-              )}
-            </div>
-          )}
+
           <div className="flex items-center gap-3 rounded-xl px-2">
             <Avatar name={userName} className="h-9 w-9 text-xs" />
             <div className="min-w-0 flex-1 leading-tight">
@@ -239,9 +223,6 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
               </div>
             </header>
 
-            {daysLeft !== null && (
-              <p className="mt-4 rounded-xl bg-accent/10 px-3 py-2 text-sm text-accent lg:hidden">{t("common.trialDays", { count: daysLeft })}</p>
-            )}
 
             <nav className="fx-card mt-6 flex flex-wrap gap-1 rounded-xl p-1 lg:hidden" aria-label={t("common.sections")}>
               {nav.map((n) => {

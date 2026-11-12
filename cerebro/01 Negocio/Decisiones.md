@@ -15,3 +15,5 @@ actualizado: 2026-11-12
 - **2026-11 · Landing como embudo alrededor de Host** — una promesa, 6.500 px. Vigente. Ver [[Landing - estructura y copy]].
 - **2026-11 · Promoción única solo con cierre real** — nada de urgencia falsa (Meta y ley). Vigente.
 - **2026-11 · Garantía de 14 días** — supuesto propio. `[VERIFICAR con abogado]`.
+- **2026-11-12 · Sin prueba gratis; acceso por código de licencia** — el producto se vende con pago único y garantía de 14 días, no con prueba. Cada compra entrega un código `SF-XXXX-XXXX-XXXX` (uno o varios productos) que el cliente pega al entrar; se activa al instante, no vence y registra 12 meses de actualizaciones (`updates_until`). Alternativas: prueba de 14 días (descartada), cuenta creada por webhook (queda para cuando exista el cobro). Vigente.
+- **2026-11-12 · Registro sin confirmar el correo** — el cliente entra directo tras llenar el formulario (Confirm email apagado en Supabase); se pide el correo dos veces. Falta captcha antes de abrirlo al público. Vigente.

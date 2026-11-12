@@ -5,6 +5,7 @@ declare
   u1 uuid := gen_random_uuid(); u2 uuid := gen_random_uuid();
   o1 uuid; o2 uuid; p1 uuid; ba uuid; bb uuid; ja uuid; jb uuid; s1 uuid; tok uuid; n int; v_next date; v_due date; v_status text; v_done jsonb; v_at timestamptz;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'ops-1@test.invalid'),
     (u2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'ops-2@test.invalid');

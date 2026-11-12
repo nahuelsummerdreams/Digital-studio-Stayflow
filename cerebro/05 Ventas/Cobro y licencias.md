@@ -6,7 +6,7 @@ actualizado: 2026-11-12
 # Cobro y licencias
 
 ## Hoy
-El botón de compra termina en un formulario de email. No hay pago ni activación automática. Las apps dan 14 días de prueba por producto.
+El botón de compra termina en un formulario de email. No hay pago automático. **No hay prueba gratis:** el acceso se activa con un **código de licencia** (`SF-XXXX-XXXX-XXXX`, migración 0022). Los códigos los crea el vendedor (SQL) y se entregan al cliente al comprar; mientras no exista el webhook de pago, se pueden vender por cualquier plataforma y enviar el código a mano.
 
 ## Qué necesita el cobro
 1. **Proveedor** con enlace de pago o carrito y **aviso automático (webhook)** al pagar, moneda USD, y manejo de impuestos.

@@ -6,6 +6,7 @@ declare
   o1 uuid; p1 uuid; r1 uuid; n int; d date;
   m0 date := date_trunc('month', current_date)::date;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'rec-test-1@test.invalid'),
     (u2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'rec-test-2@test.invalid');

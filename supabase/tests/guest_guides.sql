@@ -6,6 +6,7 @@ declare
   o1 uuid; o2 uuid; p1 uuid; p2 uuid; g1 uuid; g2 uuid;
   v_slug text; v_new text; j jsonb; n int;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'guest-test-1@test.invalid'),
     (u2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'guest-test-2@test.invalid');

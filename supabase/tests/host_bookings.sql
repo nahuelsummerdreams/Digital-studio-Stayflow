@@ -6,6 +6,7 @@ declare
   o1 uuid; o2 uuid; p1 uuid; p1b uuid; p2 uuid; b1 uuid; b2 uuid; b3 uuid; bx uuid;
   v_income uuid; n int; v_nights int;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'host-test-1@test.invalid'),
     (u2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'host-test-2@test.invalid');

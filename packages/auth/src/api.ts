@@ -37,11 +37,11 @@ export async function createOrganization(client: SupabaseClient, name: string, c
   return data as string;
 }
 
-/** Starts the 14-day trial (RPC in 0006_start_trial.sql). False if a license row already existed. */
-export async function startTrial(client: SupabaseClient, orgId: string, product: ProductKey): Promise<boolean> {
-  const { data, error } = await client.rpc("start_trial", { p_org: orgId, p_product: product });
+/** Unlocks the products of a license code for the organization (RPC in 0022_license_codes.sql). Throws code P0002 if the code is unknown or already used. */
+export async function redeemLicenseCode(client: SupabaseClient, orgId: string, code: string): Promise<string[]> {
+  const { data, error } = await client.rpc("redeem_license_code", { p_org: orgId, p_code: code });
   if (error) throw error;
-  return data === true;
+  return (data ?? []) as string[];
 }
 
 export interface Organization {

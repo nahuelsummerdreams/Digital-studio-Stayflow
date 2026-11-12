@@ -246,7 +246,7 @@ function back(g) {
     <h2 class="disp">Estamos contigo, más allá de la compra</h2>
     <p class="lead">Si algo no te queda claro o quieres ayuda para configurarlo, escríbenos: respondiendo al correo con el que recibiste esta guía llegas directo a una persona.</p>
     <div class="grid">
-      <div class="g"><h3>Tu compra incluye</h3><p>Acceso a Stayflow ${esc(g.name)}, 12 meses de actualizaciones y garantía de reembolso de 14 días.</p></div>
+      <div class="g"><h3>Tu compra incluye</h3><p>Tu código de licencia de Stayflow ${esc(g.name)}, 12 meses de actualizaciones y garantía de reembolso de 14 días.</p></div>
       <div class="g"><h3>Sin ataduras</h3><p>Es un pago único. Después de los 12 meses la app sigue funcionando; renovar las mejoras es opcional.</p></div>
       <div class="g"><h3>Tus datos son tuyos</h3><p>Cada negocio ve solo lo suyo y puedes eliminar tu cuenta cuando quieras desde “Tu cuenta”.</p></div>
       <div class="g"><h3>Tu dirección</h3><p style="color:${g.accent[1]};font-family:'DejaVu Sans Mono',monospace;font-size:8.6pt">${esc(g.url)}</p></div>

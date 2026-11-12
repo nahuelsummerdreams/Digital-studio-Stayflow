@@ -4,6 +4,7 @@ do $$
 declare
   u1 uuid := gen_random_uuid(); u2 uuid := gen_random_uuid(); o1 uuid; o2 uuid; left_ int; n int;
 begin
+  perform set_config('stayflow.allow_trials', 'on', true);
   insert into auth.users (id, instance_id, aud, role, email) values
     (u1, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'assistant-test-1@test.invalid'),
     (u2, '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated', 'assistant-test-2@test.invalid');

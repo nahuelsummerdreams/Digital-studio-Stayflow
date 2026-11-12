@@ -14,3 +14,7 @@ Dentro de cada una:
 
 Las apps funcionan en línea: se abren desde esos accesos y se pueden instalar
 como app desde Chrome, Edge o Safari (instrucciones en cada carpeta).
+
+ACTIVACIÓN
+  Al abrir cada app por primera vez, se pide el código de licencia de la compra
+  (formato SF-XXXX-XXXX-XXXX). No hay prueba gratis: cada compra incluye su código.

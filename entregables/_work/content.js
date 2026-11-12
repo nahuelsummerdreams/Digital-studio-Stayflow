@@ -22,7 +22,7 @@ const guides = [
       ["La limpieza se programa sola", "Cargas la reserva y la tarea de limpieza aparece para el día de salida."],
     ],
     steps: [
-      ["Crea tu cuenta y tu negocio", "Abre Host, pulsa “Crear tu cuenta” y ponle nombre a tu alojamiento.", "2 min"],
+      ["Crea tu cuenta y activa tu código", "Abre Host, pulsa “Crea tu cuenta”, ponle nombre a tu alojamiento y pega el código de licencia que recibiste con tu compra (SF-XXXX-XXXX-XXXX). Se activa al instante.", "2 min"],
       ["Agrega tu primera propiedad", "Nombre, ciudad y una foto. Con la foto, tu cronograma se ve mucho mejor.", "1 min"],
       ["Trae tus reservas", "En “Importar y sincronizar” sube el CSV de Airbnb o Booking y pega el enlace iCal. Si prefieres, carga una a mano con “Nueva reserva”.", "3 min"],
       ["Mira tu cronograma", "Abre “Cronograma” y comprueba que las fechas coinciden con lo que tienes en las plataformas.", "1 min"],
@@ -147,7 +147,7 @@ const guides = [
       ["Imagen profesional", "Una guía propia y cuidada, con QR para imprimir. Sin descargar nada."],
     ],
     steps: [
-      ["Crea tu cuenta", "Abre Guest e inicia sesión. Si ya usas otra app Stayflow, es la misma cuenta.", "1 min"],
+      ["Crea tu cuenta y activa tu código", "Abre Guest e inicia sesión (si ya usas otra app Stayflow, es la misma cuenta) y pega el código de licencia que recibiste con tu compra.", "2 min"],
       ["Crea la guía de una propiedad", "En “Guías”, elige la propiedad y pulsa “Crear guía”.", "1 min"],
       ["Completa lo esencial", "Bienvenida, Wi-Fi, check-in y check-out. La barra de avance te muestra cuánto falta.", "5 min"],
       ["Suma tus lugares y consejos", "Agrega 3 sitios para comer o hacer, cómo usar los aparatos y las preguntas frecuentes.", "5 min"],
@@ -225,7 +225,7 @@ const guides = [
       ["Una tarifa con sentido", "La calculadora te dice a cuánto alquilar para ganar lo que quieres."],
     ],
     steps: [
-      ["Crea tu cuenta", "Abre Business e inicia sesión. Si usas otras apps Stayflow, es la misma cuenta.", "1 min"],
+      ["Crea tu cuenta y activa tu código", "Abre Business e inicia sesión (si usas otras apps Stayflow, es la misma cuenta) y pega el código de licencia que recibiste con tu compra.", "2 min"],
       ["Carga tus propiedades", "Se comparten con las demás apps: si ya las tienes en Host, aparecen solas.", "1 min"],
       ["Registra tus ingresos", "En “Movimientos”, pestaña “Ingreso”: propiedad, importe, fecha, plataforma y noches. Si usas Host, los ingresos llegan solos cuando registras la salida.", "5 min"],
       ["Registra tus gastos", "Pestaña “Gasto”: limpieza, servicios, mantenimiento, suministros.", "5 min"],
@@ -314,7 +314,7 @@ const guides = [
       ["Nada vence en silencio", "El mantenimiento recurrente aparece en tu día cuando se acerca la fecha."],
     ],
     steps: [
-      ["Crea tu cuenta", "Abre Operations e inicia sesión. Si usas Host, tus propiedades y reservas ya están.", "1 min"],
+      ["Crea tu cuenta y activa tu código", "Abre Operations e inicia sesión y pega el código de licencia que recibiste con tu compra. Si usas Host, tus propiedades y reservas ya están.", "2 min"],
       ["Mira tu día", "En “Hoy” aparecen las limpiezas creadas desde tus reservas.", "1 min"],
       ["Ajusta tu lista de limpieza", "En “Listas” puedes dejar la lista estándar o crear la tuya (por tipo y por propiedad).", "5 min"],
       ["Suma a tu equipo", "En “Equipo”, agrega a cada persona y envíale su enlace privado por WhatsApp.", "2 min"],
