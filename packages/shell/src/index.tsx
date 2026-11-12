@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { AccountDialog, AccountProvider, AuthScreen, ResetPasswordScreen, CreateOrgScreen, TrialScreen, createStayflowClient, useAccount } from "@stayflow/auth";
 import { I18nProvider, useT } from "@stayflow/i18n";
 import type { ProductKey } from "@stayflow/licensing";
-import { Avatar, BrandMark, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, Skeleton, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
+import { Avatar, BrandMark, BrandStage, DigitalStudioLogo, FxProvider, Icon, PRODUCT_BRAND, ProgressBar, StudioSeal, ThemeSwitcher, activeTabClass, errorClass, idleTabClass, type IconName } from "@stayflow/ui";
 import { BellMenu, CommandPalette, UserMenu, type SearchItem, type ShellAlert } from "./chrome";
 
 export type { SearchItem, ShellAlert } from "./chrome";
@@ -92,14 +92,8 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
 
   if (loading) {
     return (
-      <main className="mx-auto max-w-5xl px-5 pt-14" aria-busy="true" aria-label={t("common.loading")}>
-        <Skeleton className="h-4 w-32" />
-        <Skeleton className="mt-4 h-10 w-64" />
-        <div className="mt-10 grid grid-cols-2 gap-4 xl:grid-cols-4">
-          {[0, 1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 rounded-card" />
-          ))}
-        </div>
+      <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center px-5" aria-busy="true" aria-label={t("common.loading")}>
+        <BrandStage product={brand.name} compact />
       </main>
     );
   }
