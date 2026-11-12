@@ -4,7 +4,6 @@ import { CartButton } from "./client";
 
 const LINKS = [
   { href: "/#sistema", key: "landing.nav.system" },
-  { href: "/#cronograma", key: "landing.nav.schedule" },
   { href: "/#proximamente", key: "landing.nav.soon" },
   { href: "/#precios", key: "landing.nav.price" },
   { href: "/#preguntas", key: "landing.nav.faq" },

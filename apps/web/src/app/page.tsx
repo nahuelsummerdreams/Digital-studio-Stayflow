@@ -1,8 +1,11 @@
 import { Header } from "@/components/Header";
 import { Precios } from "@/components/precios";
+import { Faq, FinalCta, Footer, Hero, Strip } from "@/components/sections";
+import { Showcase } from "@/components/showcase";
 import { Proximamente } from "@/components/soon";
-import { Blocks, Faq, FinalCta, Footer, Hero, Pain, Steps, Strip, Ticker } from "@/components/sections";
+import { StickyBuy } from "@/components/sticky";
 
+/** The funnel, in order: promise and action → proof in numbers → the product, seen → the offer (and how to add more) → what is coming → doubts → the action again. */
 export default function Home() {
   return (
     <>
@@ -10,16 +13,14 @@ export default function Home() {
       <main>
         <Hero />
         <Strip />
-        <Ticker />
-        <Pain />
-        <Blocks />
+        <Showcase />
         <Precios />
         <Proximamente />
-        <Steps />
         <Faq />
         <FinalCta />
       </main>
       <Footer />
+      <StickyBuy />
     </>
   );
 }
