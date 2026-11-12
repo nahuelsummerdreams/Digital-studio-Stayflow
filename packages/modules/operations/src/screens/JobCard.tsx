@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { Avatar, Icon, Pill, ProgressBar, PropertyPhoto, buttonClass, errorClass, ghostButtonClass, inputClass } from "@stayflow/ui";
-import { removeJob, setJobAssignee, setJobChecklist, setJobNotes, setJobStatus } from "../data";
+import { loadJobPhotos, removeJob, removeJobPhoto, setJobAssignee, setJobChecklist, setJobNotes, setJobStatus, type JobPhoto } from "../data";
 import { daysBetween, longDate, shortDate } from "../dates";
 import { nextStatus, progress, toggleItem, turnover, urgency } from "../logic";
 import type { Job, OpsProperty, Staff } from "../types";
@@ -32,6 +32,15 @@ export function JobCard({ client, job, property, staff, today, onChanged, defaul
   useEffect(() => setList(job.checklist), [job.checklist]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [photos, setPhotos] = useState<JobPhoto[]>([]);
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    void loadJobPhotos(client, job.id).then((p) => live && setPhotos(p)).catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [open, client, job.id, job.status]);
   const p = progress({ checklist: list });
   const u = urgency(job, today);
   const tight = turnover(job);
@@ -89,6 +98,22 @@ export function JobCard({ client, job, property, staff, today, onChanged, defaul
                 </li>
               ))}
             </ul>
+          )}
+          {photos.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-muted">{t("ops.photosTitle", { count: photos.length })}</p>
+              <ul className="mt-2 grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">
+                {photos.map((ph) => (
+                  <li key={ph.id} className="group relative overflow-hidden rounded-xl border border-line">
+                    <a href={ph.url} target="_blank" rel="noreferrer">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={ph.url} alt={t("ops.photoAlt")} loading="lazy" className="aspect-square w-full object-cover" />
+                    </a>
+                    <button type="button" aria-label={t("ops.photoDelete")} className="absolute right-1 top-1 hidden rounded-full bg-bg/80 p-1 text-xs group-hover:block" onClick={() => window.confirm(t("ops.photoDeleteConfirm")) && run(async () => { await removeJobPhoto(client, ph.id); setPhotos((l) => l.filter((x) => x.id !== ph.id)); })}>✕</button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
           <label className="block text-xs font-medium text-muted">
             {t("ops.notes")}

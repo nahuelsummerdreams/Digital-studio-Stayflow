@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n } from "@stayflow/i18n";
 import { BrandMark, Pill, ProgressBar, Skeleton, errorClass } from "@stayflow/ui";
-import { fetchStaffJobs, fetchStaffName, updateStaffJob } from "../data";
+import { fetchStaffJobs, fetchStaffName, updateStaffJob, uploadStaffPhoto } from "../data";
+import { MAX_PHOTOS_PER_JOB } from "../photos";
 import { daysBetween, localToday, longDate, shortDate } from "../dates";
 import { nextStatus, progress, turnover } from "../logic";
 import type { JobStatus, StaffJob } from "../types";
@@ -17,6 +18,8 @@ export function StaffJobs({ client, token }: { client: SupabaseClient; token: st
   const [who, setWho] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
   const [error, setError] = useState(false);
+  const [photoBusy, setPhotoBusy] = useState<string | null>(null);
+  const [photoError, setPhotoError] = useState(false);
   // Taps are sent one after another, in order: two fast taps must never overtake each other on the way to the server.
   const queue = useRef<Promise<void>>(Promise.resolve());
 
@@ -44,6 +47,20 @@ export function StaffJobs({ client, token }: { client: SupabaseClient; token: st
         setError(true);
         return load(); // the server is the truth: show what it really has
       });
+  }
+
+  async function addPhoto(job: StaffJob, file: File | undefined) {
+    if (!file) return;
+    setPhotoError(false);
+    setPhotoBusy(job.id);
+    try {
+      const n = await uploadStaffPhoto(client, token, job.id, file);
+      setJobs((list) => (list ?? []).map((j) => (j.id === job.id ? { ...j, photos: n } : j)));
+    } catch {
+      setPhotoError(true);
+    } finally {
+      setPhotoBusy(null);
+    }
   }
 
   if (failed) {
@@ -96,7 +113,15 @@ export function StaffJobs({ client, token }: { client: SupabaseClient; token: st
                     </ul>
                   </>
                 )}
-                <div className="mt-5 flex gap-2">
+                <div className="mt-4 flex items-center gap-3">
+                  <label className={`flex min-h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-line px-4 text-sm font-medium ${j.photos >= MAX_PHOTOS_PER_JOB || photoBusy === j.id ? "pointer-events-none opacity-50" : ""}`}>
+                    <input type="file" accept="image/*" capture="environment" className="sr-only" onChange={(e) => { void addPhoto(j, e.target.files?.[0]); e.target.value = ""; }} />
+                    {photoBusy === j.id ? t("ops.photoUploading") : t("ops.photoAdd")}
+                  </label>
+                  {j.photos > 0 && <span className="text-sm tabular-nums text-muted">{t("ops.photoCount", { count: j.photos })}</span>}
+                </div>
+                {photoError && <p role="alert" className={`${errorClass} mt-2`}>{t("ops.photoErr")}</p>}
+                <div className="mt-4 flex gap-2">
                   {next && <button type="button" onClick={() => save(j, next)} className="fx-btn flex-1 rounded-2xl px-5 py-4 text-base font-semibold text-onaccent">{next === "in_progress" ? t("ops.start") : t("ops.staffFinish")}</button>}
                   {j.status === "done" && <button type="button" onClick={() => save(j, "pending")} className="flex-1 rounded-2xl border border-line px-5 py-4 text-base font-semibold">{t("ops.reopen")}</button>}
                 </div>

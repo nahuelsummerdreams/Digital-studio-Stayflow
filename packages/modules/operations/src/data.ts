@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { shrinkImage } from "./photos";
 import type { Checklist, ChecklistItem, ChecklistKind, Job, JobKind, JobStatus, NewJob, Recurring, Staff, StaffJob } from "./types";
 
 // ---------------------------------------------------------------- jobs
@@ -139,7 +140,7 @@ export async function syncOperations(client: SupabaseClient, orgId: string): Pro
 
 // ---------------------------------------------------------------- the team's private page (no login)
 interface StaffJobDb {
-  id: string; staff_name: string; property_name: string; kind: JobKind; title: string; due_on: string; status: JobStatus; checklist: ChecklistItem[]; notes: string; next_checkin: string | null;
+  id: string; staff_name: string; property_name: string; kind: JobKind; title: string; due_on: string; status: JobStatus; checklist: ChecklistItem[]; notes: string; next_checkin: string | null; photos: number;
 }
 
 /** The person's name if the link is valid and active, otherwise null. */
@@ -154,11 +155,48 @@ export async function fetchStaffJobs(client: SupabaseClient, token: string): Pro
   if (error) throw error;
   return ((data ?? []) as StaffJobDb[]).map((r) => ({
     id: r.id, staffName: r.staff_name, propertyName: r.property_name, kind: r.kind, title: r.title, dueOn: r.due_on, status: r.status,
-    checklist: Array.isArray(r.checklist) ? r.checklist : [], notes: r.notes, nextCheckin: r.next_checkin,
+    checklist: Array.isArray(r.checklist) ? r.checklist : [], notes: r.notes, nextCheckin: r.next_checkin, photos: r.photos ?? 0,
   }));
 }
 
 export async function updateStaffJob(client: SupabaseClient, token: string, jobId: string, status: JobStatus, done: boolean[]): Promise<void> {
   const { error } = await client.rpc("ops_staff_update", { p_token: token, p_job: jobId, p_status: status, p_done: done });
   if (error) throw error;
+}
+
+/** Team side: shrink, upload and register one photo on a job. Returns how many photos the job has now. */
+export async function uploadStaffPhoto(client: SupabaseClient, token: string, jobId: string, file: File): Promise<number> {
+  const blob = await shrinkImage(file);
+  const path = `${token}/${jobId}/${crypto.randomUUID()}.jpg`;
+  const up = await client.storage.from("ops-evidence").upload(path, blob, { contentType: "image/jpeg", upsert: false });
+  if (up.error) throw up.error;
+  const { data, error } = await client.rpc("ops_staff_add_photo", { p_token: token, p_job: jobId, p_path: path });
+  if (error) throw error;
+  return Number(data);
+}
+
+export interface JobPhoto {
+  id: string;
+  url: string;
+}
+
+/** Owner side: the photos of a job, as short-lived private links. */
+export async function loadJobPhotos(client: SupabaseClient, jobId: string): Promise<JobPhoto[]> {
+  const { data, error } = await client.from("ops_job_photos").select("id, path").eq("job_id", jobId).order("created_at", { ascending: true }).returns<{ id: string; path: string }[]>();
+  if (error) throw error;
+  const rows = data ?? [];
+  if (rows.length === 0) return [];
+  const signed = await client.storage.from("ops-evidence").createSignedUrls(rows.map((r) => r.path), 3600);
+  if (signed.error) throw signed.error;
+  return rows.flatMap((r, i) => {
+    const url = signed.data?.[i]?.signedUrl;
+    return url ? [{ id: r.id, url }] : [];
+  });
+}
+
+export async function removeJobPhoto(client: SupabaseClient, id: string): Promise<void> {
+  const { data } = await client.from("ops_job_photos").select("path").eq("id", id).single();
+  const { error } = await client.from("ops_job_photos").delete().eq("id", id);
+  if (error) throw error;
+  if (data) await client.storage.from("ops-evidence").remove([(data as { path: string }).path]);
 }

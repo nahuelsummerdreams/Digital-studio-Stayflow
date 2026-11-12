@@ -87,4 +87,6 @@ export interface StaffJob {
   checklist: ChecklistItem[];
   notes: string;
   nextCheckin: string | null;
+  /** Evidence photos already uploaded. */
+  photos: number;
 }
