@@ -1,5 +1,6 @@
 export * from "./types";
 export * from "./helpers";
+export * from "./starter";
 export * from "./data";
 export { GuideView } from "./view";
 export { CopyButton } from "./CopyButton";

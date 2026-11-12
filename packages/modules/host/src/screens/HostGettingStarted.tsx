@@ -16,12 +16,14 @@ interface Props {
   onGo: (href: string) => void;
   /** Reload account properties and Host data after the sample data changes. */
   onChanged: () => Promise<void>;
+  /** The sample account is made of rental properties, so hotels and hostels do not offer it. Default true. */
+  allowDemo?: boolean;
 }
 
 const KEY = (orgId: string) => `stayflow-host-start-${orgId}`;
 
 /** First steps for a new host, with real progress, plus a one-click sample account to try everything. */
-export function HostGettingStarted({ client, orgId, properties, bookings, onGo, onChanged }: Props) {
+export function HostGettingStarted({ client, orgId, properties, bookings, onGo, onChanged, allowDemo = true }: Props) {
   const { t } = useI18n();
   const [demoIds, setDemoIds] = useState<string[] | null>(null);
   const [linked, setLinked] = useState(false);
@@ -102,7 +104,7 @@ export function HostGettingStarted({ client, orgId, properties, bookings, onGo, 
               </li>
             ))}
           </ol>
-          {real.length === 0 && !hasDemo && (
+          {allowDemo && real.length === 0 && !hasDemo && (
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-line pt-4">
               <p className="text-sm text-muted">{t("hx.demoBody")}</p>
               <button type="button" className={`${ghostButtonClass} gap-2`} disabled={busy} onClick={() => run(() => seedDemo(client, orgId, localToday(), addDays))}>

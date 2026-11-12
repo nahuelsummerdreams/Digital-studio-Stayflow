@@ -8,6 +8,7 @@ import { GuideTranslationsEditor } from "./GuideTranslationsEditor";
 import { CopyButton } from "../CopyButton";
 import { addItem, loadGuideByProperty, removeItem, rotateSlug, saveGuide, setPublished } from "../data";
 import { asCategory, completeness, guideUrl, normalizeUrl } from "../helpers";
+import { applyStarter, type StarterType } from "../starter";
 import { ACCENTS, PLACE_CATEGORIES, type Accent, type Guide, type GuideFields, type GuideItem, type ItemKind, type PublicGuide } from "../types";
 import { GuideView } from "../view";
 import { QrCode } from "./QrCode";
@@ -18,6 +19,8 @@ interface Props {
   /** Origin where the guide app is served. Empty = use this page's origin. */
   publicBaseUrl: string;
   onBack: () => void;
+  /** Hotel or hostel: offers a starting text for the empty fields. Omit for rentals. */
+  starter?: StarterType;
 }
 
 const toFields = (g: Guide): GuideFields => ({
@@ -34,7 +37,7 @@ function Card({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-export function GuideEditor({ client, property, publicBaseUrl, onBack }: Props) {
+export function GuideEditor({ client, property, publicBaseUrl, onBack, starter }: Props) {
   const t = useT();
   const [guide, setGuide] = useState<Guide | null>(null);
   const [items, setItems] = useState<GuideItem[]>([]);
@@ -190,6 +193,14 @@ export function GuideEditor({ client, property, publicBaseUrl, onBack }: Props) 
 
       <form onSubmit={onSubmit} className="space-y-6">
         <Card title={t("guest.secWelcome")}>
+          {starter && (
+            <div className="rounded-xl border border-line bg-bg/40 p-3">
+              <p className="text-sm text-muted">{t("guest.starterHint")}</p>
+              <button type="button" className={`${ghostButtonClass} mt-2`} onClick={() => { setSavedAt(false); setForm(applyStarter(form, starter)); }}>
+                {t("guest.starterLoad")}
+              </button>
+            </div>
+          )}
           <fieldset>
             <legend className={labelClass}>{t("guest.accent")}</legend>
             <div role="radiogroup" aria-label={t("guest.accent")} className="mt-2 flex gap-3">

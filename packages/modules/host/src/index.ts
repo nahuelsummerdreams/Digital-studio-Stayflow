@@ -1,10 +1,12 @@
 export * from "./types";
 export * from "./dates";
 export * from "./logic";
+export * from "./lodging";
 export * from "./data";
 export { HostDataProvider, useHostData, type HostData } from "./useHostData";
 export { HostDashboard, alertText } from "./screens/HostDashboard";
 export { HostBookings } from "./screens/HostBookings";
+export { HostReception } from "./screens/HostReception";
 export { HostCalendar } from "./screens/HostCalendar";
 export { HostGuests } from "./screens/HostGuests";
 export { HostGettingStarted } from "./screens/HostGettingStarted";

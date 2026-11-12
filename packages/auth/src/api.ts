@@ -44,22 +44,42 @@ export async function redeemLicenseCode(client: SupabaseClient, orgId: string, c
   return (data ?? []) as string[];
 }
 
+export type LodgingType = "rental" | "hotel" | "hostel";
+export const LODGING_TYPES: readonly LodgingType[] = ["rental", "hotel", "hostel"];
+
 export interface Organization {
   id: string;
   name: string;
   currency: string;
+  /** What this business reserves: whole properties (rental), rooms (hotel) or beds and rooms (hostel). */
+  lodgingType: LodgingType;
+}
+
+interface OrganizationRow {
+  id: string;
+  name: string;
+  currency: string;
+  lodging_type: LodgingType;
 }
 
 /** Organizations the signed-in user belongs to (RLS filters the rest). */
 export async function fetchOrganizations(client: SupabaseClient): Promise<Organization[]> {
   const { data, error } = await client
     .from("organizations")
-    .select("id, name, currency")
+    .select("id, name, currency, lodging_type")
     .order("created_at", { ascending: true })
-    .returns<Organization[]>();
+    .returns<OrganizationRow[]>();
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []).map((r) => ({ id: r.id, name: r.name, currency: r.currency, lodgingType: r.lodging_type ?? "rental" }));
 }
+
+/** Only allowed while the business has no rooms or beds (the database enforces it). */
+export async function setLodgingType(client: SupabaseClient, orgId: string, type: LodgingType): Promise<void> {
+  const { error } = await client.from("organizations").update({ lodging_type: type }).eq("id", orgId);
+  if (error) throw error;
+}
+
+export type UnitKind = "room" | "bed";
 
 export interface Property {
   id: string;
@@ -69,6 +89,12 @@ export interface Property {
   photoPath: string | null;
   /** Ready-to-use public URL of the cover photo, or null. */
   photoUrl: string | null;
+  /** Set for rooms and beds: the establishment (or room) they hang from. */
+  parentId: string | null;
+  unitKind: UnitKind | null;
+  roomCategory: string | null;
+  /** Suggested nightly rate in minor units, or null. */
+  baseRate: number | null;
 }
 
 interface PropertyRow {
@@ -76,6 +102,10 @@ interface PropertyRow {
   name: string;
   city: string | null;
   photo_path: string | null;
+  parent_id: string | null;
+  unit_kind: UnitKind | null;
+  room_category: string | null;
+  base_rate_minor: number | string | null;
 }
 
 export const PHOTO_BUCKET = "property-photos";
@@ -83,7 +113,7 @@ export const PHOTO_BUCKET = "property-photos";
 export async function fetchProperties(client: SupabaseClient, orgId: string): Promise<Property[]> {
   const { data, error } = await client
     .from("properties")
-    .select("id, name, city, photo_path")
+    .select("id, name, city, photo_path, parent_id, unit_kind, room_category, base_rate_minor")
     .eq("org_id", orgId)
     .is("archived_at", null)
     .order("created_at", { ascending: true })
@@ -95,7 +125,55 @@ export async function fetchProperties(client: SupabaseClient, orgId: string): Pr
     city: r.city,
     photoPath: r.photo_path,
     photoUrl: r.photo_path ? client.storage.from(PHOTO_BUCKET).getPublicUrl(r.photo_path).data.publicUrl : null,
+    parentId: r.parent_id,
+    unitKind: r.unit_kind,
+    roomCategory: r.room_category,
+    baseRate: r.base_rate_minor === null ? null : Number(r.base_rate_minor),
   }));
+}
+
+/**
+ * What can actually be reserved, with a readable name ("Hotel Sol · Hab 101").
+ * rental: top-level properties; hotel: rooms; hostel: beds, or a room that has no beds (private room).
+ * Establishments that only hold units are left out, so every app keeps working with a flat list.
+ */
+export function reservableProperties(all: Property[], type: LodgingType): Property[] {
+  if (type === "rental") return all.filter((p) => !p.parentId);
+  const byId = new Map(all.map((p) => [p.id, p]));
+  const hasBeds = new Set(all.filter((p) => p.unitKind === "bed" && p.parentId).map((p) => p.parentId as string));
+  const label = (p: Property): string => {
+    const parts = [p.name];
+    let up = p.parentId ? byId.get(p.parentId) : undefined;
+    while (up) {
+      parts.unshift(up.name);
+      up = up.parentId ? byId.get(up.parentId) : undefined;
+    }
+    return parts.join(" · ");
+  };
+  return all
+    .filter((p) => (p.unitKind === "bed" ? true : p.unitKind === "room" ? !hasBeds.has(p.id) : false))
+    .map((p) => ({ ...p, name: label(p), city: p.city ?? byId.get(p.parentId ?? "")?.city ?? null }));
+}
+
+/** Adds `count` rooms or beds named "<prefix> 1", "<prefix> 2"... under `parentId`. */
+export async function createUnits(
+  client: SupabaseClient,
+  orgId: string,
+  input: { parentId: string; kind: UnitKind; prefix: string; count: number; startAt?: number; category?: string; baseRate?: number },
+): Promise<void> {
+  const count = Math.floor(input.count);
+  if (!Number.isFinite(count) || count < 1 || count > 200) throw new Error("units-count");
+  const start = Math.max(1, Math.floor(input.startAt ?? 1));
+  const rows = Array.from({ length: count }, (_, i) => ({
+    org_id: orgId,
+    parent_id: input.parentId,
+    unit_kind: input.kind,
+    name: `${input.prefix.trim()} ${start + i}`.trim().slice(0, 120),
+    room_category: input.category?.trim() || null,
+    base_rate_minor: input.baseRate && input.baseRate > 0 ? Math.round(input.baseRate) : null,
+  }));
+  const { error } = await client.from("properties").insert(rows);
+  if (error) throw error;
 }
 
 /** Shrinks a photo to at most 1600px on its long side as JPEG, so uploads are fast and storage stays small. */
@@ -155,9 +233,13 @@ export async function createProperty(
 
 /** Archiving keeps the financial history; the property just stops showing up. */
 export async function archiveProperty(client: SupabaseClient, propertyId: string): Promise<void> {
-  const { error } = await client
-    .from("properties")
-    .update({ archived_at: new Date().toISOString() })
-    .eq("id", propertyId);
+  // An establishment takes its rooms (and their beds) with it, so nothing is left reservable under an archived hotel.
+  const rooms = await client.from("properties").select("id").eq("parent_id", propertyId).returns<{ id: string }[]>();
+  if (rooms.error) throw rooms.error;
+  const roomIds = (rooms.data ?? []).map((r) => r.id);
+  const beds = roomIds.length > 0 ? await client.from("properties").select("id").in("parent_id", roomIds).returns<{ id: string }[]>() : { data: [], error: null };
+  if (beds.error) throw beds.error;
+  const ids = [propertyId, ...roomIds, ...(beds.data ?? []).map((b) => b.id)];
+  const { error } = await client.from("properties").update({ archived_at: new Date().toISOString() }).in("id", ids);
   if (error) throw error;
 }
