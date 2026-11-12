@@ -10,11 +10,12 @@ Método: revisé la base de producción (tablas, políticas, tipos, historial de
 | 1 · Auditoría | ✅ |
 | 2 · Selector de 4 categorías | ✅ Tarjetas, módulos por perfil (`org_modules`), menú que sigue la categoría, cambio controlado con vista previa y registro (migraciones 0026, 0027; 16 comprobaciones SQL) |
 | 3a · Huéspedes | ✅ Ficha persistente: documento, preferencias, notas, etiquetas, VIP, incidencias y segmentos (migración 0028; 14 comprobaciones SQL) |
-| 3b · Estados de reserva e historial | Pendiente |
-| 3c · Libro de pagos | Pendiente |
-| 3d · Permisos por módulo y auditoría | Pendiente (requiere primero invitar usuarios al equipo: hoy no existe) |
-| 3e · Historial de comunicaciones | Pendiente |
-| 3f · Tareas con responsable y prioridad | Pendiente |
+| 3b · Estados de reserva e historial | ✅ Consulta/Pendiente/Confirmada, historial por reserva (migración 0030; 8 comprobaciones SQL) |
+| 3c · Libro de pagos | ✅ Cobros con medio y fecha, devoluciones, total derivado (migración 0031; 7 comprobaciones SQL) |
+| 3d · Equipo, roles y auditoría | ✅ Invitaciones, roles, bajas, registro de actividad (migración 0032; 12 comprobaciones SQL). Falta: ocultar botones según rol y matriz por módulo |
+| 3e · Historial de comunicaciones | ✅ Mensajes preparados quedan en el historial de la reserva |
+| 3f · Tareas con responsable y prioridad | ✅ (notificaciones pendientes) |
+| 4 · Rentals | ✅ parcial: ficha por unidad (capacidad, comodidades, normas, accesos privados), incidencias con costo y envío a Profit (migración 0033; 8 comprobaciones SQL). Faltan automatizaciones programadas |
 
 ## 0. Resumen
 - **Stayflow ya es multi-cliente y seguro por diseño** (21 tablas, todas con RLS; pruebas de aislamiento). Esa es la base más difícil y está hecha.

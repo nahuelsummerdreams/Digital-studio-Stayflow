@@ -54,6 +54,8 @@ function Frame({ children }: { children: ReactNode }) {
         { href: "/messages", module: "messages", label: t("nav.messages"), icon: "message", description: t("navDesc.messages") },
         { href: "/reports", module: "reports", label: t("nav.reports"), icon: "report", description: t("navDesc.reports") },
         { href: "/sync", module: "channels", label: t("nav.sync"), icon: "refresh", description: t("navDesc.sync") },
+        { href: "/sheets", label: t("sheet.nav"), icon: "report", description: t("navDesc.sheets") },
+        { href: "/maintenance", label: t("maint.nav"), icon: "tasks", description: t("navDesc.maintenance") },
         { href: "/team", label: t("team.title"), icon: "users", description: t("navDesc.team") },
         { href: "/properties", module: "properties", label: org?.lodgingType === "hostel" ? t("nav.roomsBeds") : org?.lodgingType === "hotel" ? t("nav.rooms") : org?.lodgingType === "cabins" ? t("unit.cabins.many").replace(/^./, (c) => c.toUpperCase()) : t("nav.properties"), icon: "building", description: t("navDesc.properties"), badge: properties.length },
       ]}

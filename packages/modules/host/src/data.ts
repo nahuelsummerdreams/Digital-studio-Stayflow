@@ -501,3 +501,151 @@ export async function loadBookingEvents(client: SupabaseClient, bookingId: strin
   if (error) throw error;
   return (data ?? []).map((r) => ({ id: r.id, kind: r.kind, from: r.from_value, to: r.to_value, at: r.created_at }));
 }
+
+// ---------------------------------------------------------------- property sheet (0033)
+export const AMENITIES = ["wifi", "ac", "heating", "kitchen", "washer", "tv", "parking", "pool", "grill", "pets", "workspace", "balcony"] as const;
+export type Amenity = (typeof AMENITIES)[number];
+
+export interface PropertyDetails {
+  propertyId: string;
+  capacity: number | null;
+  bedrooms: number | null;
+  beds: number | null;
+  bathrooms: number | null;
+  amenities: string[];
+  houseRules: string;
+  checkinTime: string;
+  checkoutTime: string;
+  accessNotes: string;
+}
+
+interface DetailsDb {
+  property_id: string;
+  capacity: number | null;
+  bedrooms: number | null;
+  beds: number | null;
+  bathrooms: number | string | null;
+  amenities: string[];
+  house_rules: string;
+  checkin_time: string;
+  checkout_time: string;
+  access_notes: string;
+}
+
+export async function loadDetails(client: SupabaseClient, orgId: string): Promise<Record<string, PropertyDetails>> {
+  const { data, error } = await client
+    .from("property_details")
+    .select("property_id, capacity, bedrooms, beds, bathrooms, amenities, house_rules, checkin_time, checkout_time, access_notes")
+    .eq("org_id", orgId)
+    .returns<DetailsDb[]>();
+  if (error) throw error;
+  const out: Record<string, PropertyDetails> = {};
+  for (const r of data ?? []) {
+    out[r.property_id] = {
+      propertyId: r.property_id,
+      capacity: r.capacity,
+      bedrooms: r.bedrooms,
+      beds: r.beds,
+      bathrooms: r.bathrooms === null ? null : Number(r.bathrooms),
+      amenities: r.amenities,
+      houseRules: r.house_rules,
+      checkinTime: r.checkin_time,
+      checkoutTime: r.checkout_time,
+      accessNotes: r.access_notes,
+    };
+  }
+  return out;
+}
+
+export async function saveDetails(client: SupabaseClient, orgId: string, d: PropertyDetails): Promise<void> {
+  const { error } = await client.from("property_details").upsert({
+    property_id: d.propertyId,
+    org_id: orgId,
+    capacity: d.capacity,
+    bedrooms: d.bedrooms,
+    beds: d.beds,
+    bathrooms: d.bathrooms,
+    amenities: d.amenities,
+    house_rules: d.houseRules.trim(),
+    checkin_time: d.checkinTime.trim(),
+    checkout_time: d.checkoutTime.trim(),
+    access_notes: d.accessNotes.trim(),
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw error;
+}
+
+// ---------------------------------------------------------------- incidents and maintenance cost (0033)
+export type IncidentStatus = "open" | "in_progress" | "resolved";
+
+export interface Incident {
+  id: string;
+  propertyId: string;
+  title: string;
+  detail: string;
+  status: IncidentStatus;
+  priority: 0 | 1 | 2;
+  cost: number;
+  assigneeId: string | null;
+  createdAt: string;
+  resolvedAt: string | null;
+}
+
+interface IncidentDb {
+  id: string;
+  property_id: string;
+  title: string;
+  detail: string;
+  status: IncidentStatus;
+  priority: 0 | 1 | 2;
+  cost_minor: number | string;
+  assignee_id: string | null;
+  created_at: string;
+  resolved_at: string | null;
+}
+
+export async function loadIncidents(client: SupabaseClient, orgId: string): Promise<Incident[]> {
+  const { data, error } = await client
+    .from("property_incidents")
+    .select("id, property_id, title, detail, status, priority, cost_minor, assignee_id, created_at, resolved_at")
+    .eq("org_id", orgId)
+    .order("created_at", { ascending: false })
+    .limit(300)
+    .returns<IncidentDb[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ id: r.id, propertyId: r.property_id, title: r.title, detail: r.detail, status: r.status, priority: r.priority, cost: Number(r.cost_minor), assigneeId: r.assignee_id, createdAt: r.created_at, resolvedAt: r.resolved_at }));
+}
+
+export async function addIncident(client: SupabaseClient, orgId: string, i: { propertyId: string; title: string; detail: string; priority: 0 | 1 | 2; assigneeId: string | null; cost: number }): Promise<void> {
+  const { error } = await client.from("property_incidents").insert({
+    org_id: orgId,
+    property_id: i.propertyId,
+    title: i.title.trim(),
+    detail: i.detail.trim(),
+    priority: i.priority,
+    assignee_id: i.assigneeId,
+    cost_minor: i.cost,
+  });
+  if (error) throw error;
+}
+
+export async function updateIncident(client: SupabaseClient, id: string, patch: { status?: IncidentStatus; cost?: number; assigneeId?: string | null }): Promise<void> {
+  const row: Record<string, unknown> = {};
+  if (patch.status) row.status = patch.status;
+  if (patch.cost !== undefined) row.cost_minor = patch.cost;
+  if (patch.assigneeId !== undefined) row.assignee_id = patch.assigneeId;
+  const { error } = await client.from("property_incidents").update(row).eq("id", id);
+  if (error) throw error;
+}
+
+export async function removeIncident(client: SupabaseClient, id: string): Promise<void> {
+  const { error } = await client.from("property_incidents").delete().eq("id", id);
+  if (error) throw error;
+}
+
+/** Sends the incident's cost to Profit as a maintenance expense, once. Returns false if it was already sent. */
+export async function incidentToExpense(client: SupabaseClient, id: string): Promise<boolean> {
+  const { data, error } = await client.rpc("incident_to_expense", { p_incident: id });
+  if (error) throw error;
+  return data !== null;
+}
