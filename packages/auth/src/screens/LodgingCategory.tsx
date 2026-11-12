@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
 import { buttonClass, cardClass, errorClass, ghostButtonClass, infoClass } from "@stayflow/ui";
 import { useAccount } from "../account";
@@ -8,21 +8,26 @@ import { previewLodgingChange, setLodgingType, type LodgingChangePreview, type L
 import { LodgingPicker } from "./LodgingPicker";
 
 /** The category of the business, and the controlled way to change it: see what changes first, then confirm. Data is never touched. */
-export function LodgingCategory({ onError }: { onError?: (m: string | null) => void }) {
+export function LodgingCategory({ onError, initialTarget, onClose }: { onError?: (m: string | null) => void; initialTarget?: LodgingType; onClose?: () => void }) {
   const t = useT();
   const { client, org, refresh } = useAccount();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Boolean(initialTarget));
   const [target, setTarget] = useState<LodgingType | null>(null);
   const [preview, setPreview] = useState<LodgingChangePreview | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState<LodgingType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const embedded = Boolean(initialTarget);
+  useEffect(() => {
+    if (initialTarget) void pick(initialTarget);
+  }, [initialTarget]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!org) return null;
   const current = org.lodgingType;
 
   function reset() {
-    setOpen(false);
+    onClose?.();
+    setOpen(embedded);
     setTarget(null);
     setPreview(null);
     setError(null);
@@ -66,17 +71,17 @@ export function LodgingCategory({ onError }: { onError?: (m: string | null) => v
 
   return (
     <section className={`${cardClass} space-y-4`} aria-label={t("category.changeTitle")}>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      {!embedded && <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs font-medium uppercase tracking-[0.16em] text-muted">{t("category.current")}</p>
           <p className="font-display text-xl uppercase tracking-wide">{brand(current)}</p>
         </div>
         {!open && <button type="button" className={ghostButtonClass} onClick={() => setOpen(true)}>{t("category.change")}</button>}
-      </div>
+      </div>}
       {done && !open && <p role="status" className={infoClass}>{t("category.changed", { brand: brand(done) })}</p>}
       {open && (
         <div className="space-y-4">
-          <LodgingPicker value={target ?? current} onChange={(k) => void pick(k)} disabled={busy} />
+          {!embedded && <LodgingPicker value={target ?? current} onChange={(k) => void pick(k)} disabled={busy} />}
           {loading && <p className="text-sm text-muted">{t("category.previewLoading")}</p>}
           {preview && !preview.allowed && (
             <p role="alert" className={errorClass}>

@@ -7,4 +7,5 @@ export { PropertiesScreen } from "./screens/PropertiesScreen";
 export { AccountDialog, ResetPasswordScreen } from "./screens/AccountPanels";
 export { LodgingPicker } from "./screens/LodgingPicker";
 export { TeamScreen } from "./screens/TeamScreen";
+export { CategoryBar } from "./screens/CategoryBar";
 export { LodgingCategory } from "./screens/LodgingCategory";

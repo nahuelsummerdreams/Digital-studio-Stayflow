@@ -485,6 +485,8 @@ export const es = {
     noMatch: "Ningún huésped en este grupo.",
   },
   category: {
+    barTitle: "Tipo de alojamiento",
+    barCurrent: "Tu categoría",
     chooseTitle: "¿Qué tipo de alojamiento administras?",
     chooseHint: "Armamos tu panel y tus herramientas según tu actividad. Puedes cambiarlo después sin perder nada.",
     choose: "Elegir",
@@ -492,22 +494,26 @@ export const es = {
     status: { available: "Disponible", beta: "En desarrollo", soon: "Próximamente" },
     rental: {
       brand: "Stayflow Rentals",
+      short: "Airbnb, casas y deptos",
       audience: "Airbnb, departamentos temporarios, casas y administradores de alquileres vacacionales.",
       features: "Calendario con entrada y salida el mismo día|Importa y sincroniza Airbnb y Booking|Limpieza y cobros ordenados|Varias propiedades en un solo panel",
     },
     hotel: {
       brand: "Stayflow Hotels",
+      short: "Hoteles y posadas",
       audience: "Hoteles independientes, boutique, apart hoteles y posadas.",
       features: "Habitaciones con su tarifa|Recepción del día: llegadas, salidas y ocupación|Limpieza por habitación|Ocupación y tarifa media (ADR)",
     },
     cabins: {
       brand: "Stayflow Cabins & Resorts",
+      short: "Cabañas y resorts",
       audience: "Cabañas, complejos turísticos, bungalows, lodges y resorts.",
       features: "Cada cabaña con su calendario|Reservas familiares y bloqueos de fechas|Limpieza y mantenimiento|Servicios y experiencias: en camino",
       note: "Empiezas con las herramientas de Rentals. Los servicios y las experiencias llegan en una próxima etapa.",
     },
     hostel: {
       brand: "Stayflow Hostels",
+      short: "Hostels y albergues",
       audience: "Hostels, albergues, habitaciones compartidas y alojamientos para viajeros.",
       features: "Disponibilidad por cama y por habitación|Habitaciones compartidas y privadas|Recepción del día|Limpieza por habitación",
     },
