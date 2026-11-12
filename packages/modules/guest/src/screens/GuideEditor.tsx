@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNo
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useT } from "@stayflow/i18n";
 import { THEMES, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
+import { GuideTranslationsEditor } from "./GuideTranslationsEditor";
 import { CopyButton } from "../CopyButton";
 import { addItem, loadGuideByProperty, removeItem, rotateSlug, saveGuide, setPublished } from "../data";
 import { asCategory, completeness, guideUrl, normalizeUrl } from "../helpers";
@@ -244,6 +245,8 @@ export function GuideEditor({ client, property, publicBaseUrl, onBack }: Props) 
       <ItemsSection kind="place" title={t("guest.placesTitle")} guide={guide} items={items} client={client} onChange={load} setError={setError} />
       <ItemsSection kind="appliance" title={t("guest.appliancesTitle")} guide={guide} items={items} client={client} onChange={load} setError={setError} />
       <ItemsSection kind="faq" title={t("guest.faqTitle")} guide={guide} items={items} client={client} onChange={load} setError={setError} />
+
+      <GuideTranslationsEditor key={`${guide.id}-${items.length}`} client={client} guide={guide} items={items} onSaved={load} />
 
       <div>
         <button type="button" className={ghostButtonClass} onClick={() => setShowPreview((v) => !v)} aria-expanded={showPreview}>

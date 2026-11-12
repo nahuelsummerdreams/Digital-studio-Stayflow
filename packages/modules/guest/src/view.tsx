@@ -3,6 +3,7 @@ import type { TFn } from "@stayflow/i18n";
 import { DigitalStudioLogo } from "@stayflow/ui";
 import { CopyButton } from "./CopyButton";
 import { groupPlaces, telLink, whatsappLink } from "./helpers";
+import { GUIDE_LANGS, GUIDE_LANG_NAMES, type GuideLang } from "./languages";
 import type { PublicGuide } from "./types";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -22,7 +23,7 @@ const safeHref = (url: string) => (/^https?:\/\//i.test(url) ? url : undefined);
  * The guide as a guest sees it. Pure and server-safe: it receives the translator, so it works on the
  * public page (server) and in the editor preview (client). All content is rendered as plain text.
  */
-export function GuideView({ guide, t, preview = false }: { guide: PublicGuide; t: TFn; preview?: boolean }) {
+export function GuideView({ guide, t, preview = false, lang }: { guide: PublicGuide; t: TFn; preview?: boolean; lang?: GuideLang }) {
   const places = guide.items.filter((i) => i.kind === "place");
   const appliances = guide.items.filter((i) => i.kind === "appliance");
   const faqs = guide.items.filter((i) => i.kind === "faq");
@@ -38,6 +39,15 @@ export function GuideView({ guide, t, preview = false }: { guide: PublicGuide; t
       style={{ backgroundImage: "radial-gradient(700px 380px at 80% -5%, rgb(var(--accent) / 0.18), transparent 65%)", backgroundRepeat: "no-repeat" }}
     >
       <main className="mx-auto max-w-xl space-y-4 px-5 pb-16 pt-12">
+        {lang && !preview && (
+          <nav aria-label="Language" className="flex justify-end gap-1.5 text-xs">
+            {GUIDE_LANGS.map((l) => (
+              <a key={l} href={`?lang=${l}`} hrefLang={l} aria-current={l === lang ? "true" : undefined} className={`rounded-full border px-3 py-1 ${l === lang ? "border-accent bg-accent/15 text-accent" : "border-line text-muted"}`}>
+                {GUIDE_LANG_NAMES[l]}
+              </a>
+            ))}
+          </nav>
+        )}
         <header className="pb-4">
           {guide.city && <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{guide.city}</p>}
           <H1 className="font-display mt-3 text-4xl leading-tight">{guide.title || guide.propertyName}</H1>

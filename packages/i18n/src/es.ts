@@ -589,6 +589,10 @@ export const es = {
     breakEvenHint: "Escribe tu precio por noche para ver cuántas noches necesitas.",
   },
   guest: {
+    trTitle: "Tu guía en otros idiomas",
+    trBody: "Escribe tu guía en inglés y portugués y el huésped la lee en su idioma. Si dejas un campo vacío, ve el texto en español. Se elige solo según el idioma de su teléfono.",
+    trItems: "Lugares, aparatos y preguntas",
+    tr: { title: "Título", welcome: "Bienvenida", checkin: "Check-in", checkout: "Check-out", houseRules: "Reglas de la casa", safety: "Seguridad" },
     homeTitle: "Guías digitales",
     homeIntro: "Cada propiedad tiene su guía. El huésped la abre con un código QR, sin descargar nada.",
     needProperty: "Primero agrega una propiedad.",

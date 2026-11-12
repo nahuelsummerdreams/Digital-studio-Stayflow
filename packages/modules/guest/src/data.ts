@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Accent, Guide, GuideFields, GuideItem, ItemKind, PublicGuide } from "./types";
+import type { Accent, Guide, GuideFields, GuideItem, GuideTranslations, ItemKind, ItemTranslations, PublicGuide } from "./types";
 
 interface GuideDb {
   id: string;
@@ -17,10 +17,11 @@ interface GuideDb {
   safety: string;
   host_name: string;
   host_phone: string;
+  translations: GuideTranslations | null;
 }
 
 const COLUMNS =
-  "id, property_id, slug, published, accent, title, welcome, wifi_name, wifi_password, checkin, checkout, house_rules, safety, host_name, host_phone";
+  "id, property_id, slug, published, accent, title, welcome, wifi_name, wifi_password, checkin, checkout, house_rules, safety, host_name, host_phone, translations";
 
 const toGuide = (r: GuideDb): Guide => ({
   id: r.id,
@@ -38,6 +39,7 @@ const toGuide = (r: GuideDb): Guide => ({
   safety: r.safety,
   hostName: r.host_name,
   hostPhone: r.host_phone,
+  translations: r.translations ?? {},
 });
 
 export interface GuideSummary {
@@ -77,7 +79,7 @@ export async function loadGuideByProperty(
 export async function loadItems(client: SupabaseClient, guideId: string): Promise<GuideItem[]> {
   const { data, error } = await client
     .from("guest_guide_items")
-    .select("id, kind, category, title, body, url")
+    .select("id, kind, category, title, body, url, translations")
     .eq("guide_id", guideId)
     .order("sort", { ascending: true })
     .order("created_at", { ascending: true })
@@ -108,6 +110,17 @@ export async function saveGuide(client: SupabaseClient, id: string, f: GuideFiel
       host_phone: f.hostPhone.trim(),
     })
     .eq("id", id);
+  if (error) throw error;
+}
+
+/** Saves the hand-written translations of the guide's main texts. */
+export async function saveGuideTranslations(client: SupabaseClient, id: string, translations: GuideTranslations): Promise<void> {
+  const { error } = await client.from("guest_guides").update({ translations }).eq("id", id);
+  if (error) throw error;
+}
+
+export async function saveItemTranslations(client: SupabaseClient, id: string, translations: ItemTranslations): Promise<void> {
+  const { error } = await client.from("guest_guide_items").update({ translations }).eq("id", id);
   if (error) throw error;
 }
 
@@ -158,6 +171,7 @@ interface PublicDb {
   safety: string;
   host_name: string;
   host_phone: string;
+  translations?: GuideTranslations;
   items: Omit<GuideItem, "id">[];
 }
 
@@ -181,6 +195,7 @@ export async function fetchPublicGuide(client: SupabaseClient, slug: string): Pr
     safety: r.safety,
     hostName: r.host_name,
     hostPhone: r.host_phone,
+    translations: r.translations ?? {},
     items: r.items ?? [],
   };
 }

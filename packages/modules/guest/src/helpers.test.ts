@@ -70,3 +70,34 @@ describe("places", () => {
     expect(g.map((x) => [x.category, x.items.length])).toEqual([["restaurant", 2], ["activity", 1], ["other", 1]]);
   });
 });
+
+import { guideT, localizeGuide, pickGuideLang } from "./languages";
+import type { PublicGuide } from "./types";
+
+describe("guide languages", () => {
+  const base: PublicGuide = {
+    title: "Casa", welcome: "Bienvenidos", accent: "blue", propertyName: "Casa", city: null, wifiName: "", wifiPassword: "",
+    checkin: "A las 15", checkout: "A las 11", houseRules: "", safety: "", hostName: "", hostPhone: "",
+    translations: { en: { welcome: "Welcome", checkin: "  " } },
+    items: [{ kind: "faq", category: "", title: "¿Hay estacionamiento?", body: "Sí", url: "", translations: { en: { title: "Is there parking?" } } }],
+  };
+  it("picks the query, then the phone language, then Spanish", () => {
+    expect(pickGuideLang("pt", "en-US")).toBe("pt");
+    expect(pickGuideLang(undefined, "fr-FR,en;q=0.8")).toBe("en");
+    expect(pickGuideLang("xx", "de")).toBe("es");
+  });
+  it("uses translations and falls back to the base text when empty", () => {
+    const en = localizeGuide(base, "en");
+    expect(en.welcome).toBe("Welcome");
+    expect(en.checkin).toBe("A las 15");
+    expect(en.items[0]?.title).toBe("Is there parking?");
+    expect(en.items[0]?.body).toBe("Sí");
+    expect(localizeGuide(base, "es")).toBe(base);
+    expect(localizeGuide(base, "pt").welcome).toBe("Bienvenidos");
+  });
+  it("translates the fixed labels", () => {
+    expect(guideT("en")("guide.rules")).toBe("House rules");
+    expect(guideT("pt")("guide.hostedBy", { name: "Ana" })).toBe("Anfitrião: Ana");
+    expect(guideT("es")("guide.rules")).toBe("Reglas de la casa");
+  });
+});

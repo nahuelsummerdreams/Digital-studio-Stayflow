@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { headers } from "next/headers";
 import { translate } from "@stayflow/i18n/core";
-import { GuideView, fetchPublicGuide } from "@stayflow/module-guest";
+import { GuideView, fetchPublicGuide, guideT, localizeGuide, pickGuideLang } from "@stayflow/module-guest";
 
 // Always fresh: a host who edits the guide expects guests to see it right away.
 export const dynamic = "force-dynamic";
@@ -28,8 +29,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default async function PublicGuidePage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function PublicGuidePage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ lang?: string }> }) {
   const guide = await getGuide((await params).slug);
   if (!guide) notFound();
-  return <GuideView guide={guide} t={t} />;
+  // The guest's own language: the one they pick, else the one their phone uses, else Spanish.
+  const lang = pickGuideLang((await searchParams).lang, (await headers()).get("accept-language"));
+  return <GuideView guide={localizeGuide(guide, lang)} t={guideT(lang)} lang={lang} />;
 }
