@@ -12,6 +12,8 @@ export function monthTitle(year: number, month: number, locale = "es"): string {
 }
 
 export const STATUS_KEY = {
+  inquiry: "host.statusInquiry",
+  pending: "host.statusPending",
   confirmed: "host.statusConfirmed",
   checked_in: "host.statusCheckedIn",
   checked_out: "host.statusCheckedOut",
@@ -19,6 +21,8 @@ export const STATUS_KEY = {
 } as const;
 
 export const STATUS_TONE = {
+  inquiry: "bg-line text-muted",
+  pending: "bg-amber-400/10 text-amber-300",
   confirmed: "bg-accent/15 text-accent",
   checked_in: "bg-success/15 text-success",
   checked_out: "bg-line text-muted",

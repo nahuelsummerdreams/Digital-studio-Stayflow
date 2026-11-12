@@ -9,7 +9,7 @@ import { addBlock, removeBooking } from "../data";
 import { addDays, daysInMonth, localToday, shiftMonth } from "../dates";
 import { STATUS_KEY, monthTitle, shortDate } from "../format";
 import { monthRange } from "../insights";
-import { monthHalfSegments, nightsWithin, occupancyPct, owed, paymentState, turnoverDays } from "../logic";
+import { isActive, monthHalfSegments, nightsWithin, occupancyPct, owed, paymentState, turnoverDays } from "../logic";
 import type { Booking, BookingStatus, HostProperty } from "../types";
 
 interface Props {
@@ -29,12 +29,14 @@ interface Props {
 }
 
 const BAR: Record<BookingStatus, string> = {
+  inquiry: "",
+  pending: "bg-gradient-to-r from-amber-400/80 to-amber-400/50 text-bg",
   confirmed: "bg-gradient-to-r from-accent to-accent/70 text-onaccent shadow-[0_10px_24px_-10px_rgb(var(--accent)/0.9)]",
   checked_in: "bg-gradient-to-r from-success to-success/70 text-bg shadow-[0_10px_24px_-10px_rgb(var(--success)/0.9)]",
   checked_out: "bg-line/80 text-muted",
   canceled: "",
 };
-const TONE = { confirmed: "accent", checked_in: "success", checked_out: "muted", canceled: "danger" } as const;
+const TONE = { inquiry: "muted", pending: "warning", confirmed: "accent", checked_in: "success", checked_out: "muted", canceled: "danger" } as const;
 const HATCH: CSSProperties = { backgroundImage: "repeating-linear-gradient(135deg, rgb(var(--muted) / 0.3) 0 6px, rgb(var(--surface-2)) 6px 12px)" };
 const NAME_COL = 13.5; // rem
 const DAY_MIN = 2.1; // rem per day (two half-day squares)
@@ -89,11 +91,11 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
 
   // Month summary across every property (stays only: blocks never count as occupancy).
   const ids = properties.map((p) => p.id);
-  const monthStays = bookings.filter((b) => b.status !== "canceled" && ids.includes(b.propertyId));
+  const monthStays = bookings.filter((b) => isActive(b) && ids.includes(b.propertyId));
   const nights = monthStays.reduce((s, b) => s + nightsWithin(b, from, to), 0);
   const arrivals = monthStays.filter((b) => b.checkIn >= from && b.checkIn < to).length;
   const departures = monthStays.filter((b) => b.checkOut >= from && b.checkOut < to).length;
-  const blockedNights = blocks.filter((b) => b.status !== "canceled" && ids.includes(b.propertyId)).reduce((s, b) => s + nightsWithin(b, from, to), 0);
+  const blockedNights = blocks.filter((b) => isActive(b) && ids.includes(b.propertyId)).reduce((s, b) => s + nightsWithin(b, from, to), 0);
   const summary: { label: string; value: string; icon: "chart" | "bed" | "key" | "lock" }[] = [
     { label: t("hx.calOccupancy"), value: `${occupancyPct(bookings, ids, from, to).toFixed(0)}%`, icon: "chart" },
     { label: t("hx.calNights"), value: String(nights), icon: "bed" },
@@ -111,7 +113,7 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
     if (!blocking) return;
     setError(null);
     if (!blocking.from || !blocking.to || blocking.to <= blocking.from) return setError(t("hx.blockErrDates"));
-    if (all.some((b) => b.status !== "canceled" && b.propertyId === blocking.propertyId && b.checkIn < blocking.to && blocking.from < b.checkOut)) return setError(t("hx.blockErrOverlap"));
+    if (all.some((b) => isActive(b) && b.propertyId === blocking.propertyId && b.checkIn < blocking.to && blocking.from < b.checkOut)) return setError(t("hx.blockErrOverlap"));
     setBusy(true);
     try {
       await addBlock(client, orgId, { propertyId: blocking.propertyId, reason: blocking.reason, checkIn: blocking.from, checkOut: blocking.to });

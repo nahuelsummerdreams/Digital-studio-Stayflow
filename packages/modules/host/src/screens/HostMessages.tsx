@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { EmptyState, Icon, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
 import { loadGuideSlugs, loadTemplates, resetTemplate, saveTemplate } from "../data";
+import { isActive } from "../logic";
 import { addDays, localToday } from "../dates";
 import { shortDate, isLinkablePhone } from "../format";
 import { DEFAULT_TEMPLATES, TEMPLATE_KINDS, TEMPLATE_VARS, mailtoUrl, renderTemplate, whatsappUrl, type TemplateKind } from "../templates";
@@ -40,7 +41,7 @@ export function HostMessages({ client, orgId, properties, bookings, guestBase }:
   }, [client, orgId]);
 
   const options = useMemo(
-    () => bookings.filter((b) => b.status !== "canceled" && b.checkOut >= addDays(today, -7)).sort((a, b) => a.checkIn.localeCompare(b.checkIn)),
+    () => bookings.filter((b) => isActive(b) && b.checkOut >= addDays(today, -7)).sort((a, b) => a.checkIn.localeCompare(b.checkIn)),
     [bookings, today],
   );
   const booking = options.find((b) => b.id === bookingId) ?? options.find((b) => b.checkOut >= today) ?? options[0];

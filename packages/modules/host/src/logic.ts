@@ -1,8 +1,8 @@
 import { addDays, daysBetween, firstOfMonth, firstOfNextMonth, toDate } from "./dates";
 import type { Booking, BookingStatus, HostTask, NewBooking } from "./types";
 
-/** A canceled booking holds no dates and counts for nothing. */
-export const isActive = (b: Pick<Booking, "status">): boolean => b.status !== "canceled";
+/** A canceled booking or a plain inquiry holds no dates and counts for nothing. */
+export const isActive = (b: Pick<Booking, "status">): boolean => b.status !== "canceled" && b.status !== "inquiry";
 
 /** Nights of `b` that fall in [from, to). */
 export function nightsWithin(b: Pick<Booking, "checkIn" | "checkOut">, from: string, to: string): number {
@@ -118,6 +118,10 @@ export function guestsDirectory(bookings: Booking[]): GuestRecord[] {
 /** What a booking can become next. Keeps the daily flow to one tap. */
 export function nextStatuses(status: BookingStatus): BookingStatus[] {
   switch (status) {
+    case "inquiry":
+      return ["pending", "confirmed", "canceled"];
+    case "pending":
+      return ["confirmed", "canceled"];
     case "confirmed":
       return ["checked_in", "canceled"];
     case "checked_in":
@@ -135,6 +139,7 @@ export function validateBooking(input: NewBooking, existing: Booking[]): Booking
   if (!input.checkIn || !input.checkOut || input.checkOut <= input.checkIn) return "host.errDates";
   if (daysBetween(input.checkIn, input.checkOut) > 366) return "host.errLong";
   if (!Number.isFinite(input.amount) || input.amount < 0) return "host.errAmount";
+  if (input.status === "inquiry") return null;
   const clash = existing.some(
     (b) => isActive(b) && b.propertyId === input.propertyId && b.checkIn < input.checkOut && input.checkIn < b.checkOut,
   );

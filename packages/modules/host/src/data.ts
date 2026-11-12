@@ -93,6 +93,7 @@ export async function addBooking(client: SupabaseClient, orgId: string, b: NewBo
     amount_minor: b.amount,
     paid_minor: b.paid ?? 0,
     notes: b.notes.trim(),
+    ...(b.status ? { status: b.status } : {}),
   });
   if (error) throw error;
 }
@@ -403,4 +404,25 @@ export async function addGuestEvent(client: SupabaseClient, orgId: string, key: 
 export async function removeGuestEvent(client: SupabaseClient, id: string): Promise<void> {
   const { error } = await client.from("guest_events").delete().eq("id", id);
   if (error) throw error;
+}
+
+export interface BookingEvent {
+  id: string;
+  kind: "created" | "status" | "dates" | "amount" | "property";
+  from: string | null;
+  to: string | null;
+  at: string;
+}
+
+/** Who changed what on a booking, newest first. Written by the database, read-only here. */
+export async function loadBookingEvents(client: SupabaseClient, bookingId: string): Promise<BookingEvent[]> {
+  const { data, error } = await client
+    .from("booking_events")
+    .select("id, kind, from_value, to_value, created_at")
+    .eq("booking_id", bookingId)
+    .order("created_at", { ascending: false })
+    .limit(50)
+    .returns<{ id: string; kind: BookingEvent["kind"]; from_value: string | null; to_value: string | null; created_at: string }[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ id: r.id, kind: r.kind, from: r.from_value, to: r.to_value, at: r.created_at }));
 }

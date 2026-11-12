@@ -22,7 +22,7 @@ interface Props {
 const initials = (name: string) =>
   name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join("") || "?";
 
-const STATUS_KEY = { confirmed: "host.statusConfirmed", checked_in: "host.statusCheckedIn", checked_out: "host.statusCheckedOut", canceled: "host.statusCanceled" } as const;
+const STATUS_KEY = { inquiry: "host.statusInquiry", pending: "host.statusPending", confirmed: "host.statusConfirmed", checked_in: "host.statusCheckedIn", checked_out: "host.statusCheckedOut", canceled: "host.statusCanceled" } as const;
 
 /** The file of one guest: what we know about them, their stays and their timeline. */
 function GuestFile({ client, orgId, guestKey, bookings, properties, currency, profile, onSaved, onIncidentsChanged }: {

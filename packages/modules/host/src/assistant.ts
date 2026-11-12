@@ -24,7 +24,7 @@ export const TOOLS: ToolDef[] = [
     description: "Lista reservas que se solapan con un rango de fechas. Devuelve huésped, fechas, estado, canal e importe. Máximo 40.",
     input_schema: {
       type: "object",
-      properties: { from: date, to: date, property: { type: "string", description: "Nombre de la propiedad (opcional)" }, status: { type: "string", enum: ["confirmed", "checked_in", "checked_out", "canceled"] } },
+      properties: { from: date, to: date, property: { type: "string", description: "Nombre de la propiedad (opcional)" }, status: { type: "string", enum: ["inquiry", "pending", "confirmed", "checked_in", "checked_out", "canceled"] } },
     },
   },
   {

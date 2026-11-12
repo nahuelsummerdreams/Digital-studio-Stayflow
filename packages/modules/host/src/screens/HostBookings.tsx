@@ -8,6 +8,7 @@ import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardC
 import { addBooking, recordBookingIncome, removeBooking, setBookingPaid, setBookingStatus, updateBooking } from "../data";
 import { addDays, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
+import { BookingHistory } from "./BookingHistory";
 import { isActive, nextStatuses, owed, paymentState, validateBooking } from "../logic";
 import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus, type HostProperty } from "../types";
 import { useHostData } from "../useHostData";
@@ -43,6 +44,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [source, setSource] = useState<BookingSource>("airbnb");
   const [amount, setAmount] = useState("");
   const [paidIn, setPaidIn] = useState("");
+  const [startStatus, setStartStatus] = useState<BookingStatus>("confirmed");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
   const [payValue, setPayValue] = useState("");
@@ -106,6 +108,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       amount: minor ?? -1,
       paid: paidIn.trim() === "" ? 0 : (parseMoney(paidIn) ?? -1),
       notes,
+      status: editingId ? undefined : startStatus,
     };
     if ((input.paid ?? 0) < 0) {
       setError(t("hx.payErr"));
@@ -210,7 +213,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
     }
   }
 
-  const actionLabel = (s: BookingStatus) => (s === "checked_in" ? t("host.doCheckIn") : s === "checked_out" ? t("host.doCheckOut") : t("host.cancel"));
+  const actionLabel = (s: BookingStatus) => (s === "checked_in" ? t("host.doCheckIn") : s === "checked_out" ? t("host.doCheckOut") : s === "confirmed" ? t("host.doConfirm") : s === "pending" ? t("host.doPending") : t("host.cancel"));
 
   return (
     <div className="space-y-6 lg:grid lg:grid-cols-[22rem_1fr] lg:items-start lg:gap-6 lg:space-y-0">
@@ -224,6 +227,16 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
             ))}
           </select>
         </label>
+        {!editingId && (
+          <label className={labelClass}>
+            {t("host.startStatus")}
+            <select className={inputClass} value={startStatus} onChange={(e) => setStartStatus(e.target.value as BookingStatus)}>
+              <option value="confirmed">{t("host.statusConfirmed")}</option>
+              <option value="pending">{t("host.statusPending")}</option>
+              <option value="inquiry">{t("host.statusInquiry")}</option>
+            </select>
+          </label>
+        )}
         <label className={labelClass}>
           {t("host.guestName")}
           <input id="booking-guest" className={inputClass} value={guestName} onChange={(e) => setGuestName(e.target.value)} maxLength={120} required />
@@ -364,6 +377,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                     {t("host.delete")}
                   </button>
                 </div>
+                <BookingHistory client={client} bookingId={b.id} nameOf={nameOf} version={b.status + b.checkIn + b.checkOut + b.amount + b.propertyId} />
                   </div>
                 </div>
               </li>

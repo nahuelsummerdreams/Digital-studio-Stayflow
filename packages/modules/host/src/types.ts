@@ -1,4 +1,4 @@
-export const BOOKING_STATUSES = ["confirmed", "checked_in", "checked_out", "canceled"] as const;
+export const BOOKING_STATUSES = ["inquiry", "pending", "confirmed", "checked_in", "checked_out", "canceled"] as const;
 export type BookingStatus = (typeof BOOKING_STATUSES)[number];
 
 export const BOOKING_SOURCES = ["airbnb", "booking", "vrbo", "direct", "other"] as const;
@@ -44,6 +44,8 @@ export interface NewBooking {
   amount: number;
   /** Collected so far. */
   paid?: number;
+  /** Starting state when creating: inquiry (asks, holds nothing), pending (holds dates) or confirmed. */
+  status?: BookingStatus;
   notes: string;
 }
 

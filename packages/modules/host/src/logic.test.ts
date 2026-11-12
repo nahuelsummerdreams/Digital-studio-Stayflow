@@ -102,6 +102,8 @@ describe("status flow and validation", () => {
     expect(nextStatuses("checked_in")).toEqual(["checked_out"]);
     expect(nextStatuses("checked_out")).toEqual([]);
     expect(nextStatuses("canceled")).toEqual([]);
+    expect(nextStatuses("inquiry")).toEqual(["pending", "confirmed", "canceled"]);
+    expect(nextStatuses("pending")).toEqual(["confirmed", "canceled"]);
   });
   const base: NewBooking = { propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2, checkIn: "2026-12-01", checkOut: "2026-12-05", source: "direct", amount: 0, notes: "" };
   it("accepts a valid booking and rejects broken ones", () => {
@@ -206,5 +208,17 @@ describe("guest file", () => {
     expect(parseTags("familia, vip ,Familia,, ")).toEqual(["familia", "vip"]);
     expect(parseTags(Array.from({ length: 14 }, (_, i) => `t${i}`).join(","))).toHaveLength(10);
     expect(parseTags("x".repeat(40))[0]).toHaveLength(30);
+  });
+});
+
+describe("inquiries and pending bookings", () => {
+  const input: NewBooking = { propertyId: "p1", guestName: "Ana", guestEmail: "", guestPhone: "", guestsCount: 2, checkIn: "2026-11-12", checkOut: "2026-11-15", source: "direct", amount: 0, notes: "" };
+  it("an inquiry holds no dates; a pending booking does", () => {
+    expect(validateBooking(input, [bk({ status: "inquiry" })])).toBeNull();
+    expect(validateBooking(input, [bk({ status: "pending" })])).toBe("host.errOverlap");
+  });
+  it("an inquiry may overlap anything, but does not count in the numbers", () => {
+    expect(validateBooking({ ...input, status: "inquiry" }, [bk({ status: "confirmed" })])).toBeNull();
+    expect(bookedRevenue([bk({ status: "inquiry", amount: 99_000 })], "2026-11-01", "2026-12-01")).toBe(0);
   });
 });
