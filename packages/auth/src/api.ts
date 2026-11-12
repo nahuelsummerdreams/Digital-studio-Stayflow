@@ -271,3 +271,82 @@ export async function archiveProperty(client: SupabaseClient, propertyId: string
   const { error } = await client.from("properties").update({ archived_at: new Date().toISOString() }).in("id", ids);
   if (error) throw error;
 }
+
+// ------------------------------------------------------------------ team (0032_team_audit_tasks_messages.sql)
+export type OrgRole = "owner" | "admin" | "member" | "viewer";
+export type InviteRole = Exclude<OrgRole, "owner">;
+
+export interface TeamMember {
+  userId: string;
+  email: string;
+  name: string;
+  role: OrgRole;
+  since: string;
+}
+export interface TeamInvite {
+  id: string;
+  email: string;
+  role: InviteRole;
+  token: string;
+  expiresAt: string;
+}
+export interface AuditRow {
+  id: string;
+  actor: string;
+  action: string;
+  target: string;
+  detail: string;
+  at: string;
+}
+
+/** The signed-in user's role in the organization. */
+export async function fetchMyRole(client: SupabaseClient, orgId: string, userId: string): Promise<OrgRole | null> {
+  const { data, error } = await client.from("memberships").select("role").eq("org_id", orgId).eq("user_id", userId).maybeSingle<{ role: OrgRole }>();
+  if (error) throw error;
+  return data?.role ?? null;
+}
+
+/** Members and open invitations. Owners and admins only. */
+export async function teamOverview(client: SupabaseClient, orgId: string): Promise<{ members: TeamMember[]; invites: TeamInvite[] }> {
+  const { data, error } = await client.rpc("team_overview", { p_org: orgId });
+  if (error) throw error;
+  const d = data as { members: { user_id: string; email: string; name: string; role: OrgRole; since: string }[]; invites: { id: string; email: string; role: InviteRole; token: string; expires_at: string }[] };
+  return {
+    members: d.members.map((m) => ({ userId: m.user_id, email: m.email, name: m.name, role: m.role, since: m.since })),
+    invites: d.invites.map((i) => ({ id: i.id, email: i.email, role: i.role, token: i.token, expiresAt: i.expires_at })),
+  };
+}
+
+/** Creates an invitation and returns its code. Nothing is emailed: the owner shares the link. */
+export async function inviteTeamMember(client: SupabaseClient, orgId: string, email: string, role: InviteRole): Promise<string> {
+  const { data, error } = await client.rpc("invite_team_member", { p_org: orgId, p_email: email, p_role: role });
+  if (error) throw error;
+  return data as string;
+}
+
+export async function revokeTeamInvite(client: SupabaseClient, inviteId: string): Promise<void> {
+  const { error } = await client.rpc("revoke_team_invite", { p_invite: inviteId });
+  if (error) throw error;
+}
+
+/** The invited person (signed in with the invited email) joins the business. Throws 22023 for a wrong, used or expired code. */
+export async function acceptTeamInvite(client: SupabaseClient, code: string): Promise<void> {
+  const { error } = await client.rpc("accept_team_invite", { p_token: code.trim() });
+  if (error) throw error;
+}
+
+export async function setMemberRole(client: SupabaseClient, orgId: string, userId: string, role: InviteRole): Promise<void> {
+  const { error } = await client.rpc("set_member_role", { p_org: orgId, p_user: userId, p_role: role });
+  if (error) throw error;
+}
+
+export async function removeTeamMember(client: SupabaseClient, orgId: string, userId: string): Promise<void> {
+  const { error } = await client.rpc("remove_team_member", { p_org: orgId, p_user: userId });
+  if (error) throw error;
+}
+
+export async function auditOverview(client: SupabaseClient, orgId: string, limit = 60): Promise<AuditRow[]> {
+  const { data, error } = await client.rpc("audit_overview", { p_org: orgId, p_limit: limit });
+  if (error) throw error;
+  return ((data ?? []) as { id: string; actor: string; action: string; target: string; detail: string; created_at: string }[]).map((r) => ({ id: r.id, actor: r.actor, action: r.action, target: r.target, detail: r.detail, at: r.created_at }));
+}

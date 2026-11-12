@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n } from "@stayflow/i18n";
 import { formatMoney } from "@stayflow/money";
-import { loadBookingEvents, loadPayments, type BookingEvent, type BookingPayment } from "../data";
+import { loadBookingEvents, loadMessageLog, loadPayments, type BookingEvent, type BookingMessage, type BookingPayment } from "../data";
 import { STATUS_KEY } from "../format";
 import type { BookingStatus } from "../types";
 
@@ -14,11 +14,13 @@ export function BookingHistory({ client, bookingId, nameOf, version, currency }:
   const [open, setOpen] = useState(false);
   const [events, setEvents] = useState<BookingEvent[] | null>(null);
   const [payments, setPayments] = useState<BookingPayment[]>([]);
+  const [messages, setMessages] = useState<BookingMessage[]>([]);
 
   useEffect(() => {
     if (!open) return;
     let alive = true;
     loadBookingEvents(client, bookingId).then((e) => alive && setEvents(e)).catch(() => alive && setEvents([]));
+    loadMessageLog(client, bookingId).then((m) => alive && setMessages(m)).catch(() => alive && setMessages([]));
     loadPayments(client, bookingId).then((p) => alive && setPayments(p)).catch(() => alive && setPayments([]));
     return () => { alive = false; };
   }, [open, client, bookingId, version]);
@@ -46,6 +48,15 @@ export function BookingHistory({ client, bookingId, nameOf, version, currency }:
             {payments.map((p) => (
               <li key={p.id}>
                 <span className="text-text">{p.amount > 0 ? "+" : "−"} {formatMoney(Math.abs(p.amount), currency, locale)}</span> · {t(`pay.${p.method}`)}{p.note ? ` · ${p.note}` : ""} · {new Date(p.paidOn + "T12:00:00").toLocaleDateString(locale, { day: "numeric", month: "short" })}
+              </li>
+            ))}
+          </ul>
+        )}
+        {messages.length > 0 && (
+          <ul className="mt-2 space-y-1 border-l border-success/40 pl-3 text-xs text-muted">
+            {messages.map((m) => (
+              <li key={m.id}>
+                <span className="text-text">{t("hist.message", { channel: t(`hist.ch_${m.channel}`), template: m.template })}</span> · {new Date(m.at).toLocaleString(locale, { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
               </li>
             ))}
           </ul>

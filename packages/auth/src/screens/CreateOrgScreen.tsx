@@ -4,7 +4,7 @@ import { useState, type FormEvent } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
 import { buttonClass, cardClass, errorClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { createOrganization, setLodgingType, type LodgingType } from "../api";
+import { acceptTeamInvite, createOrganization, setLodgingType, type LodgingType } from "../api";
 import { LodgingPicker } from "./LodgingPicker";
 
 const CURRENCIES = ["USD", "EUR", "GBP", "CAD", "AUD", "MXN", "BRL", "ARS"];
@@ -18,6 +18,24 @@ export function CreateOrgScreen() {
   const [type, setType] = useState<LodgingType>("rental");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [code, setCode] = useState(() => {
+    try { return new URLSearchParams(window.location.search).get("invite") ?? ""; } catch { return ""; }
+  });
+  const [joining, setJoining] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
+
+  async function join(e: FormEvent) {
+    e.preventDefault();
+    setJoining(true);
+    setJoinError(null);
+    try {
+      await acceptTeamInvite(client, code);
+      await refresh();
+    } catch {
+      setJoinError(t("team.joinInvalid"));
+      setJoining(false);
+    }
+  }
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -59,6 +77,13 @@ export function CreateOrgScreen() {
         <button className={`${buttonClass} w-full`} disabled={busy}>
           {busy ? t("org.creating") : t("org.continue")}
         </button>
+      </form>
+      <form onSubmit={join} className={`${cardClass} mt-6 space-y-3`}>
+        <h2 className="text-sm font-medium">{t("team.joinTitle")}</h2>
+        <p className="text-xs text-muted">{t("team.joinHint")}</p>
+        <input className={inputClass} value={code} onChange={(e) => setCode(e.target.value)} placeholder={t("team.joinPlaceholder")} aria-label={t("team.joinTitle")} required />
+        {joinError && <p role="alert" className={errorClass}>{joinError}</p>}
+        <button className={`${buttonClass} w-full`} disabled={joining}>{joining ? t("team.joining") : t("team.join")}</button>
       </form>
       <button type="button" onClick={signOut} className="mt-4 text-sm text-muted underline-offset-4 hover:underline">
         {t("common.signOut")}

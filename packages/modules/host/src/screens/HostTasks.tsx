@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { EmptyState, Skeleton, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
-import { addTask, removeTask, setTaskDone } from "../data";
+import { addTask, loadPeople, removeTask, setTaskAssignee, setTaskDone, type Person } from "../data";
 import { localToday } from "../dates";
 import { shortDate } from "../format";
 import type { HostTask } from "../types";
@@ -16,24 +16,34 @@ interface Props {
   tasks: HostTask[];
   loading: boolean;
   reload: () => Promise<void>;
+  /** The signed-in user, to offer "mine". */
+  userId?: string;
 }
 
 const WHOLE = "__all__";
 
-export function HostTasks({ client, orgId, properties, tasks, loading, reload }: Props) {
+export function HostTasks({ client, orgId, properties, tasks, loading, reload, userId }: Props) {
   const { t, locale } = useI18n();
   const today = localToday();
   const [title, setTitle] = useState("");
   const [due, setDue] = useState("");
   const [propertyId, setPropertyId] = useState(WHOLE);
+  const [assignee, setAssignee] = useState("");
+  const [priority, setPriority] = useState<0 | 1 | 2>(1);
+  const [mine, setMine] = useState(false);
+  const [people, setPeople] = useState<Person[]>([]);
+  useEffect(() => {
+    loadPeople(client, orgId).then(setPeople).catch(() => setPeople([]));
+  }, [client, orgId]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Checkbox answers instantly; the server confirms right after.
   const [optimistic, setOptimistic] = useState<Record<string, boolean>>({});
 
   const nameOf = (id: string | null) => (id === null ? t("host.taskWholeBusiness") : properties.find((p) => p.id === id)?.name ?? t("properties.archived"));
-  const view = tasks.map((x) => ({ ...x, done: optimistic[x.id] ?? x.done }));
-  const pending = view.filter((x) => !x.done);
+  const personName = (id: string | null) => (id ? people.find((p) => p.userId === id)?.name ?? "" : "");
+  const view = tasks.filter((x) => !mine || x.assigneeId === userId).map((x) => ({ ...x, done: optimistic[x.id] ?? x.done }));
+  const pending = view.filter((x) => !x.done).sort((a, b) => b.priority - a.priority);
   const done = view.filter((x) => x.done);
 
   async function submit(e: FormEvent) {
@@ -41,9 +51,11 @@ export function HostTasks({ client, orgId, properties, tasks, loading, reload }:
     setBusy(true);
     setError(null);
     try {
-      await addTask(client, { orgId, propertyId: propertyId === WHOLE ? null : propertyId, title, dueOn: due || null });
+      await addTask(client, { orgId, propertyId: propertyId === WHOLE ? null : propertyId, title, dueOn: due || null, assigneeId: assignee || null, priority });
       setTitle("");
       setDue("");
+      setAssignee("");
+      setPriority(1);
       await reload();
     } catch (err) {
       setError(t(errorKey(err)));
@@ -91,7 +103,10 @@ export function HostTasks({ client, orgId, properties, tasks, loading, reload }:
         <span className="min-w-0 flex-1">
           <span className={`block truncate text-sm font-medium ${task.done ? "text-muted line-through" : ""}`}>{task.title}</span>
           <span className="block truncate text-xs text-muted">
+            {task.priority === 2 && <span className="mr-1.5 rounded-full bg-danger/10 px-2 py-0.5 text-[11px] font-medium text-danger">{t("host.prioHigh")}</span>}
+            {task.priority === 0 && <span className="mr-1.5 rounded-full bg-line px-2 py-0.5 text-[11px] text-muted">{t("host.prioLow")}</span>}
             {nameOf(task.propertyId)}
+            {task.assigneeId && personName(task.assigneeId) ? ` · ${personName(task.assigneeId)}` : ""}
             {task.dueOn && (
               <>
                 {" · "}
@@ -127,6 +142,23 @@ export function HostTasks({ client, orgId, properties, tasks, loading, reload }:
             ))}
           </select>
         </label>
+        <div className="grid grid-cols-2 gap-3">
+          <label className={labelClass}>
+            {t("host.taskAssignee")}
+            <select className={inputClass} value={assignee} onChange={(e) => setAssignee(e.target.value)}>
+              <option value="">{t("host.taskUnassigned")}</option>
+              {people.map((p) => <option key={p.userId} value={p.userId}>{p.name}</option>)}
+            </select>
+          </label>
+          <label className={labelClass}>
+            {t("host.taskPriority")}
+            <select className={inputClass} value={priority} onChange={(e) => setPriority(Number(e.target.value) as 0 | 1 | 2)}>
+              <option value={2}>{t("host.prioHigh")}</option>
+              <option value={1}>{t("host.prioNormal")}</option>
+              <option value={0}>{t("host.prioLow")}</option>
+            </select>
+          </label>
+        </div>
         <label className={labelClass}>
           {t("host.taskDue")}
           <input className={inputClass} type="date" value={due} onChange={(e) => setDue(e.target.value)} />
@@ -136,6 +168,12 @@ export function HostTasks({ client, orgId, properties, tasks, loading, reload }:
       </form>
 
       <div className="space-y-6">
+        {userId && people.length > 1 && (
+          <label className="flex items-center gap-2 text-sm text-muted">
+            <input type="checkbox" checked={mine} onChange={(e) => setMine(e.target.checked)} className="h-4 w-4 accent-[rgb(var(--accent))]" />
+            {t("host.onlyMine")}
+          </label>
+        )}
         {loading ? (
           <Skeleton className="h-48 rounded-card" />
         ) : tasks.length === 0 ? (

@@ -57,6 +57,10 @@ export interface HostTask {
   done: boolean;
   /** Set when the task was created for a booking (cleaning after check-out). */
   bookingId: string | null;
+  /** Team member in charge, if any. */
+  assigneeId: string | null;
+  /** 0 low, 1 normal, 2 high. */
+  priority: 0 | 1 | 2;
 }
 
 /** What the Host screens need to know about a property (photo included). */

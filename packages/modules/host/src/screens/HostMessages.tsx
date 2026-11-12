@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { EmptyState, Icon, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
-import { loadGuideSlugs, loadTemplates, resetTemplate, saveTemplate } from "../data";
+import { logMessage, loadGuideSlugs, loadTemplates, resetTemplate, saveTemplate } from "../data";
 import { isActive } from "../logic";
 import { addDays, localToday } from "../dates";
 import { shortDate, isLinkablePhone } from "../format";
@@ -53,9 +53,14 @@ export function HostMessages({ client, orgId, properties, bookings, guestBase }:
 
   if (options.length === 0) return <EmptyState icon="message" title={t("hx.msgTitle")} body={t("hx.msgNone")} />;
 
+  const log = (channel: "whatsapp" | "email" | "copy") => {
+    if (booking) void logMessage(client, booking.id, channel, kind).catch(() => undefined);
+  };
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(text);
+      log("copy");
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -134,11 +139,11 @@ export function HostMessages({ client, orgId, properties, bookings, guestBase }:
               <div className="flex flex-wrap gap-2">
                 <button type="button" className={`${buttonClass} gap-2`} onClick={copy}><Icon name={copied ? "check" : "copy"} className="h-4 w-4" />{copied ? t("hx.msgCopied") : t("hx.msgCopy")}</button>
                 {booking && isLinkablePhone(booking.guestPhone) ? (
-                  <a className={ghostButtonClass} href={whatsappUrl(booking.guestPhone, text)} target="_blank" rel="noopener noreferrer">{t("hx.msgWhatsapp")}</a>
+                  <a className={ghostButtonClass} href={whatsappUrl(booking.guestPhone, text)} target="_blank" rel="noopener noreferrer" onClick={() => log("whatsapp")}>{t("hx.msgWhatsapp")}</a>
                 ) : (
                   <span className="self-center text-xs text-muted">{t("hx.msgNoPhone")}</span>
                 )}
-                {booking?.guestEmail && <a className={ghostButtonClass} href={mailtoUrl(booking.guestEmail, property?.name ?? "", text)}>{t("hx.msgEmail")}</a>}
+                {booking?.guestEmail && <a className={ghostButtonClass} href={mailtoUrl(booking.guestEmail, property?.name ?? "", text)} onClick={() => log("email")}>{t("hx.msgEmail")}</a>}
                 <button type="button" className={`${ghostButtonClass} ml-auto`} onClick={() => { setDraft(body); setEditing(true); }}>{t("hx.msgEdit")}</button>
               </div>
             </>

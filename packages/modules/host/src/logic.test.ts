@@ -171,7 +171,7 @@ describe("insights", () => {
         mk({ id: "c", status: "confirmed", checkIn: "2026-11-20", checkOut: "2026-11-22", amount: 0 }),
         mk({ id: "d", status: "confirmed", checkIn: today, checkOut: "2026-11-12" }),
       ],
-      [{ id: "t1", propertyId: null, title: "Sábanas", dueOn: "2026-11-08", done: false, bookingId: null }],
+      [{ id: "t1", propertyId: null, title: "Sábanas", dueOn: "2026-11-08", done: false, bookingId: null, assigneeId: null, priority: 1 }],
       today,
     );
     expect(alerts.map((x) => x.kind).sort()).toEqual(["arrivalPending", "arrivalsToday", "departurePending", "noAmount", "overdueTask"]);

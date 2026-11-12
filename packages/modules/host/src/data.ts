@@ -152,27 +152,29 @@ interface TaskDb {
   due_on: string | null;
   done: boolean;
   booking_id: string | null;
+  assignee_id: string | null;
+  priority: 0 | 1 | 2;
 }
 
 export async function loadTasks(client: SupabaseClient, orgId: string): Promise<HostTask[]> {
   const { data, error } = await client
     .from("host_tasks")
-    .select("id, property_id, title, due_on, done, booking_id")
+    .select("id, property_id, title, due_on, done, booking_id, assignee_id, priority")
     .eq("org_id", orgId)
     .order("due_on", { ascending: true, nullsFirst: false })
     .order("created_at", { ascending: true })
     .returns<TaskDb[]>();
   if (error) throw error;
-  return (data ?? []).map((r) => ({ id: r.id, propertyId: r.property_id, title: r.title, dueOn: r.due_on, done: r.done, bookingId: r.booking_id }));
+  return (data ?? []).map((r) => ({ id: r.id, propertyId: r.property_id, title: r.title, dueOn: r.due_on, done: r.done, bookingId: r.booking_id, assigneeId: r.assignee_id, priority: r.priority }));
 }
 
 export async function addTask(
   client: SupabaseClient,
-  input: { orgId: string; propertyId: string | null; title: string; dueOn: string | null },
+  input: { orgId: string; propertyId: string | null; title: string; dueOn: string | null; assigneeId?: string | null; priority?: 0 | 1 | 2 },
 ): Promise<void> {
   const { error } = await client
     .from("host_tasks")
-    .insert({ org_id: input.orgId, property_id: input.propertyId, title: input.title.trim(), due_on: input.dueOn });
+    .insert({ org_id: input.orgId, property_id: input.propertyId, title: input.title.trim(), due_on: input.dueOn, assignee_id: input.assigneeId ?? null, priority: input.priority ?? 1 });
   if (error) throw error;
 }
 
@@ -182,6 +184,49 @@ export async function setTaskDone(client: SupabaseClient, id: string, done: bool
     .update({ done, done_at: done ? new Date().toISOString() : null })
     .eq("id", id);
   if (error) throw error;
+}
+
+export async function setTaskAssignee(client: SupabaseClient, id: string, assigneeId: string | null): Promise<void> {
+  const { error } = await client.from("host_tasks").update({ assignee_id: assigneeId }).eq("id", id);
+  if (error) throw error;
+}
+
+export interface Person {
+  userId: string;
+  name: string;
+  role: string;
+}
+
+/** Who is on the team (names only), for assignment menus. */
+export async function loadPeople(client: SupabaseClient, orgId: string): Promise<Person[]> {
+  const { data, error } = await client.rpc("org_people", { p_org: orgId });
+  if (error) throw error;
+  return ((data ?? []) as { user_id: string; name: string; role: string }[]).map((r) => ({ userId: r.user_id, name: r.name, role: r.role }));
+}
+
+/** Notes that a message was opened for a guest (WhatsApp, email or copied), so the history shows it. */
+export async function logMessage(client: SupabaseClient, bookingId: string, channel: "whatsapp" | "email" | "copy", template: string): Promise<void> {
+  const { error } = await client.rpc("log_booking_message", { p_booking: bookingId, p_channel: channel, p_template: template });
+  if (error) throw error;
+}
+
+export interface BookingMessage {
+  id: string;
+  channel: "whatsapp" | "email" | "copy";
+  template: string;
+  at: string;
+}
+
+export async function loadMessageLog(client: SupabaseClient, bookingId: string): Promise<BookingMessage[]> {
+  const { data, error } = await client
+    .from("booking_messages")
+    .select("id, channel, template, created_at")
+    .eq("booking_id", bookingId)
+    .order("created_at", { ascending: false })
+    .limit(30)
+    .returns<{ id: string; channel: BookingMessage["channel"]; template: string; created_at: string }[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ id: r.id, channel: r.channel, template: r.template, at: r.created_at }));
 }
 
 export async function removeTask(client: SupabaseClient, id: string): Promise<void> {

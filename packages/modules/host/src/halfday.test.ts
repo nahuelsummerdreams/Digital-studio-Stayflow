@@ -12,7 +12,7 @@ const bk = (over: Partial<Booking>): Booking => ({
   checkIn: "2026-10-09", checkOut: "2026-10-15", nights: 6, source: "airbnb", status: "confirmed", amount: 60_000, notes: "", createdAt: "2026-10-01T10:00:00Z",
   paid: 0, kind: "stay", externalUid: null, ...over,
 });
-const task = (over: Partial<HostTask>): HostTask => ({ id: `t${++n}`, propertyId: "p1", title: "Limpiar", dueOn: null, done: false, bookingId: null, ...over });
+const task = (over: Partial<HostTask>): HostTask => ({ id: `t${++n}`, propertyId: "p1", title: "Limpiar", dueOn: null, done: false, bookingId: null, assigneeId: null, priority: 1, ...over });
 
 describe("half-day calendar", () => {
   it("a stay fills the 2nd half of check-in day through the 1st half of check-out day", () => {

@@ -11,7 +11,7 @@ const snap: Snapshot = {
   today: "2026-11-10", currency: "EUR",
   properties: [{ id: "p1", name: "Casa del Árbol", city: "Gredos" }, { id: "p2", name: "Villa Palmera", city: "Marbella" }],
   bookings: [bk({}), bk({ checkIn: "2026-12-12", checkOut: "2026-12-14", nights: 2, guestName: "Beto" }), bk({ propertyId: "p2", checkIn: "2026-12-01", checkOut: "2026-12-03", nights: 2, guestName: "Carla" }), bk({ checkIn: "2026-12-09", checkOut: "2026-12-11", status: "canceled", guestName: "Cancelada" })],
-  tasks: [{ id: "t1", propertyId: "p1", title: "Cambiar sábanas", dueOn: "2026-11-08", done: false, bookingId: null }, { id: "t2", propertyId: null, title: "Hecha", dueOn: null, done: true, bookingId: null }],
+  tasks: [{ id: "t1", propertyId: "p1", title: "Cambiar sábanas", dueOn: "2026-11-08", done: false, bookingId: null, assigneeId: null, priority: 1 }, { id: "t2", propertyId: null, title: "Hecha", dueOn: null, done: true, bookingId: null, assigneeId: null, priority: 1 }],
 };
 
 describe("tools", () => {

@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { hasProductAccess, type License, type ProductKey } from "@stayflow/licensing";
-import { fetchLicenses, fetchOrgModules, fetchOrganizations, fetchProperties, reservableProperties, type Organization, type Property } from "./api";
+import { fetchLicenses, fetchMyRole, fetchOrgModules, fetchOrganizations, fetchProperties, reservableProperties, type OrgRole, type Organization, type Property } from "./api";
 
 interface AccountState {
   client: SupabaseClient;
@@ -11,6 +11,8 @@ interface AccountState {
   loading: boolean;
   session: Session | null;
   org: Organization | null;
+  /** Role of the signed-in user in this business (owner, admin, member, viewer). */
+  role: OrgRole | null;
   licenses: License[];
   /** Modules this organization has (follow its category). Empty until loaded: the menu then shows everything. */
   modules: string[];
@@ -34,6 +36,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
   const [sessionReady, setSessionReady] = useState(false);
   const [accountReady, setAccountReady] = useState(false);
   const [org, setOrg] = useState<Organization | null>(null);
+  const [role, setRole] = useState<OrgRole | null>(null);
   const [licenses, setLicenses] = useState<License[]>([]);
   const [modules, setModules] = useState<string[]>([]);
   const [allProperties, setProperties] = useState<Property[]>([]);
@@ -64,6 +67,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
   const load = useCallback(async () => {
     if (!userId) {
       setOrg(null);
+      setRole(null);
       setLicenses([]);
       setModules([]);
       setProperties([]);
@@ -74,7 +78,8 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       const first = (await fetchOrganizations(client))[0] ?? null;
       setOrg(first);
       if (first) {
-        const [lic, props, mods] = await Promise.all([fetchLicenses(client, first.id), fetchProperties(client, first.id), fetchOrgModules(client, first.id).catch(() => [] as string[])]);
+        const [lic, props, mods, myRole] = await Promise.all([fetchLicenses(client, first.id), fetchProperties(client, first.id), fetchOrgModules(client, first.id).catch(() => [] as string[]), fetchMyRole(client, first.id, userId).catch(() => null)]);
+        setRole(myRole);
         setLicenses(lic);
         setModules(mods);
         setProperties(props);
@@ -108,6 +113,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       loading: !sessionReady || !accountReady,
       session,
       org,
+      role,
       licenses,
       modules,
       properties,
@@ -121,7 +127,7 @@ export function AccountProvider({ client, children }: { client: SupabaseClient; 
       recovery,
       endRecovery: () => setRecovery(false),
     }),
-    [client, sessionReady, accountReady, session, org, licenses, modules, properties, allProperties, error, load, recovery],
+    [client, sessionReady, accountReady, session, org, role, licenses, modules, properties, allProperties, error, load, recovery],
   );
 
   return <AccountContext.Provider value={value}>{children}</AccountContext.Provider>;
