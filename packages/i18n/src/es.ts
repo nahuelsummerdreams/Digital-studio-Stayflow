@@ -394,6 +394,8 @@ export const es = {
   },
   auth: {
     signInTitle: "Iniciar sesión",
+    email2: "Repite tu correo",
+    emailMismatch: "Los dos correos no coinciden. Revísalos para poder recuperar tu cuenta si la necesitas.",
     signUpTitle: "Crea tu cuenta",
     name: "Tu nombre",
     email: "Correo electrónico",

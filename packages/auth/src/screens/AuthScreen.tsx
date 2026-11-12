@@ -12,6 +12,7 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
   const [mode, setMode] = useState<"signin" | "signup" | "forgot">("signin");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [email2, setEmail2] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +29,10 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
         if (err) throw err;
         setInfo(t("auth.resetSent"));
       } else if (mode === "signup") {
+        if (email.trim().toLowerCase() !== email2.trim().toLowerCase()) {
+          setError(t("auth.emailMismatch"));
+          return;
+        }
         const { data, error: err } = await client.auth.signUp({
           email: email.trim(),
           password,
@@ -64,6 +69,12 @@ export function AuthScreen({ productName, tagline }: { productName: string; tagl
           {t("auth.email")}
           <input className={inputClass} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" required />
         </label>
+        {signup && (
+          <label className={labelClass}>
+            {t("auth.email2")}
+            <input className={inputClass} type="email" value={email2} onChange={(e) => setEmail2(e.target.value)} autoComplete="off" onPaste={(e) => e.preventDefault()} required />
+          </label>
+        )}
         {!forgot && <label className={labelClass}>
           {t("auth.password")}
           <input
