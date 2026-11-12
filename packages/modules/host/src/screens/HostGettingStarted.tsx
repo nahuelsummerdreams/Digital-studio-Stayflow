@@ -56,7 +56,7 @@ export function HostGettingStarted({ client, orgId, properties, bookings, onGo, 
   const realBookings = bookings.filter((b) => real.some((p) => p.id === b.propertyId));
   const steps = [
     { done: real.length > 0, label: t(`unit.${lodgingType}.addFirst`), go: "/properties", cta: t(`unit.${lodgingType}.add`) },
-    { done: real.some((p) => p.photoUrl), label: t("hx.gsPhoto"), go: "/properties", cta: t("hx.gsPhotoCta") },
+    ...(lodgingType === "hotel" || lodgingType === "hostel" ? [] : [{ done: real.some((p) => p.photoUrl), label: t("hx.gsPhoto"), go: "/properties", cta: t("hx.gsPhotoCta") }]),
     { done: realBookings.length > 0, label: t("hx.gsBooking"), go: "/bookings?new=1", cta: t("hx.gsBookingCta") },
     { done: linked, label: t("hx.gsSync"), go: "/sync", cta: t("hx.gsSyncCta"), optional: true },
   ];

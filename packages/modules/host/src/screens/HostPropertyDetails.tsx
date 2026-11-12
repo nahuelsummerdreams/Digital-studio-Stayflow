@@ -6,6 +6,7 @@ import { errorKey, useI18n } from "@stayflow/i18n";
 import { EmptyState, PropertyPhoto, Skeleton, buttonClass, cardClass, errorClass, inputClass, labelClass } from "@stayflow/ui";
 import { AMENITIES, loadDetails, saveDetails, type PropertyDetails } from "../data";
 import type { HostProperty } from "../types";
+import { useUnit } from "../useHostData";
 
 interface Props {
   client: SupabaseClient;
@@ -21,6 +22,7 @@ const num = (v: string): number | null => (v.trim() === "" ? null : Number(v.rep
 /** The technical sheet of each unit: capacity, amenities, rules, check-in times and access notes (private to the team). */
 export function HostPropertyDetails({ client, orgId, properties, unitsLabel }: Props) {
   const { t } = useI18n();
+  const unit = useUnit();
   const [all, setAll] = useState<Record<string, PropertyDetails> | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +31,7 @@ export function HostPropertyDetails({ client, orgId, properties, unitsLabel }: P
     loadDetails(client, orgId).then(setAll).catch((e) => { setError(t(errorKey(e))); setAll({}); });
   }, [client, orgId, t]);
 
-  if (properties.length === 0) return <EmptyState icon="building" title={t("host.needProperty")} body={t("host.needPropertyBody")} />;
+  if (properties.length === 0) return <EmptyState icon="building" title={unit.addFirst} body={t("host.needUnitBody", { many: unit.many })} />;
   if (all === null) return <Skeleton className="h-48 rounded-card" />;
 
   return (

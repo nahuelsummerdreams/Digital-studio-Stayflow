@@ -68,7 +68,7 @@ function Frame({ children }: { children: ReactNode }) {
 function WithData({ children }: { children: ReactNode }) {
   const { client, org } = useAccount();
   return (
-    <HostDataProvider client={client} orgId={org?.id ?? ""}>
+    <HostDataProvider client={client} orgId={org?.id ?? ""} lodgingType={org?.lodgingType}>
       <Frame>{children}</Frame>
       <AssistantChat />
     </HostDataProvider>

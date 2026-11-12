@@ -8,6 +8,7 @@ import { EmptyState, Skeleton, buttonClass, cardClass, errorClass, ghostButtonCl
 import { addIncident, incidentToExpense, loadIncidents, loadPeople, removeIncident, updateIncident, type Incident, type IncidentStatus, type Person } from "../data";
 import { shortDate } from "../format";
 import type { HostProperty } from "../types";
+import { useUnit } from "../useHostData";
 
 interface Props {
   client: SupabaseClient;
@@ -21,6 +22,7 @@ const NEXT: Record<IncidentStatus, IncidentStatus | null> = { open: "in_progress
 /** Incidents per unit with their cost, who fixes them, and one tap to send the cost to Profit as a maintenance expense. */
 export function HostMaintenance({ client, orgId, currency, properties }: Props) {
   const { t, locale } = useI18n();
+  const unit = useUnit();
   const [items, setItems] = useState<Incident[] | null>(null);
   const [people, setPeople] = useState<Person[]>([]);
   const [propertyId, setPropertyId] = useState("");
@@ -47,7 +49,7 @@ export function HostMaintenance({ client, orgId, currency, properties }: Props) 
     loadPeople(client, orgId).then(setPeople).catch(() => setPeople([]));
   }, [client, orgId, reload]);
 
-  if (properties.length === 0) return <EmptyState icon="building" title={t("host.needProperty")} body={t("host.needPropertyBody")} />;
+  if (properties.length === 0) return <EmptyState icon="building" title={unit.addFirst} body={t("host.needUnitBody", { many: unit.many })} />;
   const selected = propertyId || properties[0]?.id || "";
   const nameOf = (id: string) => properties.find((p) => p.id === id)?.name ?? t("properties.archived");
   const personName = (id: string | null) => (id ? people.find((p) => p.userId === id)?.name ?? "" : "");
@@ -136,7 +138,7 @@ export function HostMaintenance({ client, orgId, currency, properties }: Props) 
     <div className="space-y-6 lg:grid lg:grid-cols-[22rem_1fr] lg:items-start lg:gap-6 lg:space-y-0">
       <form onSubmit={submit} className={`${cardClass} space-y-4 lg:sticky lg:top-8`}>
         <h2 className="text-sm font-medium">{t("maint.new")}</h2>
-        <label className={labelClass}>{t("host.property")}
+        <label className={labelClass}>{unit.label}
           <select className={inputClass} value={selected} onChange={(e) => setPropertyId(e.target.value)}>{properties.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
         </label>
         <label className={labelClass}>{t("maint.what")}<input className={inputClass} value={title} onChange={(e) => setTitle(e.target.value)} maxLength={160} required /></label>

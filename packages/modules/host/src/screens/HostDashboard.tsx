@@ -13,6 +13,7 @@ import { shortDate } from "../format";
 import { bookedRevenue, isActive, movementsOn, occupancyPct, upcomingArrivals } from "../logic";
 import { changePct, hostAlerts, monthRange, monthlyOccupancy, monthlyRevenue, movementDays, propertyState, sourceBreakdown, weekOf, type HostAlert } from "../insights";
 import type { Booking, HostProperty, HostTask } from "../types";
+import { useUnit } from "../useHostData";
 
 interface Props {
   currency: string;
@@ -100,6 +101,7 @@ function relative(iso: string, locale: string): string {
 
 export function HostDashboard({ currency, userName, properties, bookings, tasks, loading, links, onGoBookings, onGoCalendar, onGoTasks, onGoProperties, onNewBooking }: Props) {
   const { t, locale } = useI18n();
+  const unit = useUnit();
   const today = localToday();
   const [y, m] = today.split("-").map(Number) as [number, number];
   const [chartTab, setChartTab] = useState<"occupancy" | "revenue">("occupancy");
@@ -108,8 +110,8 @@ export function HostDashboard({ currency, userName, properties, bookings, tasks,
 
   if (properties.length === 0) {
     return (
-      <EmptyState icon="building" title={t("host.needProperty")} body={t("host.needPropertyBody")}>
-        <button type="button" className={buttonClass} onClick={onGoProperties}>{t("host.goProperties")}</button>
+      <EmptyState icon="building" title={unit.addFirst} body={t("host.needUnitBody", { many: unit.many })}>
+        <button type="button" className={buttonClass} onClick={onGoProperties}>{unit.add}</button>
       </EmptyState>
     );
   }

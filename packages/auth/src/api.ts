@@ -188,7 +188,7 @@ export async function createUnits(
   client: SupabaseClient,
   orgId: string,
   input: { parentId: string; kind: UnitKind; prefix: string; count: number; startAt?: number; category?: string; baseRate?: number },
-): Promise<void> {
+): Promise<string[]> {
   const count = Math.floor(input.count);
   if (!Number.isFinite(count) || count < 1 || count > 200) throw new Error("units-count");
   const start = Math.max(1, Math.floor(input.startAt ?? 1));
@@ -200,8 +200,30 @@ export async function createUnits(
     room_category: input.category?.trim() || null,
     base_rate_minor: input.baseRate && input.baseRate > 0 ? Math.round(input.baseRate) : null,
   }));
-  const { error } = await client.from("properties").insert(rows);
+  const { data, error } = await client.from("properties").insert(rows).select("id").returns<{ id: string }[]>();
   if (error) throw error;
+  return (data ?? []).map((r) => r.id);
+}
+
+/** "80", "80,50" or "1.200,50" to integer minor units; null when it is not an amount. */
+export function toMinor(raw: string): number | null {
+  const s = raw.trim().replace(/[^\d.,]/g, "");
+  if (s === "") return null;
+  const dec = Math.max(s.lastIndexOf(","), s.lastIndexOf("."));
+  const tail = dec >= 0 ? s.length - dec - 1 : 0;
+  const hasDecimals = tail > 0 && tail <= 2;
+  const intPart = (hasDecimals ? s.slice(0, dec) : s).replace(/[.,]/g, "");
+  const frac = hasDecimals ? s.slice(dec + 1).padEnd(2, "0") : "00";
+  const n = Number(`${intPart || "0"}.${frac}`);
+  return Number.isFinite(n) ? Math.round(n * 100) : null;
+}
+
+/** The single establishment of a hotel or hostel, created from the business name the first time it is needed, so people only think in rooms and beds. */
+export async function ensureEstablishment(client: SupabaseClient, orgId: string, name: string, existing: { id: string } | undefined): Promise<string> {
+  if (existing) return existing.id;
+  const { data, error } = await client.from("properties").insert({ org_id: orgId, name: name.trim() || "Establecimiento" }).select("id").single<{ id: string }>();
+  if (error) throw error;
+  return data.id;
 }
 
 /** Shrinks a photo to at most 1600px on its long side as JPEG, so uploads are fast and storage stays small. */

@@ -4,100 +4,9 @@ import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { errorKey, useT } from "@stayflow/i18n";
 import { Icon, Pill, PropertyPhoto, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
 import { useAccount } from "../account";
-import { archiveProperty, createProperty, createUnits, removePropertyPhoto, setPropertyPhoto, type LodgingType, type Property } from "../api";
+import { archiveProperty, createProperty, removePropertyPhoto, setPropertyPhoto, type Property } from "../api";
+import { UnitsManager } from "./UnitsManager";
 import { LodgingCategory } from "./LodgingCategory";
-
-/** Rooms (and beds in a hostel) of one establishment, with a form to add more. */
-function UnitsPanel({ establishment, type, all, onChanged, onError }: { establishment: Property; type: LodgingType; all: Property[]; onChanged: () => Promise<void>; onError: (m: string | null) => void }) {
-  const t = useT();
-  const { client, org } = useAccount();
-  const rooms = all.filter((p) => p.parentId === establishment.id && p.unitKind === "room");
-  const bedsOf = (roomId: string) => all.filter((p) => p.parentId === roomId && p.unitKind === "bed");
-  const [roomId, setRoomId] = useState("");
-  const [prefix, setPrefix] = useState("");
-  const [count, setCount] = useState("1");
-  const [category, setCategory] = useState("");
-  const [busy, setBusy] = useState(false);
-  const addingBeds = type === "hostel" && roomId !== "";
-  const kind = addingBeds ? "bed" : "room";
-  const parentId = addingBeds ? roomId : establishment.id;
-  const existing = addingBeds ? bedsOf(roomId).length : rooms.length;
-
-  async function add(e: FormEvent) {
-    e.preventDefault();
-    if (!org) return;
-    setBusy(true);
-    onError(null);
-    try {
-      await createUnits(client, org.id, {
-        parentId,
-        kind,
-        prefix: prefix || (addingBeds ? "Cama" : "Hab"),
-        count: Number(count),
-        startAt: existing + 1,
-        category: addingBeds ? undefined : category,
-      });
-      setPrefix("");
-      setCount("1");
-      await onChanged();
-    } catch (err) {
-      onError(t(errorKey(err)));
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="space-y-3 border-t border-white/10 p-4">
-      <p className="text-xs font-medium uppercase tracking-wide text-muted">{t("lodging.rooms")}</p>
-      {rooms.length === 0 ? (
-        <p className="text-sm text-muted">{t("lodging.noRooms")}</p>
-      ) : (
-        <ul className="flex flex-wrap gap-2">
-          {rooms.map((r) => (
-            <li key={r.id} className="rounded-lg border border-white/10 px-2.5 py-1 text-sm">
-              {r.name}
-              {r.roomCategory ? <span className="text-muted"> · {r.roomCategory}</span> : null}
-              {type === "hostel" && bedsOf(r.id).length > 0 ? <span className="text-muted"> · {t("lodging.beds")} {bedsOf(r.id).length}</span> : null}
-            </li>
-          ))}
-        </ul>
-      )}
-      <form onSubmit={add} className="grid gap-3 sm:grid-cols-2">
-        {type === "hostel" && rooms.length > 0 && (
-          <label className={`${labelClass} sm:col-span-2`}>
-            {t("lodging.addBeds")}
-            <select className={inputClass} value={roomId} onChange={(e) => setRoomId(e.target.value)}>
-              <option value="">{t("lodging.addRooms")}</option>
-              {rooms.map((r) => (
-                <option key={r.id} value={r.id}>
-                  {t("lodging.beds")} · {r.name}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        <label className={labelClass}>
-          {addingBeds ? t("lodging.prefixBed") : t("lodging.prefixRoom")}
-          <input className={inputClass} value={prefix} onChange={(e) => setPrefix(e.target.value)} maxLength={60} />
-        </label>
-        <label className={labelClass}>
-          {t("lodging.count")}
-          <input className={inputClass} type="number" min={1} max={200} value={count} onChange={(e) => setCount(e.target.value)} required />
-        </label>
-        {!addingBeds && (
-          <label className={`${labelClass} sm:col-span-2`}>
-            {t("lodging.category")}
-            <input className={inputClass} value={category} onChange={(e) => setCategory(e.target.value)} placeholder={t("lodging.categoryPlaceholder")} maxLength={60} />
-          </label>
-        )}
-        <button className={`${buttonClass} sm:col-span-2`} disabled={busy}>
-          {t("lodging.addUnits")}
-        </button>
-      </form>
-    </div>
-  );
-}
 
 /** One property with a big cover photo. Photos are uploaded straight from the device. */
 function PropertyCard({ property, onChanged, onError, children }: { property: Property; onChanged: () => Promise<void>; onError: (m: string | null) => void; children?: ReactNode }) {
@@ -198,6 +107,7 @@ export function PropertiesScreen() {
   const hasUnits = allProperties.some((p) => p.parentId);
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
+  const [qty, setQty] = useState("1");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -207,9 +117,15 @@ export function PropertiesScreen() {
     setBusy(true);
     setError(null);
     try {
-      await createProperty(client, org.id, { name, city });
+      const n = lodging === "cabins" ? Math.max(1, Math.min(200, Math.floor(Number(qty) || 1))) : 1;
+      if (n > 1) {
+        for (let i = 1; i <= n; i += 1) await createProperty(client, org.id, { name: `${name.trim()} ${topLevel.length + i}`, city });
+      } else {
+        await createProperty(client, org.id, { name, city });
+      }
       setName("");
       setCity("");
+      setQty("1");
       await refresh();
     } catch (err) {
       setError(t(errorKey(err)));
@@ -223,6 +139,7 @@ export function PropertiesScreen() {
       {error && <p role="alert" className={errorClass}>{error}</p>}
       <LodgingCategory onError={setError} />
       {(hasUnits || usesUnits) && <p className="-mt-3 text-xs text-muted">{hasUnits ? t("lodging.typeHint") : t("lodging.noCapacityHint")}</p>}
+      {usesUnits ? <UnitsManager /> : (
       <div className="grid gap-6 xl:grid-cols-[1fr_20rem] xl:items-start">
         <section aria-label={t("properties.yourProperties")}>
           {topLevel.length === 0 ? (
@@ -230,9 +147,7 @@ export function PropertiesScreen() {
           ) : (
             <ul className="anim-stagger grid gap-4 sm:grid-cols-2">
               {topLevel.map((p) => (
-                <PropertyCard key={p.id} property={p} onChanged={refresh} onError={setError}>
-                  {usesUnits && <UnitsPanel establishment={p} type={lodging} all={allProperties} onChanged={refresh} onError={setError} />}
-                </PropertyCard>
+                <PropertyCard key={p.id} property={p} onChanged={refresh} onError={setError} />
               ))}
             </ul>
           )}
@@ -245,6 +160,13 @@ export function PropertiesScreen() {
             {t("properties.name")}
             <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("properties.namePlaceholder")} maxLength={120} required />
           </label>
+          {lodging === "cabins" && (
+            <label className={labelClass}>
+              {t("units.cabinsQty")}
+              <input className={inputClass} type="number" min={1} max={200} value={qty} onChange={(e) => setQty(e.target.value)} />
+              <span className="mt-1 block text-xs text-muted">{t("units.cabinsQtyHint")}</span>
+            </label>
+          )}
           <label className={labelClass}>
             {t("properties.city")}
             <input className={inputClass} value={city} onChange={(e) => setCity(e.target.value)} />
@@ -254,6 +176,7 @@ export function PropertiesScreen() {
           </button>
         </form>
       </div>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import { STATUS_KEY, monthTitle, shortDate } from "../format";
 import { monthRange } from "../insights";
 import { isActive, monthHalfSegments, nightsWithin, occupancyPct, owed, paymentState, turnoverDays } from "../logic";
 import type { Booking, BookingStatus, HostProperty } from "../types";
+import { useUnit } from "../useHostData";
 
 interface Props {
   client: SupabaseClient;
@@ -56,6 +57,7 @@ function barShape(startsBefore: boolean, endsAfter: boolean): CSSProperties {
  */
 export function HostCalendar({ client, orgId, currency, properties, bookings, blocks, loading, onCreateBooking, onOpenBookings, onChanged }: Props) {
   const { t, locale } = useI18n();
+  const unit = useUnit();
   const today = localToday();
   const [ty, tm] = today.split("-").map(Number) as [number, number];
   const [cursor, setCursor] = useState({ year: ty, month: tm });
@@ -166,7 +168,7 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
       <div className={`${cardClass} anim-in overflow-x-auto !p-0`} role="group" aria-label={t("host.calLabel", { month: title })}>
         <div style={{ minWidth: `${NAME_COL * 16 + days * DAY_MIN * 16}px` }}>
           <div className="grid border-b border-line bg-surface2/30" style={grid}>
-            <div className="sticky left-0 z-30 flex items-end bg-surface2 px-4 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{t("host.property")}</div>
+            <div className="sticky left-0 z-30 flex items-end bg-surface2 px-4 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{unit.label}</div>
             {Array.from({ length: days }, (_, i) => i + 1).map((d) => {
               const isToday = d === todayDay;
               const weekend = weekday(d) === 0 || weekday(d) === 6;
@@ -265,7 +267,7 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
       {blocking && (
         <form onSubmit={saveBlock} className={`${cardClass} anim-in grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1.4fr_auto] lg:items-end`}>
           <label className={labelClass}>
-            {t("host.property")}
+            {unit.label}
             <select className={inputClass} value={blocking.propertyId} onChange={(e) => setBlocking({ ...blocking, propertyId: e.target.value })}>
               {properties.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>

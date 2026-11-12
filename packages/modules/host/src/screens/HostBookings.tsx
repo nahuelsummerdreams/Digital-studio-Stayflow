@@ -6,12 +6,12 @@ import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney, formatMoneyExact, parseMoney } from "@stayflow/money";
 import { EmptyState, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, infoClass, inputClass, labelClass } from "@stayflow/ui";
 import { addBooking, recordBookingIncome, removeBooking, recordPayment, setBookingStatus, updateBooking, PAYMENT_METHODS, type PaymentMethod } from "../data";
-import { addDays, localToday } from "../dates";
+import { addDays, daysBetween, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
 import { BookingHistory } from "./BookingHistory";
 import { isActive, nextStatuses, owed, paymentState, validateBooking } from "../logic";
 import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus, type HostProperty } from "../types";
-import { useHostData } from "../useHostData";
+import { useHostData, useUnit } from "../useHostData";
 
 interface Props {
   client: SupabaseClient;
@@ -31,6 +31,7 @@ const FILTER_KEY = { upcoming: "host.filterUpcoming", all: "host.filterAll", pas
 
 export function HostBookings({ client, orgId, currency, properties, prefill, onGoProperties, data }: Props) {
   const { t, locale } = useI18n();
+  const unit = useUnit();
   const today = localToday();
   const { bookings, loading, reload } = data;
 
@@ -41,7 +42,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [guestsCount, setGuestsCount] = useState("2");
   const [checkIn, setCheckIn] = useState(today);
   const [checkOut, setCheckOut] = useState(addDays(today, 3));
-  const [source, setSource] = useState<BookingSource>("airbnb");
+  const [source, setSource] = useState<BookingSource>(data.lodgingType === "rental" ? "airbnb" : "direct");
   const [amount, setAmount] = useState("");
   const [paidIn, setPaidIn] = useState("");
   const [startStatus, setStartStatus] = useState<BookingStatus>("confirmed");
@@ -70,6 +71,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   }, [prefill?.nonce]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selected = propertyId || properties[0]?.id || "";
+  const rate = properties.find((p) => p.id === selected)?.baseRate ?? null;
+  const suggested = rate && checkOut > checkIn ? rate * daysBetween(checkIn, checkOut) : 0;
   const nameOf = (id: string) => properties.find((p) => p.id === id)?.name ?? t("properties.archived");
   const photoOf = (id: string) => properties.find((p) => p.id === id)?.photoUrl ?? null;
 
@@ -87,8 +90,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
 
   if (properties.length === 0) {
     return (
-      <EmptyState icon="building" title={t("host.needProperty")} body={t("host.needPropertyBody")}>
-        <button type="button" className={buttonClass} onClick={onGoProperties}>{t("host.goProperties")}</button>
+      <EmptyState icon="building" title={unit.addFirst} body={t("host.needUnitBody", { many: unit.many })}>
+        <button type="button" className={buttonClass} onClick={onGoProperties}>{unit.add}</button>
       </EmptyState>
     );
   }
@@ -223,7 +226,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       <form onSubmit={submit} className={`${cardClass} space-y-4 lg:sticky lg:top-8`}>
         <h2 className="text-sm font-medium">{editingId ? t("hx.editBooking") : t("host.newBooking")}</h2>
         <label className={labelClass}>
-          {t("host.property")}
+          {unit.label}
           <select className={inputClass} value={selected} onChange={(e) => setPropertyId(e.target.value)}>
             {properties.map((p) => (
               <option key={p.id} value={p.id}>{p.name}</option>
@@ -271,6 +274,11 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
         <label className={labelClass}>
           {t("host.amount", { currency })}
           <input className={inputClass} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0,00" />
+          {suggested > 0 && amount.trim() === "" && !editingId && (
+            <button type="button" className="mt-1.5 text-left text-xs text-accent underline-offset-4 hover:underline" onClick={() => setAmount(String(suggested / 100).replace(".", ","))}>
+              {t("host.useRate", { amount: formatMoney(suggested, currency) })}
+            </button>
+          )}
         </label>
         <label className={labelClass}>
           {t("hx.payPaidLabel", { currency })}
