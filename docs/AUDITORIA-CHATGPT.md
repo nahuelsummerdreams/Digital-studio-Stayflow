@@ -72,16 +72,17 @@ Público: anfitriones individuales o pequeños administradores. Dolor central de
 
 Sitio estático/SSR en Next.js. Tema oscuro con acentos neón, efectos (aurora, grano, tilt 3D, cursor glow, barra de progreso, confeti al desbloquear el descuento), respeta `prefers-reduced-motion`.
 
-**Estructura de la home (en orden):**
-1. Portada: titular de dolor, chips de dolores, pantalla animada de ejemplo (panel "Buenos días Lucía" con notificaciones), botón principal **"Conseguirlo por USD 49"** (agrega Host al carrito y abre el carrito) y botón secundario "Ver todas las herramientas".
-2. Franja de 4 tarjetas con números (0 dobles reservas · 1 panel para todo · USD 49 y Host es tuyo · −30% al combinar) + sellos (12 meses de actualizaciones · Se instala como app · Garantía de 14 días · Soporte opcional).
-3. Ticker, sección "El problema" (antes/después) y bloques de funciones con mockups de las pantallas reales.
-4. **Las 4 herramientas a la venta**: cada una con caja 3D, pregunta de dolor, "Para qué sirve", 3 beneficios, precio, botón "Agregar al carrito", enlace "Ver más".
-5. **Packs** (Esencial y Megapack).
-6. **La repisa**: las cajas de las 4 apps en una repisa; se arrastran (o se tocan) hasta "Tu pack"; un "ticket" calcula en vivo subtotal, descuento del 30% y total; sugerencias upsell/downsell.
-7. **Soporte opcional** (selector por herramienta, total mensual; hoy termina en "Avísame").
-8. **Próximamente**: 5 tarjetas (AI, Listing, Academy, Experiences, Website) con "Avísame cuando salga".
-9. Cómo empieza, preguntas frecuentes, llamada final, pie con enlaces legales y botón de cookies.
+**Estructura de la home (en orden) — reconstruida como embudo alrededor de Host (≈6.500 px escritorio, ≈9.300 px móvil):**
+1. Portada: titular de dolor, una línea de explicación, 3 beneficios, botón principal **"Conseguirlo por USD 49"** (agrega Host al carrito y lo abre), "Ver cómo funciona", y línea de confianza (pago único · garantía de 14 días · computadora y celular). A la derecha, pantalla de ejemplo animada.
+2. Fila de 4 datos (0 dobles reservas · 1 panel para todo · USD 49 · −30% al combinar).
+3. "Míralo por dentro": 5 pestañas (cronograma, reservas, huéspedes, tareas, ganancia), cada una con dolor, promesa, 3 puntos y la pantalla real.
+4. Oferta de Host: qué incluye, precio, garantía, "Empiezas en 3 pasos".
+5. "Suma apps y ahorra 30%": **la repisa** (arrastrar o tocar cajas 3D hasta "Tu pack"; ticket en vivo) y 2 packs compactos (Esencial, Megapack).
+6. Soporte opcional en un desplegable.
+7. "Próximamente": fila horizontal de 5 apps con "Avísame cuando salga".
+8. 6 preguntas frecuentes y cierre con el mismo botón.
+En móvil, barra fija inferior "Stayflow Host · USD 49" tras la portada.
+**Promoción única (apagada por defecto):** si `NEXT_PUBLIC_PROMO_ENDS_AT` está definida, Esencial 65 y Megapack 85 con barra superior y cuenta regresiva hacia un cierre real; se apaga sola. El precio promocional hoy se decide en el navegador: **debe validarse en el servidor cuando exista el cobro**.
 
 **Otras páginas:** `/products/[slug]` (ficha de cada producto; las de "Próximamente" no muestran precio ni carrito), `/checkout` (resumen + formulario de email), `/l/host`, `/l/guest`, `/l/profit` (landings para anuncios, más cortas, `noindex`), `/privacidad`, `/terminos`, `/reembolsos`, `sitemap.xml`, `robots.txt`.
 
