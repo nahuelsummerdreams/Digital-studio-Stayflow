@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { averageDailyRate, bookableIds, establishmentTree, receptionDay } from "./lodging";
+import { averageDailyRate, bookableIds, categorySnapshot, establishmentTree, receptionDay } from "./lodging";
 import type { Booking, HostProperty } from "./types";
 
 const prop = (id: string, over: Partial<HostProperty> = {}): HostProperty => ({ id, name: id, ...over });
@@ -79,5 +79,26 @@ describe("averageDailyRate", () => {
   });
   it("is 0 with no stays", () => {
     expect(averageDailyRate([], hotel, "hotel", "2026-11-10", "2026-11-12")).toBe(0);
+  });
+});
+
+describe("categorySnapshot", () => {
+  it("counts occupancy, movements and rates over the given units", () => {
+    const bookings = [
+      bk({ propertyId: "r1", checkIn: "2026-11-10", checkOut: "2026-11-12", nights: 2, amount: 20_000 }),
+      bk({ propertyId: "r2", checkIn: "2026-11-12", checkOut: "2026-11-14", nights: 2, amount: 30_000 }),
+      bk({ propertyId: "r2", checkIn: "2026-11-01", checkOut: "2026-11-03", status: "canceled" }),
+    ];
+    const s = categorySnapshot(bookings, ["r1", "r2"], "2026-11-11", "2026-11-01", "2026-12-01");
+    expect(s.units).toBe(2);
+    expect(s.occupiedToday).toBe(1);
+    expect(s.occupancyToday).toBe(50);
+    expect(s.arrivalsToday).toBe(0);
+    expect(s.adr).toBe(12_500);
+    expect(s.revPau).toBe(Math.round(50_000 / 60));
+  });
+  it("is zero-safe with no units", () => {
+    const s = categorySnapshot([], [], "2026-11-11", "2026-11-01", "2026-12-01");
+    expect(s).toMatchObject({ units: 0, occupancyToday: 0, adr: 0, revPau: 0 });
   });
 });

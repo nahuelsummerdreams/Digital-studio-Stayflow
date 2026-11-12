@@ -9,6 +9,7 @@ export { HostBookings } from "./screens/HostBookings";
 export { HostReception } from "./screens/HostReception";
 export { HostCalendar } from "./screens/HostCalendar";
 export { HostGuests } from "./screens/HostGuests";
+export { HostCategoryBand } from "./screens/HostCategoryBand";
 export { HostGettingStarted } from "./screens/HostGettingStarted";
 export { HostMessages } from "./screens/HostMessages";
 export { HostReports } from "./screens/HostReports";

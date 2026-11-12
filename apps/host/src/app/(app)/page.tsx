@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useAccount } from "@stayflow/auth";
-import { HostDashboard, HostDigestToggle, HostGettingStarted, useHostData } from "@stayflow/module-host";
+import { LodgingCategory, useAccount } from "@stayflow/auth";
+import { HostCategoryBand, HostDashboard, HostDigestToggle, HostGettingStarted, useHostData } from "@stayflow/module-host";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -12,12 +12,13 @@ export default function DashboardPage() {
   const meta = session?.user.user_metadata as { full_name?: string } | undefined;
   const userName = meta?.full_name?.trim() || session?.user.email?.split("@")[0] || org.name;
   const gs = (
-    <HostGettingStarted allowDemo={org.lodgingType === "rental" || org.lodgingType === "cabins"} client={client} orgId={org.id} properties={properties} bookings={data.bookings} onGo={(href) => router.push(href)} onChanged={async () => { await refresh(); await data.reload(); }} />
+    <HostGettingStarted lodgingType={org.lodgingType} allowDemo={org.lodgingType === "rental" || org.lodgingType === "cabins"} client={client} orgId={org.id} properties={properties} bookings={data.bookings} onGo={(href) => router.push(href)} onChanged={async () => { await refresh(); await data.reload(); }} />
   );
   if (properties.length === 0) return gs;
   return (
     <div className="space-y-6">
     {gs}
+    <HostCategoryBand lodgingType={org.lodgingType} currency={org.currency} units={properties} bookings={data.bookings} onAdd={() => router.push("/properties")} changeSlot={<LodgingCategory />} />
     <HostDashboard
       currency={org.currency}
       userName={userName}

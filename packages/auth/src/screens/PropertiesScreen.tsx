@@ -226,7 +226,7 @@ export function PropertiesScreen() {
       <div className="grid gap-6 xl:grid-cols-[1fr_20rem] xl:items-start">
         <section aria-label={t("properties.yourProperties")}>
           {topLevel.length === 0 ? (
-            <p className={`${cardClass} text-sm text-muted`}>{t("properties.none")}</p>
+            <p className={`${cardClass} text-sm text-muted`}>{lodging === "cabins" ? t(`unit.cabins.addFirst`) : t("properties.none")}</p>
           ) : (
             <ul className="anim-stagger grid gap-4 sm:grid-cols-2">
               {topLevel.map((p) => (
@@ -240,7 +240,7 @@ export function PropertiesScreen() {
         </section>
 
         <form onSubmit={add} className={`${cardClass} space-y-4 xl:sticky xl:top-8`}>
-          <h2 className="text-sm font-medium">{t("properties.addTitle")}</h2>
+          <h2 className="text-sm font-medium">{usesUnits ? t("properties.addTitle") : t(`unit.${lodging}.add`)}</h2>
           <label className={labelClass}>
             {t("properties.name")}
             <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} placeholder={t("properties.namePlaceholder")} maxLength={120} required />
@@ -250,7 +250,7 @@ export function PropertiesScreen() {
             <input className={inputClass} value={city} onChange={(e) => setCity(e.target.value)} />
           </label>
           <button className={`${buttonClass} w-full`} disabled={busy}>
-            {busy ? t("properties.adding") : t("properties.add")}
+            {busy ? t("properties.adding") : usesUnits ? t("properties.add") : t(`unit.${lodging}.add`)}
           </button>
         </form>
       </div>

@@ -89,3 +89,46 @@ export function averageDailyRate(bookings: Booking[], properties: HostProperty[]
   }
   return nights === 0 ? 0 : Math.round(revenue / nights);
 }
+
+export interface CategorySnapshot {
+  /** Reservable units (properties, cabins, rooms or beds, depending on the category). */
+  units: number;
+  occupiedToday: number;
+  occupancyToday: number;
+  arrivalsToday: number;
+  departuresToday: number;
+  /** Average nightly rate over the month, minor units. */
+  adr: number;
+  /** Revenue per available unit-night over the month, minor units (RevPAR for hotels, RevPAB for hostels). */
+  revPau: number;
+}
+
+/** Headline numbers for the category band, over the reservable unit ids (already resolved by category). */
+export function categorySnapshot(bookings: Booking[], unitIds: string[], day: string, monthFrom: string, monthTo: string): CategorySnapshot {
+  const set = new Set(unitIds);
+  const mine = bookings.filter((b) => set.has(b.propertyId) && b.kind === "stay");
+  const { arrivals, departures } = movementsOn(mine, day);
+  const inHouse = mine.filter((b) => isActive(b) && b.checkIn <= day && b.checkOut > day);
+  let revenue = 0;
+  let nights = 0;
+  for (const b of mine) {
+    if (!isActive(b) || b.nights <= 0) continue;
+    const start = b.checkIn > monthFrom ? b.checkIn : monthFrom;
+    const end = b.checkOut < monthTo ? b.checkOut : monthTo;
+    const n = Math.max(0, (Date.parse(end) - Date.parse(start)) / 86_400_000);
+    if (n === 0) continue;
+    revenue += Math.round((b.amount / b.nights) * n);
+    nights += n;
+  }
+  const span = Math.max(1, (Date.parse(monthTo) - Date.parse(monthFrom)) / 86_400_000);
+  const available = unitIds.length * span;
+  return {
+    units: unitIds.length,
+    occupiedToday: new Set(inHouse.map((b) => b.propertyId)).size,
+    occupancyToday: unitIds.length === 0 ? 0 : Math.round((new Set(inHouse.map((b) => b.propertyId)).size / unitIds.length) * 100),
+    arrivalsToday: arrivals.length,
+    departuresToday: departures.length,
+    adr: nights === 0 ? 0 : Math.round(revenue / nights),
+    revPau: available === 0 ? 0 : Math.round(revenue / available),
+  };
+}

@@ -580,6 +580,23 @@ export const es = {
     noCode: "¿Todavía no tienes código?",
     buy: "Consigue {product}",
   },
+  unit: {
+    rental: { one: "propiedad", many: "propiedades", title: "Tus propiedades", add: "Agregar propiedades", addFirst: "Agrega tu primera propiedad", revpau: "Ingreso por propiedad disponible", band: "Alquileres temporarios" },
+    cabins: { one: "cabaña", many: "cabañas", title: "Tus cabañas", add: "Agregar cabañas", addFirst: "Agrega tu primera cabaña", revpau: "Ingreso por cabaña disponible", band: "Cabañas y resorts" },
+    hotel: { one: "habitación", many: "habitaciones", title: "Tus habitaciones", add: "Agregar habitaciones", addFirst: "Agrega tu primera habitación", revpau: "RevPAR · ingreso por habitación disponible", band: "Hotel" },
+    hostel: { one: "cama", many: "camas", title: "Tus camas", add: "Agregar camas", addFirst: "Agrega tu primera cama", revpau: "Ingreso por cama disponible", band: "Hostel" },
+  },
+  band: {
+    title: "Tu operación, a la medida de tu alojamiento",
+    occupied: "Ocupadas hoy",
+    occupancy: "Ocupación hoy",
+    arrivals: "Llegadas hoy",
+    departures: "Salidas hoy",
+    adr: "Tarifa promedio por noche",
+    change: "Cambiar categoría",
+    changeHide: "Cerrar",
+    of: "de {total}",
+  },
   properties: {
     yourProperties: "Tus propiedades",
     none: "Aún no tienes propiedades. Agrega la primera aquí abajo.",

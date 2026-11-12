@@ -6,7 +6,7 @@ import { errorKey, useI18n } from "@stayflow/i18n";
 import { Icon, buttonClass, cardClass, errorClass, ghostButtonClass } from "@stayflow/ui";
 import { loadDemoPropertyIds, loadSyncProperties, removeDemo, seedDemo } from "../data";
 import { addDays, localToday } from "../dates";
-import type { Booking, HostProperty } from "../types";
+import type { Booking, HostProperty, LodgingType } from "../types";
 
 interface Props {
   client: SupabaseClient;
@@ -18,12 +18,14 @@ interface Props {
   onChanged: () => Promise<void>;
   /** The sample account is made of rental properties, so hotels and hostels do not offer it. Default true. */
   allowDemo?: boolean;
+  /** Category of the business: the first step speaks its vocabulary (cabin, room, bed, property). */
+  lodgingType?: LodgingType;
 }
 
 const KEY = (orgId: string) => `stayflow-host-start-${orgId}`;
 
 /** First steps for a new host, with real progress, plus a one-click sample account to try everything. */
-export function HostGettingStarted({ client, orgId, properties, bookings, onGo, onChanged, allowDemo = true }: Props) {
+export function HostGettingStarted({ client, orgId, properties, bookings, onGo, onChanged, allowDemo = true, lodgingType = "rental" }: Props) {
   const { t } = useI18n();
   const [demoIds, setDemoIds] = useState<string[] | null>(null);
   const [linked, setLinked] = useState(false);
@@ -53,7 +55,7 @@ export function HostGettingStarted({ client, orgId, properties, bookings, onGo, 
   const real = properties.filter((p) => !demoIds.includes(p.id));
   const realBookings = bookings.filter((b) => real.some((p) => p.id === b.propertyId));
   const steps = [
-    { done: real.length > 0, label: t("hx.gsProperty"), go: "/properties", cta: t("hx.gsPropertyCta") },
+    { done: real.length > 0, label: t(`unit.${lodgingType}.addFirst`), go: "/properties", cta: t(`unit.${lodgingType}.add`) },
     { done: real.some((p) => p.photoUrl), label: t("hx.gsPhoto"), go: "/properties", cta: t("hx.gsPhotoCta") },
     { done: realBookings.length > 0, label: t("hx.gsBooking"), go: "/bookings?new=1", cta: t("hx.gsBookingCta") },
     { done: linked, label: t("hx.gsSync"), go: "/sync", cta: t("hx.gsSyncCta"), optional: true },
