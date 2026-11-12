@@ -1,6 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ImportRow } from "./importer";
-import type { Booking, BookingKind, BookingSource, BookingStatus, HostTask, NewBooking } from "./types";
+import type { Booking, BookingKind, BookingSource, BookingStatus, GuestEvent, GuestEventKind, GuestProfile, HostTask, NewBooking } from "./types";
 
 interface BookingDb {
   id: string;
@@ -354,5 +354,53 @@ export async function seedDemo(client: SupabaseClient, orgId: string, today: str
 
 export async function removeDemo(client: SupabaseClient, orgId: string): Promise<void> {
   const { error } = await client.from("properties").delete().eq("org_id", orgId).eq("is_demo", true);
+  if (error) throw error;
+}
+
+// ---------------------------------------------------------------- guest file (0028_guest_profiles.sql)
+interface GuestProfileDb { guest_key: string; document: string; notes: string; preferences: string; vip: boolean; tags: string[] }
+
+export async function loadGuestProfiles(client: SupabaseClient, orgId: string): Promise<GuestProfile[]> {
+  const { data, error } = await client.from("guest_profiles").select("guest_key, document, notes, preferences, vip, tags").eq("org_id", orgId).limit(5000).returns<GuestProfileDb[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ guestKey: r.guest_key, document: r.document, notes: r.notes, preferences: r.preferences, vip: r.vip, tags: r.tags ?? [] }));
+}
+
+/** Creates the file the first time, updates it after. */
+export async function saveGuestProfile(client: SupabaseClient, orgId: string, p: GuestProfile): Promise<void> {
+  const { error } = await client.from("guest_profiles").upsert(
+    { org_id: orgId, guest_key: p.guestKey, document: p.document.trim(), notes: p.notes.trim(), preferences: p.preferences.trim(), vip: p.vip, tags: p.tags },
+    { onConflict: "org_id,guest_key" },
+  );
+  if (error) throw error;
+}
+
+/** Keys of the guests with at least one incident on record. */
+export async function loadIncidentKeys(client: SupabaseClient, orgId: string): Promise<string[]> {
+  const { data, error } = await client.from("guest_events").select("guest_key").eq("org_id", orgId).eq("kind", "incident").limit(5000).returns<{ guest_key: string }[]>();
+  if (error) throw error;
+  return [...new Set((data ?? []).map((r) => r.guest_key))];
+}
+
+export async function loadGuestEvents(client: SupabaseClient, orgId: string, key: string): Promise<GuestEvent[]> {
+  const { data, error } = await client
+    .from("guest_events")
+    .select("id, guest_key, kind, body, created_at")
+    .eq("org_id", orgId)
+    .eq("guest_key", key)
+    .order("created_at", { ascending: false })
+    .limit(200)
+    .returns<{ id: string; guest_key: string; kind: GuestEventKind; body: string; created_at: string }[]>();
+  if (error) throw error;
+  return (data ?? []).map((r) => ({ id: r.id, guestKey: r.guest_key, kind: r.kind, body: r.body, createdAt: r.created_at }));
+}
+
+export async function addGuestEvent(client: SupabaseClient, orgId: string, key: string, kind: GuestEventKind, body: string): Promise<void> {
+  const { error } = await client.from("guest_events").insert({ org_id: orgId, guest_key: key, kind, body: body.trim() });
+  if (error) throw error;
+}
+
+export async function removeGuestEvent(client: SupabaseClient, id: string): Promise<void> {
+  const { error } = await client.from("guest_events").delete().eq("id", id);
   if (error) throw error;
 }

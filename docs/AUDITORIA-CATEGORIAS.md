@@ -3,6 +3,19 @@
 Fecha: 12-nov-2026. Alcance: el proyecto "Stayflow Host: ecosistema integral de gestión para alojamientos" (4 categorías: Rentals, Hotels, Cabins & Resorts, Hostels).
 Método: revisé la base de producción (tablas, políticas, tipos, historial de migraciones), el código de la rama `claude/quirky-albattani-cthzld` y la rama `feat/hotel-hostel`, y corrí las pruebas de ambas. No modifiqué nada.
 
+## Avance (actualizado el 12-nov-2026)
+| Etapa | Estado |
+|---|---|
+| 0 · Integrar `feat/hotel-hostel` | ✅ Integrada, con pruebas SQL de 0024 y 0025 (14 comprobaciones) |
+| 1 · Auditoría | ✅ |
+| 2 · Selector de 4 categorías | ✅ Tarjetas, módulos por perfil (`org_modules`), menú que sigue la categoría, cambio controlado con vista previa y registro (migraciones 0026, 0027; 16 comprobaciones SQL) |
+| 3a · Huéspedes | ✅ Ficha persistente: documento, preferencias, notas, etiquetas, VIP, incidencias y segmentos (migración 0028; 14 comprobaciones SQL) |
+| 3b · Estados de reserva e historial | Pendiente |
+| 3c · Libro de pagos | Pendiente |
+| 3d · Permisos por módulo y auditoría | Pendiente (requiere primero invitar usuarios al equipo: hoy no existe) |
+| 3e · Historial de comunicaciones | Pendiente |
+| 3f · Tareas con responsable y prioridad | Pendiente |
+
 ## 0. Resumen
 - **Stayflow ya es multi-cliente y seguro por diseño** (21 tablas, todas con RLS; pruebas de aislamiento). Esa es la base más difícil y está hecha.
 - **Rentals está cubierto en ~60–65 %.** Hotels ~25 %, Hostels ~30 %, Cabins & Resorts ~10 %, Superadmin 0 %. (Porcentajes sobre el listado de módulos del brief; ver §3.)

@@ -74,3 +74,23 @@ export interface HostProperty {
 export const LODGING_TYPES = ["rental", "hotel", "cabins", "hostel"] as const;
 export type LodgingType = (typeof LODGING_TYPES)[number];
 export type UnitKind = "room" | "bed";
+
+/** What the host knows about a guest beyond the bookings. Hangs from the same identity key the directory uses. */
+export interface GuestProfile {
+  guestKey: string;
+  document: string;
+  notes: string;
+  preferences: string;
+  vip: boolean;
+  tags: string[];
+}
+
+export type GuestEventKind = "note" | "incident";
+
+export interface GuestEvent {
+  id: string;
+  guestKey: string;
+  kind: GuestEventKind;
+  body: string;
+  createdAt: string;
+}

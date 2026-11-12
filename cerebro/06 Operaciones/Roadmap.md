@@ -21,3 +21,7 @@ actualizado: 2026-11-12
 10. Idiomas EN/PT · equipo con varios usuarios · apps "Próximamente" según demanda
 
 Detalle técnico en [[Backlog técnico]].
+
+## Categorías (brief "Stayflow por categorías")
+Plan completo y estado en `docs/AUDITORIA-CATEGORIAS.md`. Hechas: etapa 0 (integrar hotel/hostel), 2 (selector de 4 categorías) y 3a (ficha de huéspedes). Siguiente: 3b estados de reserva e historial, 3c libro de pagos.
+

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { addDays, daysBetween, daysInMonth, firstOfNextMonth, localToday, shiftMonth } from "./dates";
 import {
-  bookedRevenue, guestsDirectory, monthSegments, movementsOn, nextStatuses, nightsWithin, occupancyPct, upcomingArrivals, validateBooking,
+  bookedRevenue, guestKeyOf, guestSegments, guestStays, guestsDirectory, parseTags, monthSegments, movementsOn, nextStatuses, nightsWithin, occupancyPct, upcomingArrivals, validateBooking,
 } from "./logic";
 import type { Booking, NewBooking } from "./types";
 
@@ -181,5 +181,30 @@ describe("insights", () => {
     expect(w[0]).toBe("2026-11-09");
     expect(w[6]).toBe("2026-11-15");
     expect(weekOf("2026-11-10", 1)[0]).toBe("2026-11-16");
+  });
+});
+
+describe("guest file", () => {
+  const stay = (over: Partial<Booking>): Booking => bk({ guestName: "Ana", guestEmail: "ana@x.com", ...over });
+  it("the identity is the email, or the name when there is none", () => {
+    expect(guestKeyOf({ guestEmail: " Ana@X.com ", guestName: "Ana" })).toBe("ana@x.com");
+    expect(guestKeyOf({ guestEmail: "", guestName: " Luis P " })).toBe("luis p");
+  });
+  it("lists the stays of one guest, newest first, canceled included", () => {
+    const all = [stay({ id: "1", checkIn: "2026-01-01", checkOut: "2026-01-03" }), stay({ id: "2", checkIn: "2026-05-01", checkOut: "2026-05-03", status: "canceled" }), stay({ id: "3", guestEmail: "otra@x.com", guestName: "Otra" })];
+    expect(guestStays(all, "ana@x.com").map((b) => b.id)).toEqual(["2", "1"]);
+  });
+  it("segments: vip, frequent, owes, incident", () => {
+    const bookings = [stay({ id: "1", amount: 1000, paid: 1000 }), stay({ id: "2", amount: 1000, paid: 400, checkIn: "2026-06-01", checkOut: "2026-06-03" })];
+    expect(guestSegments({ key: "ana@x.com", stays: 2 }, bookings, { vip: true }, new Set(["ana@x.com"]))).toEqual(["vip", "frequent", "owes", "incident"]);
+    expect(guestSegments({ key: "ana@x.com", stays: 1 }, [stay({ amount: 1000, paid: 1000 })], undefined, new Set())).toEqual([]);
+  });
+  it("a canceled stay never makes a guest owe", () => {
+    expect(guestSegments({ key: "ana@x.com", stays: 1 }, [stay({ amount: 1000, paid: 0, status: "canceled" })], undefined, new Set())).toEqual([]);
+  });
+  it("parses tags: trims, drops repeats and empties, caps at 10 of 30 characters", () => {
+    expect(parseTags("familia, vip ,Familia,, ")).toEqual(["familia", "vip"]);
+    expect(parseTags(Array.from({ length: 14 }, (_, i) => `t${i}`).join(","))).toHaveLength(10);
+    expect(parseTags("x".repeat(40))[0]).toHaveLength(30);
   });
 });

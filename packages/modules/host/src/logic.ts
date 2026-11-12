@@ -90,12 +90,15 @@ export interface GuestRecord {
   lastStay: string;
 }
 
+/** The identity of the person behind a booking: their email, or their name when there is none. */
+export const guestKeyOf = (b: Pick<Booking, "guestEmail" | "guestName">): string => (b.guestEmail.trim() || b.guestName.trim()).toLowerCase();
+
 /** Guests are not typed in twice: they are the people behind the bookings. Same email (or name) = same guest. */
 export function guestsDirectory(bookings: Booking[]): GuestRecord[] {
   const map = new Map<string, GuestRecord & { latest: string }>();
   for (const b of [...bookings].sort((x, y) => x.checkIn.localeCompare(y.checkIn))) {
     if (!isActive(b)) continue;
-    const key = (b.guestEmail.trim() || b.guestName.trim()).toLowerCase();
+    const key = guestKeyOf(b);
     const prev = map.get(key);
     map.set(key, {
       key,
@@ -237,4 +240,37 @@ export function todayPlan(bookings: Booking[], tasks: HostTask[], today: string)
     overdue: open.filter((t) => t.dueOn !== null && t.dueOn < today),
     collect: live.filter((b) => (b.checkIn === today || b.checkIn === tomorrow) && owed(b) > 0),
   };
+}
+
+/** The stays of one guest, newest first. Canceled ones are kept: the history is the history. */
+export function guestStays(bookings: Booking[], key: string): Booking[] {
+  return bookings.filter((b) => b.kind === "stay" && guestKeyOf(b) === key).sort((a, b) => b.checkIn.localeCompare(a.checkIn));
+}
+
+export type GuestSegment = "vip" | "frequent" | "owes" | "incident";
+export const GUEST_SEGMENTS: readonly GuestSegment[] = ["vip", "frequent", "owes", "incident"];
+
+/** Labels a guest by what is true about them today: marked VIP, came more than once, still owes, has an incident on record. */
+export function guestSegments(g: { key: string; stays: number }, bookings: Booking[], profile: { vip: boolean } | undefined, incidentKeys: ReadonlySet<string>): GuestSegment[] {
+  const out: GuestSegment[] = [];
+  if (profile?.vip) out.push("vip");
+  if (g.stays >= 2) out.push("frequent");
+  if (bookings.some((b) => b.kind === "stay" && isActive(b) && guestKeyOf(b) === g.key && owed(b) > 0)) out.push("owes");
+  if (incidentKeys.has(g.key)) out.push("incident");
+  return out;
+}
+
+/** "familia, vip ,Familia" -> ["familia", "vip"]. At most 10 tags of 30 characters, no repeats (the database enforces the same). */
+export function parseTags(input: string): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of input.split(",")) {
+    const tag = raw.trim().slice(0, 30);
+    const k = tag.toLowerCase();
+    if (!tag || seen.has(k)) continue;
+    seen.add(k);
+    out.push(tag);
+    if (out.length === 10) break;
+  }
+  return out;
 }
