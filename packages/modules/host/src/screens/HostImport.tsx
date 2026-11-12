@@ -44,7 +44,6 @@ export function HostImport({ client, orgId, properties, onImported }: Props) {
     setResult(null);
     setOrder(undefined);
     setSource(null);
-    setMap({});
     try {
       if (file.size > 5_000_000) throw new Error("big");
       setText(await file.text());
@@ -152,6 +151,7 @@ export function HostImport({ client, orgId, properties, onImported }: Props) {
             </ul>
           </div>
 
+          {live.length > 0 && ready.length < live.length && <p role="status" className={infoClass}>{t("hx.impPickProp", { count: live.length - ready.length })}</p>}
           <button type="button" className={buttonClass} disabled={busy || ready.length === 0} onClick={run}>
             {busy ? t("hx.impGoing") : t("hx.impGo", { count: ready.length })}
           </button>

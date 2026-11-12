@@ -198,6 +198,7 @@ export const es = {
     impSource: "Origen",
     impMap: "¿A qué propiedad corresponde?",
     impSkip: "No importar",
+    impPickProp: "{count} reservas aún no tienen propiedad: elígela arriba para incluirlas.",
     impPreview: "Vista previa",
     impGo: "Importar {count} reservas",
     impGoing: "Importando…",

@@ -272,7 +272,14 @@ export interface ImportResult {
 export async function importBookings(client: SupabaseClient, orgId: string, items: ImportItem[], today: string, guestLabel: string): Promise<ImportResult> {
   const result: ImportResult = { added: 0, duplicates: 0, conflicts: 0, canceled: 0, failed: 0 };
   const pastIds: string[] = [];
-  const live = items.filter((i) => (i.row.canceled ? (result.canceled++, false) : true));
+  // Rows imported before are recognized up front (the database would report them as an overlap, which is misleading).
+  const { data: known } = await client.from("bookings").select("property_id, external_uid").eq("org_id", orgId).like("external_uid", "file:%").limit(5000);
+  const seen = new Set(((known ?? []) as { property_id: string; external_uid: string }[]).map((k) => `${k.property_id}|${k.external_uid}`));
+  const live = items.filter((i) => {
+    if (i.row.canceled) return result.canceled++, false;
+    if (seen.has(`${i.propertyId}|${`file:${i.row.code}`.slice(0, 300)}`)) return result.duplicates++, false;
+    return true;
+  });
   for (let i = 0; i < live.length; i += 8) {
     await Promise.all(
       live.slice(i, i + 8).map(async ({ propertyId, row, source }) => {
