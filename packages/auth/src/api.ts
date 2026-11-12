@@ -233,9 +233,13 @@ export async function createProperty(
 
 /** Archiving keeps the financial history; the property just stops showing up. */
 export async function archiveProperty(client: SupabaseClient, propertyId: string): Promise<void> {
-  const { error } = await client
-    .from("properties")
-    .update({ archived_at: new Date().toISOString() })
-    .eq("id", propertyId);
+  // An establishment takes its rooms (and their beds) with it, so nothing is left reservable under an archived hotel.
+  const rooms = await client.from("properties").select("id").eq("parent_id", propertyId).returns<{ id: string }[]>();
+  if (rooms.error) throw rooms.error;
+  const roomIds = (rooms.data ?? []).map((r) => r.id);
+  const beds = roomIds.length > 0 ? await client.from("properties").select("id").in("parent_id", roomIds).returns<{ id: string }[]>() : { data: [], error: null };
+  if (beds.error) throw beds.error;
+  const ids = [propertyId, ...roomIds, ...(beds.data ?? []).map((b) => b.id)];
+  const { error } = await client.from("properties").update({ archived_at: new Date().toISOString() }).in("id", ids);
   if (error) throw error;
 }
