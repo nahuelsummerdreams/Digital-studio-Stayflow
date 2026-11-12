@@ -232,7 +232,7 @@ export function AppShell({ product, nav, children, quickAction, alerts = [], sea
                     key={n.href}
                     href={n.href}
                     aria-current={active ? "page" : undefined}
-                    className={`min-w-[30%] flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-center text-sm font-medium transition sm:min-w-0 ${active ? activeTabClass : idleTabClass}`}
+                    className={`min-w-[30%] flex-1 rounded-lg px-2 py-2 text-center text-sm font-medium leading-tight transition sm:min-w-0 sm:whitespace-nowrap sm:px-3 ${active ? activeTabClass : idleTabClass}`}
                   >
                     {n.label}
                   </Link>
