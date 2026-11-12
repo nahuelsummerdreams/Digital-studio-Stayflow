@@ -3,7 +3,7 @@
 import { useT } from "@stayflow/i18n";
 import { Icon, Pill } from "@stayflow/ui";
 import { LODGING_TYPES, type LodgingType } from "../api";
-import { LodgingArt } from "./LodgingArt";
+import { LodgingMedia } from "./LodgingMedia";
 
 /** How far along each category is. Honest on purpose: nothing is presented as finished when it is not. */
 const STATUS: Record<LodgingType, "available" | "beta" | "soon"> = { rental: "available", hotel: "beta", hostel: "beta", cabins: "soon" };
@@ -28,7 +28,7 @@ export function LodgingPicker({ value, onChange, disabled = false }: { value: Lo
             onClick={() => onChange(k)}
             className={`fx-card group flex flex-col overflow-hidden rounded-2xl border text-left transition ${selected ? "border-accent shadow-[0_0_0_1px_rgb(var(--accent)),0_18px_50px_-20px_rgb(var(--accent)/0.7)]" : "border-line hover:border-accent/50"} disabled:opacity-60`}
           >
-            <span className="block h-28 overflow-hidden"><LodgingArt type={k} /></span>
+            <span className="block h-36 overflow-hidden"><LodgingMedia type={k} /></span>
             <span className="flex flex-1 flex-col p-4">
               <span className="flex items-start justify-between gap-2">
                 <span className="font-display text-lg uppercase leading-tight tracking-wide">{t(`category.${k}.brand`)}</span>
