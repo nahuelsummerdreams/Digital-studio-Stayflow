@@ -175,7 +175,7 @@ export function Shelf() {
                 {totals.lines.map((l) => (
                   <li key={l.id} className="flex items-baseline gap-2"><span>{l.name.replace("Stayflow ", "")}</span><span aria-hidden className="min-w-4 flex-1 border-b border-dotted border-line" /><span className="tabular-nums">{usd(l.price)}</span></li>
                 ))}
-                {totals.discountActive && <li className="flex items-baseline gap-2 text-success"><span>{m.builder.discount}</span><span aria-hidden className="min-w-4 flex-1 border-b border-dotted border-success/40" /><span className="tabular-nums">−{usd(totals.discount)}</span></li>}
+                {totals.discountActive && <li className="flex items-baseline gap-2 text-success"><span>{totals.promoPack ? m.promo.discountLabel : m.builder.discount}</span><span aria-hidden className="min-w-4 flex-1 border-b border-dotted border-success/40" /><span className="tabular-nums">−{usd(totals.discount)}</span></li>}
               </ul>
               <div className="my-4 border-t-2 border-dashed border-line" />
               <div className="flex items-baseline justify-between">

@@ -4,6 +4,7 @@ import { AVAILABLE_LIST, PACK_IDS, PACKS, PRODUCTS, type ProductId } from "@/lib
 import { computeTotals, packTotals, usd } from "@/lib/pricing";
 import { fmt, getMessages, plural } from "@/i18n";
 import { AddPack, AddToCart, SupportPicker } from "./client";
+import { PackPrice } from "./promo";
 import { Shelf } from "./shelf";
 import { btnGhost } from "./styles";
 import { HUE, PackCover, ProductCover } from "./covers";
@@ -74,7 +75,6 @@ export function ProductRow({ id, flip }: { id: ProductId; flip: boolean }) {
 
 function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
   const c = m.packs.list[id];
-  const t = packTotals(id);
   const featured = id === "mega";
   return (
     <article className={`reveal fx-card relative flex flex-col items-center rounded-3xl px-6 pb-7 pt-3 text-center ${featured ? "fx-hero" : ""}`}>
@@ -82,11 +82,7 @@ function PackCard({ id }: { id: (typeof PACK_IDS)[number] }) {
       <PackCover id={id} />
       <h4 className="font-display mt-2 text-xl">{c.name}</h4>
       <p className="mt-1 text-sm text-muted">{c.for}</p>
-      <p className="mt-4 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1">
-        <span className="font-display text-gradient whitespace-nowrap text-4xl tabular-nums">{usd(t.total)}</span>
-        <span className="whitespace-nowrap text-sm text-muted line-through">{usd(t.originalTotal)}</span>
-      </p>
-      <p className="mt-1 text-sm font-medium text-success">{fmt(m.packs.saves, { amount: usd(t.saved) })} · {m.solution.oneTime}</p>
+      <PackPrice id={id} />
       <ul className="mt-5 flex flex-wrap justify-center gap-1.5">
         {PACKS[id].apps.map((a) => <li key={a} className="rounded-full border border-line bg-bg/50 px-2.5 py-1 text-[11px] text-muted">{PRODUCTS[a].name.replace("Stayflow ", "")} · {usd(PRODUCTS[a].price)}</li>)}
       </ul>

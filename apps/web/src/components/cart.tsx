@@ -1,5 +1,6 @@
 "use client";
 
+import { usePromoOn } from "./promo";
 import Link from "next/link";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@stayflow/ui";
@@ -89,7 +90,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
   const clear = useCallback(() => setState({ apps: [], kit: false }), []);
 
-  const totals = useMemo(() => computeTotals(state), [state]);
+  const promoOn = usePromoOn();
+  const totals = useMemo(() => computeTotals(state, promoOn), [state, promoOn]);
   const wasActive = useRef(false);
   useEffect(() => {
     if (!ready) return;
@@ -130,7 +132,7 @@ export function DiscountMeter({ className = "" }: { className?: string }) {
   const { m, locale } = useMessages();
   const { totals } = useCart();
   if (totals.appCount === 0) return null;
-  const text = totals.discountActive ? m.cart.unlocked : m.cart.unlockOne;
+  const text = totals.promoPack ? m.promo.applied : totals.discountActive ? m.cart.unlocked : m.cart.unlockOne;
   return (
     <p className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium ${totals.discountActive ? "bg-success/12 text-success" : "bg-accent/10 text-accent"} ${className}`} role="status">
       <Icon name={totals.discountActive ? "check" : "sparkles"} className="h-4 w-4 shrink-0" />
@@ -141,12 +143,13 @@ export function DiscountMeter({ className = "" }: { className?: string }) {
 
 /** Price breakdown: original, discount, saved, final. Used by the drawer, the builder and the checkout. */
 export function Breakdown({ totals, labels, className = "" }: { totals: Totals; labels: { original: string; discount: string; saved: string; total: string }; className?: string }) {
+  const { m } = useMessages();
   return (
     <dl className={`space-y-2 text-sm ${className}`}>
       <div className="flex justify-between"><dt className="text-muted">{labels.original}</dt><dd className={`tabular-nums ${totals.discountActive ? "text-muted line-through" : ""}`}>{usd(totals.originalTotal)}</dd></div>
       {totals.discountActive && (
         <>
-          <div className="flex justify-between text-success"><dt>{labels.discount}</dt><dd className="tabular-nums">−{usd(totals.discount)}</dd></div>
+          <div className="flex justify-between text-success"><dt>{totals.promoPack ? m.promo.discountLabel : labels.discount}</dt><dd className="tabular-nums">−{usd(totals.discount)}</dd></div>
           <div className="flex justify-between font-medium text-success"><dt>{labels.saved}</dt><dd className="tabular-nums">{usd(totals.saved)}</dd></div>
         </>
       )}

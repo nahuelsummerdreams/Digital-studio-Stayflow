@@ -1,4 +1,4 @@
-import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, isAvailable, type PackId, type ProductId } from "./catalog";
+import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, PROMO_PACK_PRICE, isAvailable, type PackId, type ProductId } from "./catalog";
 
 export interface CartState {
   /** Apps in the cart. Each one is a single licence. */
@@ -26,6 +26,10 @@ export interface Totals {
   /** How much the customer saves: same as `discount`, named for the UI. */
   saved: number;
   total: number;
+  /** What it would cost without the launch promotion (the normal 30% rule). Same as `total` when no promotion applies. */
+  regularTotal: number;
+  /** The pack whose promotional price applies to this exact cart, if any. */
+  promoPack: PackId | null;
   /** Apps still missing to unlock the discount (0 when active or when the cart has no apps). */
   appsToUnlock: number;
 }
@@ -39,7 +43,7 @@ export function normalizeApps(ids: readonly string[]): ProductId[] {
 }
 
 /** The whole price calculation. Pure: the cart UI, the product pages and the tests all use it. */
-export function computeTotals(cart: CartState): Totals {
+export function computeTotals(cart: CartState, promo = false): Totals {
   const apps = normalizeApps(cart.apps);
   const lines: CartLine[] = apps.map((id) => ({ id, name: PRODUCTS[id].name, price: PRODUCTS[id].price }));
   if (cart.kit) lines.push({ id: "kit", name: LAUNCH_KIT.name, price: LAUNCH_KIT.price });
@@ -49,6 +53,17 @@ export function computeTotals(cart: CartState): Totals {
   const discountActive = apps.length >= MULTIPACK_MIN_APPS;
   const discount = discountActive ? cents((appsSubtotal * MULTIPACK_PERCENT) / 100) : 0;
   const originalTotal = appsSubtotal + kitPrice;
+  const regularTotal = cents(originalTotal - discount);
+  // A launch promotion prices a ready-made pack. It only applies when the cart is exactly that pack (no kit, nothing else).
+  const promoPack = promo && !cart.kit ? PACK_IDS.find((id) => PACKS[id].status === "available" && PACKS[id].apps.length === apps.length && PACKS[id].apps.every((a) => apps.includes(a))) ?? null : null;
+  if (promoPack && PROMO_PACK_PRICE[promoPack] < regularTotal) {
+    const price = PROMO_PACK_PRICE[promoPack];
+    const promoDiscount = cents(originalTotal - price);
+    return {
+      lines, appCount: apps.length, appsSubtotal, kitPrice, originalTotal, discountActive: true,
+      discountPercent: Math.round((promoDiscount / appsSubtotal) * 1000) / 10, discount: promoDiscount, saved: promoDiscount, total: price, regularTotal, promoPack, appsToUnlock: 0,
+    };
+  }
   return {
     lines,
     appCount: apps.length,
@@ -59,7 +74,9 @@ export function computeTotals(cart: CartState): Totals {
     discountPercent: MULTIPACK_PERCENT,
     discount,
     saved: discount,
-    total: cents(originalTotal - discount),
+    total: regularTotal,
+    regularTotal,
+    promoPack: null,
     appsToUnlock: apps.length > 0 && !discountActive ? MULTIPACK_MIN_APPS - apps.length : 0,
   };
 }
@@ -80,7 +97,7 @@ export function recommendations(apps: readonly ProductId[], limit = 3): ProductI
 export const usd = (n: number): string => `USD ${Number.isInteger(n) ? n : n.toFixed(2).replace(".", ",")}`;
 
 /** What a ready-made pack costs, with the Multi-Pack rule applied. */
-export const packTotals = (id: PackId): Totals => computeTotals({ apps: PACKS[id].apps, kit: false });
+export const packTotals = (id: PackId, promo = false): Totals => computeTotals({ apps: PACKS[id].apps, kit: false }, promo);
 
 export type Offer =
   /** Upsell: one app in the cart, add the cheapest other one to unlock the discount. `extra` can be negative: it ends up cheaper. */

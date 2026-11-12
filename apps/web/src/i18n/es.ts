@@ -123,6 +123,16 @@ export const es = {
     compareBody: "Suma una app más a tu carrito y el 30% se descuenta del subtotal de las apps.",
     openApp: "Ver la app funcionando",
   },
+  promo: {
+    title: "Promoción única de lanzamiento",
+    prices: "Pack Esencial {a} · Megapack {b}",
+    ends: "Termina",
+    words: { today: "hoy", on: "el", at: "a las" },
+    cta: "Ver los packs",
+    normal: "Precio normal",
+    discountLabel: "Promoción única",
+    applied: "Promoción única aplicada a tu pack",
+  },
   soon: {
     eyebrow: "Próximamente",
     title: "Lo que viene.",

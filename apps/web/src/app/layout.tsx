@@ -10,6 +10,7 @@ import { CartDrawer, CartProvider } from "@/components/cart";
 import { CartBar } from "@/components/client";
 import { ConsentBanner } from "@/components/consent";
 import { Celebration, CursorGlow, ScrollProgress } from "@/components/effects";
+import { PromoBar } from "@/components/promo";
 import { MessagesProvider } from "@/i18n/client";
 
 export const metadata: Metadata = {
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="font-sans">
         <MessagesProvider>
           <CartProvider>
+            <PromoBar />
             <ScrollProgress />
             <CursorGlow />
             {children}

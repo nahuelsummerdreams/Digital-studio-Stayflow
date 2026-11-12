@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AVAILABLE_LIST, PACKS, PRODUCT_IDS, SOON_LIST, SUPPORT_PRICE, isAvailable } from "./catalog";
+import { AVAILABLE_LIST, PACKS, PRODUCT_IDS, PROMO_PACK_PRICE, SOON_LIST, SUPPORT_PRICE, isAvailable, promoIsOn } from "./catalog";
 import { computeTotals, normalizeApps, offers, packTotals, recommendations, supportTotal } from "./pricing";
 
 describe("what is on sale", () => {
@@ -115,5 +115,25 @@ describe("supportTotal", () => {
   });
   it("has a price for every product", () => {
     for (const id of PRODUCT_IDS) expect(SUPPORT_PRICE[id]).toBeGreaterThan(0);
+  });
+});
+
+describe("launch promotion (a real deadline)", () => {
+  it("is on only before its end, and off when there is no end set", () => {
+    const end = Date.parse("2026-11-15T23:59:00-03:00");
+    expect(promoIsOn(Date.parse("2026-11-15T12:00:00-03:00"), end)).toBe(true);
+    expect(promoIsOn(Date.parse("2026-11-16T00:00:00-03:00"), end)).toBe(false);
+    expect(promoIsOn(Date.now(), null)).toBe(false);
+  });
+  it("prices the two packs at 65 and 85 only while it lasts", () => {
+    expect(packTotals("essential", true)).toMatchObject({ total: 65, discount: 39, saved: 39, promoPack: "essential", regularTotal: 72.8, discountPercent: 37.5 });
+    expect(packTotals("mega", true)).toMatchObject({ total: 85, discount: 48, promoPack: "mega", regularTotal: 93.1 });
+    expect(packTotals("essential", false)).toMatchObject({ total: 72.8, promoPack: null });
+    expect(PROMO_PACK_PRICE).toEqual({ essential: 65, mega: 85 });
+  });
+  it("applies only to the exact pack, never to other combinations or with the kit", () => {
+    expect(computeTotals({ apps: ["host", "guest"], kit: false }, true)).toMatchObject({ total: 51.8, promoPack: null });
+    expect(computeTotals({ apps: ["host", "guest", "profit"], kit: true }, true)).toMatchObject({ promoPack: null });
+    expect(computeTotals({ apps: ["host", "guest", "profit", "operations"], kit: false }, true)).toMatchObject({ total: 85, promoPack: "mega" });
   });
 });

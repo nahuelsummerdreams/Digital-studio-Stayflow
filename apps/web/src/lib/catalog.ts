@@ -75,3 +75,19 @@ export const PACKS: Record<PackId, { id: PackId; apps: ProductId[]; status: Prod
   essential: { id: "essential", apps: ["host", "guest", "profit"], status: "available" },
   mega: { id: "mega", apps: PRODUCT_IDS.filter((id) => PRODUCTS[id].status === "available"), status: "available" },
 };
+
+/**
+ * Launch promotion with a REAL deadline. Pack prices while it lasts; when the deadline passes the site goes back to the normal prices by itself.
+ * It is off unless NEXT_PUBLIC_PROMO_ENDS_AT is set to a date with its time zone, e.g. 2026-11-15T23:59:00-03:00.
+ * It must be a single, genuinely ending offer: never reset it for each visitor and never re-run "today only" every day.
+ */
+export const PROMO_PACK_PRICE: Record<PackId, number> = { essential: 65, mega: 85 };
+
+export function promoEndsAt(): number | null {
+  const raw = process.env.NEXT_PUBLIC_PROMO_ENDS_AT;
+  if (!raw) return null;
+  const t = Date.parse(raw);
+  return Number.isFinite(t) ? t : null;
+}
+
+export const promoIsOn = (now: number, endsAt: number | null = promoEndsAt()): boolean => endsAt !== null && now < endsAt;
