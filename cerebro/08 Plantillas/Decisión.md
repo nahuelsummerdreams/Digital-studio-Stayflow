@@ -1,0 +1,1 @@
+- **{{date}} · {{title}}** — por qué · alternativas · estado.
