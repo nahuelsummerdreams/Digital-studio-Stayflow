@@ -11,3 +11,5 @@ export const GUEST_URL = process.env.NEXT_PUBLIC_GUEST_URL ?? "https://stayflow-
 export const APP_URL = PROFIT_URL;
 /** Where "Comprar el pack" goes once the store is connected. Empty = the button reads "Más información". */
 export const BUY_URL = process.env.NEXT_PUBLIC_BUY_URL ?? "";
+/** The Whop checkout of Stayflow Host. When set, the Host buttons go straight to it; when empty they keep opening the cart (email capture). */
+export const WHOP_HOST_URL = (process.env.NEXT_PUBLIC_WHOP_HOST_URL ?? "").trim();

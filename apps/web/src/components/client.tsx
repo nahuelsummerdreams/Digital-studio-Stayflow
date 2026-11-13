@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import { Icon } from "@stayflow/ui";
 import { track } from "@/lib/analytics";
+import { WHOP_HOST_URL } from "@/lib/t";
 import { AVAILABLE_LIST, MULTIPACK_PERCENT, PACKS, SUPPORT_PRICE, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { saveLead, type LeadSource } from "@/lib/leads";
 import { supportTotal, usd } from "@/lib/pricing";
@@ -217,6 +218,15 @@ export { CartDrawer } from "./cart";
 export function GetHostButton({ className = "", where = "hero" }: { className?: string; where?: string }) {
   const { m } = useMessages();
   const { add, setOpen, totals } = useCart();
+  const label = fmt(m.hero.getHost, { price: usd(PRODUCTS.host.price) });
+  if (WHOP_HOST_URL) {
+    return (
+      <a href={WHOP_HOST_URL} target="_blank" rel="noopener noreferrer" onClick={() => track("select_promotion", { where, item_id: "host" })} className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}>
+        {label}
+        <Icon name="arrow" className="h-4 w-4" />
+      </a>
+    );
+  }
   return (
     <button
       type="button"
@@ -228,7 +238,7 @@ export function GetHostButton({ className = "", where = "hero" }: { className?: 
       }}
       className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}
     >
-      {fmt(m.hero.getHost, { price: usd(PRODUCTS.host.price) })}
+      {label}
       <Icon name="arrow" className="h-4 w-4" />
     </button>
   );
