@@ -6,16 +6,17 @@ import { Icon } from "@stayflow/ui";
 import { HOST_LAUNCH_PRICE, PACKS, PRODUCTS, type ProductId } from "@/lib/catalog";
 import { HOST_CHECKOUT_URL } from "@/lib/t";
 import { track } from "@/lib/analytics";
+import { saveLead } from "@/lib/leads";
 import { recommend, type AssistantAction, type Pain, type Recommendation, type Scale } from "@/lib/assistant/core";
 import { usd } from "@/lib/pricing";
 import { fmt } from "@/i18n";
 import { useMessages } from "@/i18n/client";
 import { useCart } from "./cart";
 import { NotifyButton } from "./client";
-import { useLaunchOn } from "./launch";
+import { useLaunchLine, useLaunchOn } from "./launch";
 import { btnGhost, btnPrimary } from "./styles";
 
-type Step = "start" | "kind" | "notready" | "scale" | "pain" | "done";
+type Step = "start" | "explain" | "buy" | "doubts" | "kind" | "notready" | "scale" | "pain" | "done";
 type Kind = "rental" | "hotel" | "hostel" | "cabins";
 interface Bubble {
   id: number;
@@ -24,6 +25,8 @@ interface Bubble {
   rec?: Recommendation & { pain: Pain; scale: Scale };
   actions?: AssistantAction[];
   notify?: string;
+  /** Shows the "leave your email" form inside this bubble. */
+  email?: boolean;
 }
 
 const SEEN_KEY = "stayflow-assistant-seen-v1";
@@ -40,6 +43,7 @@ export function Assistant() {
   const cart = useCart();
   const router = useRouter();
   const launchOn = useLaunchOn();
+  const launchLine = useLaunchLine();
   const [open, setOpen] = useState(false);
   const [teaser, setTeaser] = useState(false);
   const [ai, setAi] = useState<boolean | null>(null);
@@ -51,10 +55,13 @@ export function Assistant() {
   const endRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const opened = useRef(false);
+  const autoOpened = useRef(false);
+  const kindRef = useRef<Kind | null>(null);
 
   const push = useCallback((b: Omit<Bubble, "id">) => setBubbles((l) => [...l, { ...b, id: ++idRef.current }]), []);
 
-  // A small, one-time nudge: never opens the chat by itself, and never comes back in the same visit.
+  // The welcome. On a computer the assistant opens by itself a moment after the page loads (without taking the keyboard focus);
+  // on a phone it shows a greeting card instead, so it never covers the page. Once per visit: closing it keeps it closed.
   useEffect(() => {
     let seen = false;
     try {
@@ -63,8 +70,13 @@ export function Assistant() {
       /* private mode: show it once per page load */
     }
     if (seen) return;
-    const t = window.setTimeout(() => !opened.current && setTeaser(true), 5_000);
+    const t = window.setTimeout(() => {
+      if (opened.current) return;
+      if (window.innerWidth >= 640) openChat({ auto: true });
+      else setTeaser(true);
+    }, 2_000);
     return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const markSeen = () => {
@@ -76,7 +88,8 @@ export function Assistant() {
     }
   };
 
-  const openChat = () => {
+  const openChat = (opts?: { auto?: boolean; then?: "explain" | "buy" }) => {
+    autoOpened.current = Boolean(opts?.auto);
     setOpen(true);
     markSeen();
     if (!opened.current) {
@@ -88,6 +101,8 @@ export function Assistant() {
         .then((j: { ai?: boolean }) => setAi(Boolean(j.ai)))
         .catch(() => setAi(false));
     }
+    if (opts?.then === "explain") explain();
+    if (opts?.then === "buy") buyNow();
   };
 
   useEffect(() => {
@@ -99,7 +114,7 @@ export function Assistant() {
 
   useEffect(() => {
     if (!open) return;
-    closeRef.current?.focus();
+    if (!autoOpened.current) closeRef.current?.focus(); // never steal the keyboard when the assistant opened by itself
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -110,12 +125,43 @@ export function Assistant() {
   }, [bubbles, busy, open]);
 
   // ---- guided mode
+  const explain = () => {
+    push({ role: "user", text: a.cWhat });
+    push({ role: "bot", text: `${a.explain}\n${a.explainNext}` });
+    setStep("explain");
+  };
+  const buyNow = () => {
+    push({ role: "user", text: a.cBuy });
+    const rec = recommend("one", "bookings", launchOn);
+    track("assistant_recommend", { items: rec.ids, pain: "bookings", scale: "one", from: "buy" });
+    push({ role: "bot", text: `${a.buyIntro}${launchLine ? `\n${fmt(a.launchNudge, { line: launchLine })}` : ""}`, rec: { ...rec, pain: "bookings", scale: "one" } });
+    push({ role: "bot", text: a.buyClose });
+    setStep("buy");
+  };
+  const askDoubt = () => {
+    push({ role: "user", text: a.cDoubt });
+    push({ role: "bot", text: a.doubtAsk });
+    setStep("doubts");
+  };
+  const answerDoubt = (label: string, faq: number) => {
+    const item = m.funnel.faq.items[faq];
+    if (!item) return;
+    push({ role: "user", text: label });
+    push({ role: "bot", text: item.a });
+    push({ role: "bot", text: a.afterDoubt });
+    setStep("doubts");
+  };
+  const askEmail = () => {
+    push({ role: "user", text: a.cInfo });
+    push({ role: "bot", text: a.emailAsk, email: true });
+  };
   const startFlow = () => {
     push({ role: "user", text: a.start });
     push({ role: "bot", text: a.qKind });
     setStep("kind");
   };
   const chooseKind = (k: Kind) => {
+    kindRef.current = k;
     push({ role: "user", text: a.kind[k] });
     if (k === "rental") {
       push({ role: "bot", text: a.qScale });
@@ -150,13 +196,6 @@ export function Assistant() {
   const restart = () => {
     setStep("start");
     push({ role: "bot", text: a.welcome });
-  };
-  const quick = (i: number) => {
-    const idx = [0, 1, 3][i]!;
-    const item = m.funnel.faq.items[idx];
-    if (!item) return;
-    push({ role: "user", text: a.quick[i]! });
-    push({ role: "bot", text: item.a });
   };
 
   // ---- actions (always confirmed by a tap)
@@ -228,12 +267,18 @@ export function Assistant() {
       {!open && (
         <div className="fixed bottom-24 right-4 z-[55] flex flex-col items-end gap-2 sm:bottom-6">
           {teaser && (
-            <div className="anim-in fx-card flex items-center gap-2 rounded-2xl py-2 pl-4 pr-2 text-sm shadow-xl" role="status">
-              <button type="button" onClick={openChat} className="font-medium">{a.teaser}</button>
-              <button type="button" onClick={markSeen} aria-label={a.close} className="flex h-6 w-6 items-center justify-center rounded-full text-muted hover:text-fg"><Icon name="close" className="h-3.5 w-3.5" /></button>
+            <div className="anim-in fx-card w-[min(20rem,calc(100vw-2rem))] rounded-2xl p-4 text-sm shadow-xl" role="status">
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-medium leading-snug">{a.teaserHi} {a.teaser}</p>
+                <button type="button" onClick={markSeen} aria-label={a.close} className="-mr-1 -mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted hover:text-fg"><Icon name="close" className="h-3.5 w-3.5" /></button>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Chip onClick={() => openChat({ then: "explain" })}>{a.cWhat}</Chip>
+                <Chip onClick={() => openChat({ then: "buy" })}>{a.cBuy}</Chip>
+              </div>
             </div>
           )}
-          <button type="button" onClick={openChat} aria-label={a.open} className={`${btnPrimary} !h-14 !w-14 !rounded-full !p-0 shadow-2xl`}>
+          <button type="button" onClick={() => openChat()} aria-label={a.open} className={`${btnPrimary} !h-14 !w-14 !rounded-full !p-0 shadow-2xl`}>
             <Icon name="message" className="h-6 w-6" />
           </button>
         </div>
@@ -257,6 +302,7 @@ export function Assistant() {
                   <p className="whitespace-pre-line">{b.text}</p>
                   {b.rec && <RecCard rec={b.rec} onAdd={(act) => apply(act)} />}
                   {b.notify && <NotifyButton id={b.notify} label={m.funnel.notifyCat} className="w-full" />}
+                  {b.email && <EmailCapture kind={kindRef.current} onDone={() => { push({ role: "bot", text: a.emailThanks }); setStep("done"); }} />}
                   {b.actions && b.actions.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {b.actions.map((act, i) => (
@@ -272,7 +318,35 @@ export function Assistant() {
             {/* what the visitor can tap next */}
             {!busy && lastBot && lastBot.id === bubbles[bubbles.length - 1]?.id && (
               <div className="flex flex-wrap gap-2 pt-1">
-                {step === "start" && <button type="button" onClick={startFlow} className={`${btnPrimary} !px-4 !py-2 !text-sm`}>{a.start}</button>}
+                {step === "start" && (
+                  <>
+                    <Chip onClick={explain}>{a.cWhat}</Chip>
+                    <button type="button" onClick={buyNow} className={`${btnPrimary} !px-4 !py-1.5 !text-xs`}>{a.cBuy}</button>
+                    <Chip onClick={startFlow}>{a.start}</Chip>
+                    <Chip onClick={askDoubt}>{a.cDoubt}</Chip>
+                  </>
+                )}
+                {step === "explain" && (
+                  <>
+                    <Chip onClick={startFlow}>{a.start}</Chip>
+                    <button type="button" onClick={buyNow} className={`${btnPrimary} !px-4 !py-1.5 !text-xs`}>{a.cBuy}</button>
+                    <Chip onClick={askDoubt}>{a.cDoubt}</Chip>
+                  </>
+                )}
+                {step === "buy" && (
+                  <>
+                    <button type="button" onClick={() => apply({ type: "open_checkout" })} className={`${btnGhost} !px-3.5 !py-2 !text-xs`}>{a.checkout}</button>
+                    <Chip onClick={startFlow}>{a.start}</Chip>
+                    <Chip onClick={askDoubt}>{a.cDoubt}</Chip>
+                    <Chip onClick={askEmail}>{a.cInfo}</Chip>
+                  </>
+                )}
+                {step === "doubts" && (
+                  <>
+                    {a.doubts.map((d) => <Chip key={d.label} onClick={() => answerDoubt(d.label, d.faq)}>{d.label}</Chip>)}
+                    <button type="button" onClick={buyNow} className={`${btnPrimary} !px-4 !py-1.5 !text-xs`}>{a.cBuy}</button>
+                  </>
+                )}
                 {step === "kind" && (["rental", "hotel", "hostel", "cabins"] as Kind[]).map((k) => <Chip key={k} onClick={() => chooseKind(k)}>{a.kind[k]}</Chip>)}
                 {step === "notready" && <button type="button" onClick={continueRentals} className={`${btnPrimary} !px-4 !py-2 !text-sm`}>{a.kindContinue}</button>}
                 {step === "scale" && (["one", "few", "many"] as Scale[]).map((s) => <Chip key={s} onClick={() => chooseScale(s)}>{a.scale[s]}</Chip>)}
@@ -280,15 +354,11 @@ export function Assistant() {
                 {step === "done" && (
                   <>
                     <button type="button" onClick={() => apply({ type: "open_checkout" })} className={`${btnGhost} !px-3.5 !py-2 !text-xs`}>{a.checkout}</button>
+                    <Chip onClick={askDoubt}>{a.cDoubt}</Chip>
+                    <Chip onClick={askEmail}>{a.cInfo}</Chip>
                     <Chip onClick={restart}>{a.again}</Chip>
                   </>
                 )}
-              </div>
-            )}
-            {(step === "start" || step === "done") && !busy && (
-              <div className="pt-2">
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{a.quickTitle}</p>
-                <div className="flex flex-wrap gap-2">{a.quick.map((q, i) => <Chip key={q} onClick={() => quick(i)}>{q}</Chip>)}</div>
               </div>
             )}
             <div ref={endRef} />
@@ -310,6 +380,40 @@ export function Assistant() {
         </section>
       )}
     </>
+  );
+}
+
+/** "Send me the information": saves the email as a lead (source notify-assistant) and nothing else. */
+function EmailCapture({ kind, onDone }: { kind: string | null; onDone: () => void }) {
+  const { m } = useMessages();
+  const a = m.assistant;
+  const [email, setEmail] = useState("");
+  const [trap, setTrap] = useState("");
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  async function submit(e: FormEvent) {
+    e.preventDefault();
+    if (state === "sending" || state === "done") return;
+    if (trap) {
+      setState("done");
+      return onDone();
+    }
+    setState("sending");
+    const ok = await saveLead(email, "notify-assistant", { interest: "info", kind: kind ?? "unknown" });
+    if (ok) {
+      track("generate_lead", { source: "assistant" });
+      setState("done");
+      onDone();
+    } else setState("error");
+  }
+  if (state === "done") return null;
+  return (
+    <form onSubmit={submit} className="space-y-2">
+      <input type="email" required maxLength={254} autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder={a.emailPlaceholder} aria-label={a.emailPlaceholder} className="w-full rounded-xl border border-line bg-bg px-3 py-2.5 text-sm outline-none transition placeholder:text-muted/60 focus:border-accent" />
+      <input type="text" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={trap} onChange={(e) => setTrap(e.target.value)} name="website" />
+      <button disabled={state === "sending"} className={`${btnPrimary} w-full !py-2 !text-sm disabled:opacity-60`}>{a.emailSend}</button>
+      {state === "error" && <p role="alert" className="text-xs text-danger">{a.emailError}</p>}
+      <p className="text-[11px] leading-snug text-muted">{a.emailConsent}</p>
+    </form>
   );
 }
 

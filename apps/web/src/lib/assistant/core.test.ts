@@ -144,6 +144,13 @@ describe("what the assistant is told", () => {
     expect(text).toContain("Hotels");
     expect(text).toContain("están en desarrollo y todavía no se venden");
   });
+  it("the system prompt aims at closing honestly: qualify, recommend, answer doubts, next step, no pressure", () => {
+    const p = buildSystemPrompt([]);
+    expect(p).toContain("ayudar a decidir");
+    expect(p).toContain("siguiente paso concreto");
+    expect(p).toContain("no insistas");
+    expect(p).toContain("Prefiero que me manden información");
+  });
   it("the system prompt forbids absolute promises and carries the cart", () => {
     const p = buildSystemPrompt(["host", "guest"]);
     expect(p).toContain("no digas \"cero dobles reservas\"");

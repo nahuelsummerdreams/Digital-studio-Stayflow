@@ -26,7 +26,7 @@ export function Ecosystem() {
     return { k, label, desc: m.funnel.cats[k].eyebrow, status };
   });
   return (
-    <section id="ecosistema" className="relative mx-auto max-w-6xl px-5 py-14 md:py-24">
+    <section id="ecosistema" className="relative mx-auto max-w-6xl overflow-x-clip px-5 py-14 md:py-24">
       <div className="reveal mx-auto max-w-2xl text-center">
         <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{e.eyebrow}</p>
         <h2 className="font-display mt-4 text-3xl leading-tight md:text-5xl">{e.title}</h2>

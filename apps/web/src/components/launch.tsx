@@ -40,6 +40,13 @@ export function HostPrice() {
   return <>{usd(useHostPrice())}</>;
 }
 
+/** The launch notice as plain text ("Hasta el 30 de noviembre. Después vuelve a USD 49."), or "" when there is no launch. For places that need a string. */
+export function useLaunchLine(): string {
+  const { m } = useMessages();
+  const on = useLaunchOn();
+  return on ? fmt(m.launch.until, { date: endDay(), regular: usd(PRODUCTS.host.price) }) : "";
+}
+
 /** The honest launch line: it ends on a real date and the price then goes back. Renders nothing when there is no launch. */
 export function LaunchNote({ className = "" }: { className?: string }) {
   const { m } = useMessages();
