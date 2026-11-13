@@ -5,6 +5,7 @@ import { fmt, getMessages } from "@/i18n";
 import { usd } from "@/lib/pricing";
 import { AddPack, AddToCart, GetHostButton, SupportPicker } from "./client";
 import { HUE, PackCover, ProductCover } from "./covers";
+import { HostPrice, LaunchBadge, PriceText, RegularPrice } from "./launch";
 import { PackPrice } from "./promo";
 import { Shelf } from "./shelf";
 import { btnGhost } from "./styles";
@@ -58,7 +59,6 @@ function PackMini({ id }: { id: (typeof PACK_IDS)[number] }) {
 export function Precios() {
   const c = m.products.host;
   const o = m.funnel.offer;
-  const price = usd(PRODUCTS.host.price);
   return (
     <section id="precios" className="relative overflow-hidden border-t border-line/60 bg-surface/30">
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[480px] w-[800px] -translate-x-1/2 rounded-full bg-accent/10 blur-3xl" />
@@ -70,16 +70,18 @@ export function Precios() {
           </div>
           <div>
             <p className="text-xs font-medium uppercase tracking-[0.22em] text-accent">{o.eyebrow}</p>
-            <h2 className="font-display mt-3 text-3xl leading-tight md:text-5xl">{fmt(o.title, { price })}</h2>
+            <h2 className="font-display mt-3 text-3xl leading-tight md:text-5xl"><PriceText template={o.title} /></h2>
             <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">{o.body}</p>
             <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-muted">{o.includes}</h3>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
               {c.features.slice(0, 6).map((f) => <li key={f} className="flex items-start gap-2.5 text-sm"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{f}</li>)}
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
-              <p className="flex items-baseline gap-2"><span className="font-display text-gradient text-5xl tabular-nums md:text-6xl">{price}</span><span className="text-sm text-muted">{m.solution.oneTime}</span></p>
+              <p className="flex items-baseline gap-2"><span className="font-display text-gradient text-5xl tabular-nums md:text-6xl"><HostPrice /></span><RegularPrice className="text-xl" /><span className="text-sm text-muted">{m.solution.oneTime}</span></p>
               <GetHostButton where="offer" />
             </div>
+            <LaunchBadge className="mt-4" />
+            <p className="mt-4 rounded-xl border border-success/30 bg-success/8 px-4 py-2.5 text-sm text-success">{o.bonusLine}</p>
             <p className="mt-4 flex items-start gap-2 text-sm text-success"><Icon name="check" className="mt-0.5 h-4 w-4 shrink-0" />{o.guarantee}</p>
             <div className="mt-7 border-t border-line pt-5">
               <h3 className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">{o.stepsTitle}</h3>

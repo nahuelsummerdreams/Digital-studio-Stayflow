@@ -8,6 +8,7 @@ import { CategoryHero } from "./category-hero";
 import { ContactLink } from "./contact";
 import { Motes, Tilt } from "./effects";
 import { DashboardMock } from "./mock";
+import { LaunchBadge, PriceText } from "./launch";
 
 const m = getMessages();
 
@@ -77,7 +78,7 @@ export function Strip() {
           const [n, label] = f.split("|");
           return (
             <div key={f} className="bg-surface/90 px-5 py-5 text-center">
-              <dt className="font-display text-gradient text-3xl tabular-nums md:text-4xl">{n}</dt>
+              <dt className="font-display text-gradient text-3xl tabular-nums md:text-4xl">{n!.includes("{price}") ? <PriceText template={n!} /> : n}</dt>
               <dd className="mt-1 text-sm text-muted">{label}</dd>
             </div>
           );
@@ -120,7 +121,8 @@ export function FinalCta() {
         <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(60% 80% at 50% 120%, rgb(var(--accent) / 0.32), transparent 70%)" }} />
         <div className="relative">
           <h2 className="font-display mx-auto max-w-2xl text-3xl leading-tight md:text-5xl">{m.funnel.cta.title}</h2>
-          <p className="mx-auto mt-5 max-w-md text-lg text-muted">{m.funnel.cta.body}</p>
+          <p className="mx-auto mt-5 max-w-md text-lg text-muted"><PriceText template={m.funnel.cta.body} /></p>
+          <LaunchBadge className="mt-4" />
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <GetHostButton where="final" />
             <ContactLink />

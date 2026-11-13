@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ProductPrice } from "@/components/launch";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icon } from "@stayflow/ui";
@@ -61,7 +62,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <span className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${live ? "bg-accent text-onaccent" : "border border-line bg-surface text-muted"}`}>{live ? m.solution.live : m.solution.soon}</span>
             <h1 className="font-display mt-5 text-4xl leading-[1.08] md:text-6xl">{p.name}</h1>
             <p className="mt-4 text-xl text-muted">{c.tagline}</p>
-            {live && <p className="mt-6 flex items-baseline gap-2"><span className="font-display text-gradient text-6xl tabular-nums">{usd(p.price)}</span><span className="text-sm text-muted">{m.solution.oneTime}</span></p>}
+            {live && <p className="mt-6 flex items-baseline gap-2"><span className="font-display text-gradient text-6xl tabular-nums"><ProductPrice id={p.id} price={p.price} /></span><span className="text-sm text-muted">{m.solution.oneTime}</span></p>}
             <div className="mt-6 flex flex-wrap gap-3">
               {live ? <AddToCart id={id} className="!px-7 !py-3.5 !text-base" /> : <NotifyButton id={id} className="!px-7 !py-3.5 !text-base" />}
               {live && p.appUrl && <a href={p.appUrl} target="_blank" rel="noopener noreferrer" className={`${btnGhost} !px-6 !py-3.5 !text-base`}>{m.productPage.openApp}<Icon name="arrow" className="h-4 w-4" /></a>}

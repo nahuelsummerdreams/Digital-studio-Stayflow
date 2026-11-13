@@ -1230,7 +1230,7 @@ export const es = {
     meta: {
       title: "Stayflow · Pon orden en tu alojamiento. Un solo panel, precios claros",
       description:
-        "Reservas, cronograma, huéspedes, tareas y ganancias en un solo panel. Sin dobles reservas, sin olvidos y sin mensualidades. Apps desde USD 25 en pago único y 30% de descuento al combinarlas.",
+        "Reservas, cronograma, huéspedes, tareas y ganancias en un solo panel. No te deja guardar reservas que se pisan, sin olvidos y sin mensualidades. Apps desde USD 25 en pago único y 30% de descuento al combinarlas.",
     },
     nav: { system: "Sistema", schedule: "Cronograma", agents: "Agentes", soon: "Próximamente", price: "Precios", faq: "Preguntas", login: "Entrar", buy: "Ver precios", by: "por" },
     hero: {
@@ -1248,10 +1248,10 @@ export const es = {
       floatA: "Hoy llega Familia Ortega",
       floatAsub: "Villa Palmera · 5 personas",
       floatB: "Fechas ocupadas",
-      floatBsub: "El sistema no te deja doblar una reserva",
+      floatBsub: "Host no te deja guardar una reserva encima",
     },
     strip: {
-      one: { n: "0", title: "dobles reservas", body: "Una fecha ocupada no se puede reservar dos veces." },
+      one: { n: "14", title: "días de garantía", body: "Si no te sirve, te devolvemos tu dinero." },
       two: { n: "1", title: "panel para todo", body: "Reservas, cronograma, huéspedes, tareas y ganancias en un solo lugar." },
       three: { n: "49", title: "y Host es tuyo", body: "Pago único. Sin mensualidad y sin renovaciones." },
       four: { n: "30", title: "menos al combinar", body: "Suma 2 apps o más y el descuento se aplica solo." },

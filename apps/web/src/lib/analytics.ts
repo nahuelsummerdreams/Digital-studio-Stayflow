@@ -4,7 +4,7 @@
  */
 import { metaEvent } from "./meta";
 
-type Event = "view_item" | "add_to_cart" | "remove_from_cart" | "view_cart" | "begin_checkout" | "generate_lead" | "select_promotion";
+type Event = "view_item" | "add_to_cart" | "remove_from_cart" | "view_cart" | "begin_checkout" | "generate_lead" | "select_promotion" | "assistant_open" | "assistant_message" | "assistant_recommend" | "assistant_add";
 
 declare global {
   interface Window {

@@ -92,4 +92,21 @@ export function promoEndsAt(): number | null {
   return Number.isFinite(t) ? t : null;
 }
 
+/**
+ * Stayflow Host launch price, with a REAL deadline. While it lasts, Host sold alone costs HOST_LAUNCH_PRICE; afterwards it goes back to its regular price by itself.
+ * Packs and other combinations are not discounted further (no stacking). Default end: 30 Nov 2026, 23:59 Argentina time.
+ * Override with NEXT_PUBLIC_HOST_LAUNCH_ENDS_AT (a date with its time zone) or switch it off with the value "off". Never reset it per visitor.
+ */
+export const HOST_LAUNCH_PRICE = 38;
+const DEFAULT_LAUNCH_ENDS_AT = "2026-11-30T23:59:00-03:00";
+
+export function launchEndsAt(): number | null {
+  const raw = (process.env.NEXT_PUBLIC_HOST_LAUNCH_ENDS_AT ?? DEFAULT_LAUNCH_ENDS_AT).trim();
+  if (!raw || raw.toLowerCase() === "off") return null;
+  const t = Date.parse(raw);
+  return Number.isFinite(t) ? t : null;
+}
+
+export const launchIsOn = (now: number, endsAt: number | null = launchEndsAt()): boolean => endsAt !== null && now < endsAt;
+
 export const promoIsOn = (now: number, endsAt: number | null = promoEndsAt()): boolean => endsAt !== null && now < endsAt;

@@ -35,6 +35,14 @@ export function DailyOps() {
           </article>
         ))}
       </div>
+      <div className="reveal mt-16 rounded-3xl border border-line bg-surface/50 p-6 md:p-8">
+        <h3 className="font-display text-xl md:text-2xl">{d.extrasTitle}</h3>
+        <ul className="mt-5 grid gap-3 md:grid-cols-2">
+          {d.extras.map((x) => (
+            <li key={x} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

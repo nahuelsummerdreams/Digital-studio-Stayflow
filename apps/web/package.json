@@ -10,6 +10,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^1.8.0",
     "@stayflow/i18n": "workspace:*",
     "@stayflow/licensing": "workspace:*",
     "@stayflow/ui": "workspace:*",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AVAILABLE_LIST, PACKS, PRODUCT_IDS, PROMO_PACK_PRICE, SOON_LIST, SUPPORT_PRICE, isAvailable, promoIsOn } from "./catalog";
+import { AVAILABLE_LIST, PACKS, PRODUCT_IDS, PROMO_PACK_PRICE, SOON_LIST, SUPPORT_PRICE, isAvailable, launchIsOn, promoIsOn } from "./catalog";
 import { computeTotals, normalizeApps, offers, packTotals, recommendations, supportTotal } from "./pricing";
 
 describe("what is on sale", () => {
@@ -139,5 +139,38 @@ describe("launch promotion (a real deadline)", () => {
     expect(computeTotals({ apps: ["host", "guest"], kit: false }, true)).toMatchObject({ total: 51.8, promoPack: null });
     expect(computeTotals({ apps: ["host", "guest", "profit"], kit: true }, true)).toMatchObject({ promoPack: null });
     expect(computeTotals({ apps: ["host", "guest", "profit", "operations"], kit: false }, true)).toMatchObject({ total: 85, promoPack: "mega" });
+  });
+});
+
+describe("Host launch price", () => {
+  it("Host alone costs 38 while the launch lasts, with 11 off the regular 49", () => {
+    const t = computeTotals({ apps: ["host"], kit: false }, false, true);
+    expect(t.total).toBe(38);
+    expect(t.originalTotal).toBe(49);
+    expect(t.saved).toBe(11);
+    expect(t.launchHost).toBe(true);
+    expect(t.lines).toEqual([{ id: "host", name: "Stayflow Host", price: 38 }]);
+  });
+  it("goes back to 49 when the launch is off", () => {
+    const t = computeTotals({ apps: ["host"], kit: false }, false, false);
+    expect(t.total).toBe(49);
+    expect(t.launchHost).toBe(false);
+  });
+  it("does not stack with the other prices: other apps, packs and the kit keep their rules", () => {
+    expect(computeTotals({ apps: ["guest"], kit: false }, false, true).total).toBe(25);
+    expect(computeTotals({ apps: ["host", "guest"], kit: false }, false, true).total).toBe(51.8);
+    expect(computeTotals({ apps: ["host", "guest", "profit"], kit: false }, false, true).total).toBe(69);
+    expect(computeTotals({ apps: ["host"], kit: true }, false, true).launchHost).toBe(false);
+  });
+  it("the deadline is real: on until the end of 30 Nov 2026 (Argentina), off right after", () => {
+    const end = Date.parse("2026-11-30T23:59:00-03:00");
+    expect(launchIsOn(end - 1000, end)).toBe(true);
+    expect(launchIsOn(end, end)).toBe(false);
+    expect(launchIsOn(Date.now(), null)).toBe(false);
+  });
+  it("the upsell is measured against the price the visitor is really paying", () => {
+    const [o] = offers({ apps: ["host"], kit: false }, 2, true);
+    expect(o).toMatchObject({ kind: "unlock", id: "guest" });
+    expect((o as { extra: number }).extra).toBe(13.8); // 51.80 − 38
   });
 });

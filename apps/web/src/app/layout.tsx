@@ -6,6 +6,7 @@ import "@stayflow/ui/fonts";
 import "@stayflow/ui/theme.css";
 import "./globals.css";
 import "./boxes.css";
+import { Assistant } from "@/components/assistant";
 import { CartDrawer, CartProvider } from "@/components/cart";
 import { CartBar } from "@/components/client";
 import { ConsentBanner } from "@/components/consent";
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             {children}
             <CartDrawer />
             <CartBar />
+            <Assistant />
             <Celebration />
             <ConsentBanner />
           </CartProvider>

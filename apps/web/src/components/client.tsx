@@ -10,6 +10,7 @@ import { saveLead, type LeadSource } from "@/lib/leads";
 import { supportTotal, usd } from "@/lib/pricing";
 import { fmt, plural } from "@/i18n";
 import { useMessages } from "@/i18n/client";
+import { useHostPrice } from "./launch";
 import { Breakdown, CartButton, DiscountMeter, OffersList, useCart } from "./cart";
 import { useBurst } from "./effects";
 import { btnGhost, btnPrimary } from "./styles";
@@ -218,7 +219,8 @@ export { CartDrawer } from "./cart";
 export function GetHostButton({ className = "", where = "hero" }: { className?: string; where?: string }) {
   const { m } = useMessages();
   const { add, setOpen, totals } = useCart();
-  const label = fmt(m.hero.getHost, { price: usd(PRODUCTS.host.price) });
+  const hostPrice = useHostPrice();
+  const label = fmt(m.hero.getHost, { price: usd(hostPrice) });
   if (HOST_CHECKOUT_URL) {
     return (
       <a href={HOST_CHECKOUT_URL} target="_blank" rel="noopener noreferrer" onClick={() => track("select_promotion", { where, item_id: "host" })} className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}>

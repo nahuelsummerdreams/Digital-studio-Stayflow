@@ -1,4 +1,4 @@
-import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, PACK_PRICE, PROMO_PACK_PRICE, isAvailable, type PackId, type ProductId } from "./catalog";
+import { HOST_LAUNCH_PRICE, SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, PACK_PRICE, PROMO_PACK_PRICE, isAvailable, type PackId, type ProductId } from "./catalog";
 
 export interface CartState {
   /** Apps in the cart. Each one is a single licence. */
@@ -30,6 +30,8 @@ export interface Totals {
   regularTotal: number;
   /** The pack whose promotional price applies to this exact cart, if any. */
   promoPack: PackId | null;
+  /** True when the Host launch price applies (Host alone, while the launch lasts). */
+  launchHost: boolean;
   /** Apps still missing to unlock the discount (0 when active or when the cart has no apps). */
   appsToUnlock: number;
 }
@@ -43,7 +45,7 @@ export function normalizeApps(ids: readonly string[]): ProductId[] {
 }
 
 /** The whole price calculation. Pure: the cart UI, the product pages and the tests all use it. */
-export function computeTotals(cart: CartState, promo = false): Totals {
+export function computeTotals(cart: CartState, promo = false, launch = false): Totals {
   const apps = normalizeApps(cart.apps);
   const lines: CartLine[] = apps.map((id) => ({ id, name: PRODUCTS[id].name, price: PRODUCTS[id].price }));
   if (cart.kit) lines.push({ id: "kit", name: LAUNCH_KIT.name, price: LAUNCH_KIT.price });
@@ -59,20 +61,28 @@ export function computeTotals(cart: CartState, promo = false): Totals {
   const fixed = pack && PACK_PRICE[pack] < regularTotal ? PACK_PRICE[pack] : null;
   // A launch promotion prices a ready-made pack. It only applies when the cart is exactly that pack (no kit, nothing else).
   const promoPack = promo && !cart.kit ? PACK_IDS.find((id) => PACKS[id].status === "available" && PACKS[id].apps.length === apps.length && PACKS[id].apps.every((a) => apps.includes(a))) ?? null : null;
+  // Launch price: Host sold alone, nothing else in the cart.
+  if (launch && !cart.kit && apps.length === 1 && apps[0] === "host" && HOST_LAUNCH_PRICE < PRODUCTS.host.price) {
+    const off = cents(PRODUCTS.host.price - HOST_LAUNCH_PRICE);
+    return {
+      lines: [{ id: "host", name: PRODUCTS.host.name, price: HOST_LAUNCH_PRICE }], appCount: 1, appsSubtotal: PRODUCTS.host.price, kitPrice: 0, originalTotal: PRODUCTS.host.price,
+      discountActive: true, discountPercent: Math.round((off / PRODUCTS.host.price) * 1000) / 10, discount: off, saved: off, total: HOST_LAUNCH_PRICE, regularTotal: PRODUCTS.host.price, promoPack: null, launchHost: true, appsToUnlock: 0,
+    };
+  }
   const standing = fixed ?? regularTotal;
   if (promoPack && PROMO_PACK_PRICE[promoPack] < standing) {
     const price = PROMO_PACK_PRICE[promoPack];
     const promoDiscount = cents(originalTotal - price);
     return {
       lines, appCount: apps.length, appsSubtotal, kitPrice, originalTotal, discountActive: true,
-      discountPercent: Math.round((promoDiscount / appsSubtotal) * 1000) / 10, discount: promoDiscount, saved: promoDiscount, total: price, regularTotal: standing, promoPack, appsToUnlock: 0,
+      discountPercent: Math.round((promoDiscount / appsSubtotal) * 1000) / 10, discount: promoDiscount, saved: promoDiscount, total: price, regularTotal: standing, promoPack, launchHost: false, appsToUnlock: 0,
     };
   }
   if (fixed !== null) {
     const packDiscount = cents(originalTotal - fixed);
     return {
       lines, appCount: apps.length, appsSubtotal, kitPrice, originalTotal, discountActive: true,
-      discountPercent: Math.round((packDiscount / appsSubtotal) * 1000) / 10, discount: packDiscount, saved: packDiscount, total: fixed, regularTotal: fixed, promoPack: null, appsToUnlock: 0,
+      discountPercent: Math.round((packDiscount / appsSubtotal) * 1000) / 10, discount: packDiscount, saved: packDiscount, total: fixed, regularTotal: fixed, promoPack: null, launchHost: false, appsToUnlock: 0,
     };
   }
   return {
@@ -88,6 +98,7 @@ export function computeTotals(cart: CartState, promo = false): Totals {
     total: regularTotal,
     regularTotal,
     promoPack: null,
+    launchHost: false,
     appsToUnlock: apps.length > 0 && !discountActive ? MULTIPACK_MIN_APPS - apps.length : 0,
   };
 }
@@ -119,9 +130,9 @@ export type Offer =
   | { kind: "drop"; id: ProductId; saving: number };
 
 /** Upsell and downsell suggestions for a cart, best first. Pure, so it is tested. */
-export function offers(cart: CartState, limit = 2): Offer[] {
+export function offers(cart: CartState, limit = 2, launch = false): Offer[] {
   const apps = normalizeApps(cart.apps);
-  const now = computeTotals({ apps, kit: false }).total;
+  const now = computeTotals({ apps, kit: false }, false, launch).total;
   const out: Offer[] = [];
 
   if (apps.length === 1) {

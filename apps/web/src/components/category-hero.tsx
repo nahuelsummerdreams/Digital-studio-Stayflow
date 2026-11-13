@@ -5,20 +5,25 @@ import { Icon } from "@stayflow/ui";
 import { getMessages } from "@/i18n";
 import { GetHostButton, NotifyButton } from "./client";
 import { ContactLink } from "./contact";
+import { LaunchBadge } from "./launch";
 
 const m = getMessages();
 type Cat = keyof typeof m.funnel.cats;
-const ORDER: Cat[] = ["rental", "hotel", "cabins", "hostel"];
-const NOTIFY_ID: Record<Exclude<Cat, "rental">, string> = { hotel: "hotels", cabins: "cabins", hostel: "hostels" };
-const DOT: Record<Cat, string> = { rental: "bg-success", hotel: "bg-amber-400", cabins: "bg-muted", hostel: "bg-amber-400" };
+const ORDER: Cat[] = ["all", "rental", "hotel", "cabins", "hostel"];
+const NOTIFY_ID: Record<Exclude<Cat, "all" | "rental">, string> = { hotel: "hotels", cabins: "cabins", hostel: "hostels" };
+const DOT: Record<Cat, string> = { all: "bg-accent", rental: "bg-success", hotel: "bg-amber-400", cabins: "bg-muted", hostel: "bg-amber-400" };
+const STATUS_TONE: Record<string, string> = { ok: "border-success/40 bg-success/10 text-success", beta: "border-amber-400/40 bg-amber-400/10 text-amber-300", soon: "border-line bg-surface/60 text-muted" };
 
 /**
- * The first thing a visitor sees: which kind of lodging do you run? Each answer changes the promise, the three benefits and the action.
- * Only Rentals is on sale today; the others say so and let the visitor ask to be told, which also tells us what to build next.
+ * The first thing a visitor sees. By default it speaks to every kind of lodging (Airbnb, hotel, hostel, cabins) and says honestly what is ready today.
+ * Picking a kind changes the promise, the three benefits and the action. Only Rentals is on sale today; the others say so and let the visitor ask to be told,
+ * which also tells us what to build next.
  */
 export function CategoryHero() {
-  const [cat, setCat] = useState<Cat>("rental");
+  const [cat, setCat] = useState<Cat>("all");
   const c = m.funnel.cats[cat];
+  const buyable = cat === "all" || cat === "rental";
+  const openAssistant = () => window.dispatchEvent(new Event("stayflow:open-assistant"));
   return (
     <div>
       <div role="radiogroup" aria-label={m.funnel.catsLabel} className="flex flex-wrap gap-2">
@@ -48,11 +53,25 @@ export function CategoryHero() {
             <li key={x} className="flex items-start gap-3 text-[15px] md:text-base"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
           ))}
         </ul>
-        {cat === "rental" ? (
+
+        {cat === "all" && (
+          <ul aria-label={m.funnel.allStatus.title} className="mt-6 flex flex-wrap gap-2">
+            {m.funnel.allStatus.items.map((it) => {
+              const [name, state, tone] = it.split("|");
+              return <li key={it} className={`flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${STATUS_TONE[tone!]}`}><span className="font-semibold">{name}</span><span className="opacity-80">· {state}</span></li>;
+            })}
+          </ul>
+        )}
+
+        {buyable ? (
           <>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <LaunchBadge className="mt-8" />
+            <div className="mt-4 flex flex-wrap items-center gap-3">
               <GetHostButton where="hero" />
-              <a href="#sistema" className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">{m.funnel.hero.how}</a>
+              <a href={cat === "all" ? "#ecosistema" : "#sistema"} className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">{m.funnel.hero.how}</a>
+              <button type="button" onClick={openAssistant} className="inline-flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-accent underline-offset-4 transition hover:underline">
+                <Icon name="message" className="h-4 w-4" />{m.hero.ask}
+              </button>
             </div>
             <p className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-muted">
               {m.funnel.hero.trust.map((x) => <span key={x} className="flex items-center gap-1.5"><Icon name="check" className="h-3.5 w-3.5 text-success" />{x}</span>)}
@@ -63,7 +82,7 @@ export function CategoryHero() {
             <p className="rounded-xl border border-line bg-surface/50 px-4 py-3 text-sm text-muted">
               <span className="font-semibold text-fg">{m.funnel.status[cat === "cabins" ? "soon" : "beta"]}.</span> {m.funnel.notReady}
             </p>
-            <NotifyButton id={NOTIFY_ID[cat]} label={m.funnel.notifyCat} className="w-full" />
+            <NotifyButton id={NOTIFY_ID[cat as Exclude<Cat, "all" | "rental">]} label={m.funnel.notifyCat} className="w-full" />
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
               <button type="button" onClick={() => setCat("rental")} className="font-medium text-accent underline-offset-4 hover:underline">{m.funnel.startRentals}</button>
               <ContactLink variant="text" />
