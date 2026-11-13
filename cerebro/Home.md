@@ -1,6 +1,6 @@
 ---
 tipo: mapa
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # 🧠 Cerebro · Productos digitales
 
@@ -10,6 +10,9 @@ actualizado: 2026-11-12
 - Estado del negocio → [[Visión y modelo]] · [[Precios y ofertas]]
 - Qué sigue → [[Roadmap]] · [[Checklist de lanzamiento]]
 - Bloqueo principal → [[Cobro y licencias]]
+
+## Novedades 2026-11-13
+[[Host - Categorías y módulos]] · [[Host - Núcleo compartido]] · [[Base de datos - migraciones]] · [[Pasarela de pago - decisión]] · [[Landing - cambios 2026-11-13]] · Diario → [[2026-11-13]]
 
 ## Productos
 [[Stayflow Host]] · [[Stayflow Guest]] · [[Stayflow Business]] · [[Stayflow Operations]] · [[Próximamente]] · [[Ideas de productos nuevos]]

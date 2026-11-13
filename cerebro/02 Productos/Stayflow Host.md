@@ -2,7 +2,7 @@
 tipo: producto
 estado: a la venta
 precio_usd: 49
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # Stayflow Host
 
@@ -18,6 +18,10 @@ actualizado: 2026-11-12
 - **Mensajes** listos (4 plantillas editables, WhatsApp/email).
 - **Reportes** mensuales (imprimir / PDF). **Sincroniza iCal** con Airbnb/Booking/VRBO y publica tu calendario.
 - **Primeros pasos** y **datos de ejemplo**. Asistente de IA (solo lectura, con tope diario).
+
+## Lo nuevo (2026-11-13)
+- **Cuatro categorías** de alojamiento en un solo sistema → [[Host - Categorías y módulos]].
+- **Núcleo compartido:** estados de reserva e historial, libro de cobros, equipo con roles y auditoría, tareas con responsable, fichas por unidad, mantenimiento con costo → [[Host - Núcleo compartido]].
 
 ## Dirección
 https://stayflow-host.vercel.app · ficha `/products/host` · landing de anuncio `/l/host`

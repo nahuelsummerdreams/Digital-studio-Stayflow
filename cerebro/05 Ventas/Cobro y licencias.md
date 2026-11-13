@@ -1,7 +1,7 @@
 ---
 tipo: ventas
 estado: BLOQUEO PRINCIPAL
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # Cobro y licencias
 
@@ -15,7 +15,10 @@ El botón de compra termina en un formulario de email. No hay pago automático. 
 4. **Precio promocional validado en el servidor** (fecha del servidor, no del navegador).
 5. Reembolsos: cómo se revoca la licencia.
 
-## Opciones (a investigar)
+## Decisión en curso
+Objetivo: vender a otros países. Evaluadas Whop, Impultienda, Mercado Pago, Lemon Squeezy/Paddle → detalle y pasos en [[Pasarela de pago - decisión]]. La landing ya acepta un link de checkout externo (`NEXT_PUBLIC_HOST_CHECKOUT_URL`).
+
+## Opciones (resumen anterior)
 | Opción | Ventaja | Riesgo |
 |---|---|---|
 | Lemon Squeezy / Paddle (comerciante de registro) | Impuestos globales resueltos | Comisión mayor; aprobación |
@@ -25,4 +28,4 @@ El botón de compra termina en un formulario de email. No hay pago automático. 
 ¿API o webhook al pagar? ¿Enlace de pago por producto? ¿Dólares? ¿Comisión? ¿Facturación/impuestos?
 
 ## Pendiente de política
-Qué pasa cuando alguien no renueva las actualizaciones (la app sigue funcionando) y cómo se registra la renovación de USD 10/año. Ver [[Decisiones]].
+Resuelto (2026-11-13): **no hay renovación**. 12 meses de actualizaciones incluidos; después la app sigue funcionando igual, sin cargos. Ver [[Decisiones]].

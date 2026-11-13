@@ -1,6 +1,6 @@
 ---
 tipo: operaciones
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # Backlog técnico
 
@@ -28,3 +28,20 @@ actualizado: 2026-11-12
 
 ## Higiene
 - [ ] Borrar usuarios y datos `e2e-*` de producción (con visto bueno)
+
+## Hecho el 2026-11-12/13
+- [x] Etapa 0–3 del plan de categorías: selector de 4 categorías, módulos por perfil, ficha de huéspedes, estados de reserva + historial, libro de cobros, equipo/roles/auditoría, tareas con responsable, registro de mensajes (migraciones 0024–0032)
+- [x] Rentals: fichas por unidad e incidencias con costo (0033)
+- [x] Panel sectorizado por categoría: hoteles agregan habitaciones por tipo y tarifa; hostels dormitorios con camas; cabañas en cantidad; vocabulario y tarifa sugerida
+- [x] Barra de categorías arriba del panel y alta en dos pasos (categoría primero)
+- [x] Landing: selector de categoría en el hero, sección con pantallas reales, ejemplos en USD, contacto opcional, FAQ por categoría, packs 69/89, sin renovación, link de checkout externo
+
+## Siguiente
+- [ ] Hotels: estado de habitación, cambio de habitación, folio con consumos, cierre de caja
+- [ ] Hostels: grupos, actividades, lavandería, caja, tipo de dormitorio
+- [ ] Cabins: servicios y experiencias reservables
+- [ ] Ocultar botones según el rol; matriz de permisos por módulo; notificaciones de tareas
+- [ ] Superadmin mínimo (clientes, códigos, métricas, auditoría de accesos)
+- [ ] Landing en inglés y portugués (y panel de Host traducido) para vender fuera del mundo hispano
+- [ ] Webhook de pago → licencia → correo (tras elegir plataforma)
+- [ ] Automatizaciones programadas reales; CI y e2e versionados; captcha en el registro

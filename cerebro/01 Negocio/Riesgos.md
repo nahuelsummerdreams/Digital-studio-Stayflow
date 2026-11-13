@@ -1,6 +1,6 @@
 ---
 tipo: riesgos
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # Registro de riesgos
 
@@ -16,3 +16,8 @@ actualizado: 2026-11-12
 | Sin monitoreo de errores ni respaldos verificados | Medio | [[Backlog técnico]] | Claude |
 | Urgencia falsa en anuncios | Alto | Solo promociones con cierre real | Todos |
 | Promesas ("de por vida", garantías) | Medio | Políticas ya cambiadas; revisar con abogado | Dueño |
+| Vercel plan gratuito bloquea despliegues (100/día) | Alto | Plan de pago o esperar; desplegar menos veces | Dueño |
+| Hotels/Hostels/Cabins comunicados como listos sin estarlo | Alto | Estados honestos en landing y panel; vender solo Rentals hoy | Todos |
+| Venta internacional sin revisión legal (UE, Brasil; datos en us-east-1) | Alto | Revisión legal corta antes de pauta paga; comerciante de registro | Dueño |
+| Pasarela que no paga a Argentina o sin entrega automática | Crítico | [[Pasarela de pago - decisión]] | Dueño |
+| Roles sin ocultar botones en pantalla | Bajo | La base rechaza lo no permitido; ocultar en la interfaz | Claude |

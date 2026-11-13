@@ -23,3 +23,6 @@ actualizado: 2026-11-12
 
 
 - **2026-11-13 · Se elimina la renovación de USD 10/año** — pago único, 12 meses de actualizaciones incluidos y sin cargos después. Packs: Esencial 69 y Megapack 89 (antes 72,80 y 93,10). Host a 38 como precio de lanzamiento de noviembre: pendiente de confirmar fecha, cupo y medio de cobro.
+- **2026-11-13 · Objetivo: vender a otros países** — se prefiere una plataforma que sea comerciante de registro (impuestos por país) → Whop vs Impultienda en [[Pasarela de pago - decisión]]. Pendiente de elegir.
+- **2026-11-13 · Panel sectorizado por categoría** — cada categoría usa su vocabulario y su forma de agregar unidades (hotel: habitaciones por tipo y tarifa; hostel: dormitorios y camas; cabañas: en cantidad; rentals: propiedades). La categoría se elige primero (alta en dos pasos) y queda arriba del panel. Vigente.
+- **2026-11-13 · Roles con registro** — invitaciones por enlace sin envío automático; solo el propietario cambia roles; auditoría de equipo, reservas eliminadas y devoluciones. Vigente.

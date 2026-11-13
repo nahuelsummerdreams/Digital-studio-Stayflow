@@ -1,7 +1,7 @@
 ---
 tipo: negocio
 estado: vigente
-actualizado: 2026-11-12
+actualizado: 2026-11-13
 ---
 # Precios y ofertas
 
@@ -19,7 +19,11 @@ actualizado: 2026-11-12
 **Soporte opcional (mensual, por herramienta):** Host 9 · Guest 9 · Business 5 · Operations 7 `[VERIFICAR]`.
 **Actualizaciones:** 12 meses incluidos; **sin renovación** (decisión 2026-11-13). La app sigue funcionando igual después.
 
-## Promoción única (hecha, apagada)
+## Lanzamiento de Host (propuesto, pendiente)
+Host **USD 38** por noviembre (precio de lanzamiento, 49 tachado), con cierre real el 30-nov 23:59 (hora Argentina) y, opcionalmente, cupo de 30 clientes. Solo Host; los packs no se rebajan más (no apilar descuentos). **No implementado en la landing todavía**: falta confirmar fecha, cupo y medio de cobro. Pasos: [[Pasarela de pago - decisión]].
+**Criterios del test:** tratar a los primeros 10–30 compradores como piloto, pedir feedback y permiso para citarlos, preguntarles cuánto habrían pagado; volver a 49 el 1-dic.
+
+## Promoción de packs (hecha, apagada)
 Esencial 65 / Megapack 85 con **cierre real**. Se enciende con la variable `NEXT_PUBLIC_PROMO_ENDS_AT` (fecha con huso horario) y se apaga sola.
 **Reglas:** una sola vez, sin reiniciar por visitante, sin "solo por hoy" repetido, no encenderla hasta que el cobro funcione, y validar el precio **en el servidor** cuando exista el cobro. Ver [[Cobro y licencias]].
 
