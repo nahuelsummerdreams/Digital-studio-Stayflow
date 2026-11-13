@@ -3,6 +3,7 @@ import { Precios } from "@/components/precios";
 import { Faq, FinalCta, Footer, Hero, Strip } from "@/components/sections";
 import { DailyOps } from "@/components/daily";
 import { Ecosystem } from "@/components/ecosystem";
+import { Manifesto } from "@/components/manifesto";
 import { Showcase } from "@/components/showcase";
 import { Proximamente } from "@/components/soon";
 import { StickyBuy } from "@/components/sticky";
@@ -15,6 +16,7 @@ export default function Home() {
       <main>
         <Hero />
         <Strip />
+        <Manifesto />
         <Ecosystem />
         <Showcase />
         <DailyOps />

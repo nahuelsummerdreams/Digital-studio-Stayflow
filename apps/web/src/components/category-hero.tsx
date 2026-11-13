@@ -56,11 +56,6 @@ export function CategoryHero() {
                 <li key={x} className="flex items-start gap-2.5 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger"><Icon name="close" className="h-3 w-3" /></span>{x}</li>
               ))}
             </ul>
-            <p className="mt-5 text-base leading-relaxed text-muted">{mf.pivot}</p>
-            <p className="font-display mt-6 text-xl leading-snug md:text-2xl">{mf.brand}</p>
-            <p className="mt-3 text-base leading-relaxed text-fg/85">{mf.ecosystem}</p>
-            <p className="mt-3 text-base leading-relaxed text-fg/85">{mf.closing}</p>
-            <p className="font-display text-gradient mt-5 text-lg font-extrabold uppercase leading-snug tracking-tight md:text-xl">{mf.tagline}</p>
           </div>
         ) : (
         <ul className="mt-6 space-y-2.5">
@@ -70,25 +65,26 @@ export function CategoryHero() {
         </ul>
         )}
 
-        {cat === "all" && (
-          <ul aria-label={m.funnel.allStatus.title} className="mt-6 flex flex-wrap gap-2">
-            {m.funnel.allStatus.items.map((it) => {
-              const [name, state, tone] = it.split("|");
-              return <li key={it} className={`flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${STATUS_TONE[tone!]}`}><span className="font-semibold">{name}</span><span className="opacity-80">· {state}</span></li>;
-            })}
-          </ul>
-        )}
-
         {buyable ? (
           <>
-            <LaunchBadge className="mt-8" />
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <GetHostButton where="hero" label={cat === "all" ? mf.cta : undefined} />
-              <a href={cat === "all" ? "#ecosistema" : "#sistema"} className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">{m.funnel.hero.how}</a>
-              <button type="button" onClick={openAssistant} className="inline-flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-accent underline-offset-4 transition hover:underline">
+            <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3">
+              <GetHostButton where="hero" label={cat === "all" ? mf.cta : undefined} className="!px-8 !py-4 !text-lg" />
+              <LaunchBadge showRegular />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+              <a href={cat === "all" ? "#manifiesto" : "#sistema"} className="font-medium text-fg/80 underline-offset-4 transition hover:text-fg hover:underline">{m.funnel.hero.how}</a>
+              <button type="button" onClick={openAssistant} className="inline-flex items-center gap-1.5 font-medium text-accent underline-offset-4 transition hover:underline">
                 <Icon name="message" className="h-4 w-4" />{m.hero.ask}
               </button>
             </div>
+            {cat === "all" && (
+              <ul aria-label={m.funnel.allStatus.title} className="mt-5 flex flex-wrap gap-2">
+                {m.funnel.allStatus.items.map((it) => {
+                  const [name, state, tone] = it.split("|");
+                  return <li key={it} className={`flex items-center gap-2 rounded-full border px-3 py-1 text-xs ${STATUS_TONE[tone!]}`}><span className="font-semibold">{name}</span><span className="opacity-80">· {state}</span></li>;
+                })}
+              </ul>
+            )}
             <p className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-[13px] text-muted">
               {m.funnel.hero.trust.map((x) => <span key={x} className="flex items-center gap-1.5"><Icon name="check" className="h-3.5 w-3.5 text-success" />{x}</span>)}
             </p>

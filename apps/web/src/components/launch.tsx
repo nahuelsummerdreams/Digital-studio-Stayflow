@@ -62,12 +62,13 @@ export function RegularPrice({ className = "" }: { className?: string }) {
 }
 
 /** A small pill: "Precio de lanzamiento · hasta el 30 de noviembre. Después vuelve a USD 49." */
-export function LaunchBadge({ className = "" }: { className?: string }) {
+export function LaunchBadge({ className = "", showRegular = false }: { className?: string; showRegular?: boolean }) {
   const { m } = useMessages();
   const on = useLaunchOn();
   if (!on) return null;
   return (
     <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs ${className}`}>
+      {showRegular && <RegularPrice />}
       <span className="font-semibold text-accent">{m.launch.badge}</span>
       <LaunchNote className="text-fg/80" />
     </p>
