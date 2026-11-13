@@ -1,3 +1,22 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Landing only: a lime green mixed into the default blue theme, so the page reads vibrant (blue → lime) and the key spots pop.
+ * It lives here, not in the shared theme, so the apps keep their own look; the green and coral themes keep their own palettes.
+ * --accent-2 is the second colour of every gradient (headline accents, rings, glows); --success is what the check marks and "ready" chips use.
+ */
+:root:not([data-theme="green"]):not([data-theme="coral"]) {
+  --accent-2: 182 255 60;
+  --success: 163 230 53;
+}
+/* A faint lime halo on the main button when it is hovered, so the blue button "lights up" with the second colour. */
+@media (hover: hover) {
+  :root:not([data-theme="green"]):not([data-theme="coral"]) .fx-btn:hover:not(:disabled) {
+    box-shadow:
+      0 0 0 1px rgb(var(--accent) / 0.7),
+      0 14px 34px -10px rgb(var(--accent) / 0.9),
+      0 0 26px -6px rgb(var(--accent-2) / 0.55);
+  }
+}

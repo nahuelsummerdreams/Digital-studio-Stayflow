@@ -67,9 +67,9 @@ export function LaunchBadge({ className = "", showRegular = false }: { className
   const on = useLaunchOn();
   if (!on) return null;
   return (
-    <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-accent/40 bg-accent/10 px-3 py-1.5 text-xs ${className}`}>
+    <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-[rgb(var(--accent-2)/0.5)] bg-[rgb(var(--accent-2)/0.1)] px-3 py-1.5 text-xs ${className}`}>
       {showRegular && <RegularPrice />}
-      <span className="font-semibold text-accent">{m.launch.badge}</span>
+      <span className="font-semibold text-[rgb(var(--accent-2))]">{m.launch.badge}</span>
       <LaunchNote className="text-fg/80" />
     </p>
   );

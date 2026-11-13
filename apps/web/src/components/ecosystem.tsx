@@ -48,8 +48,8 @@ export function Ecosystem() {
         </div>
 
         {/* connector */}
-        <div aria-hidden className="mx-auto h-10 w-px bg-gradient-to-b from-accent/60 to-transparent" />
-        <div aria-hidden className="mx-auto hidden h-px w-[66%] bg-gradient-to-r from-transparent via-accent/50 to-transparent md:block" />
+        <div aria-hidden className="mx-auto h-10 w-px bg-gradient-to-b from-[rgb(var(--accent-2)/0.7)] to-transparent" />
+        <div aria-hidden className="mx-auto hidden h-px w-[66%] bg-gradient-to-r from-transparent via-[rgb(var(--accent-2)/0.6)] to-transparent md:block" />
 
         <div className="mt-2 grid gap-5 md:grid-cols-3">
           {e.nodes.map((n, i) => (
@@ -62,7 +62,7 @@ export function Ecosystem() {
                   <p className="text-xs text-muted">{n.role}</p>
                 </div>
               </div>
-              <p className="mt-4 flex items-start gap-2 rounded-xl bg-accent/8 px-3 py-2.5 text-sm"><Icon name="refresh" className="mt-0.5 h-4 w-4 shrink-0 text-accent" />{n.link}</p>
+              <p className="mt-4 flex items-start gap-2 rounded-xl bg-accent/8 px-3 py-2.5 text-sm"><Icon name="refresh" className="mt-0.5 h-4 w-4 shrink-0 text-[rgb(var(--accent-2))]" />{n.link}</p>
             </article>
           ))}
         </div>
