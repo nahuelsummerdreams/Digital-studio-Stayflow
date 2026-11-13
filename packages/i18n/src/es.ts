@@ -1253,7 +1253,7 @@ export const es = {
     strip: {
       one: { n: "0", title: "dobles reservas", body: "Una fecha ocupada no se puede reservar dos veces." },
       two: { n: "1", title: "panel para todo", body: "Reservas, cronograma, huéspedes, tareas y ganancias en un solo lugar." },
-      three: { n: "49", title: "y Host es tuyo", body: "Pago único. Sin mensualidad: renovar las mejoras es opcional." },
+      three: { n: "49", title: "y Host es tuyo", body: "Pago único. Sin mensualidad y sin renovaciones." },
       four: { n: "30", title: "menos al combinar", body: "Suma 2 apps o más y el descuento se aplica solo." },
       chips: "12 meses de actualizaciones|Se instala como app|Garantía de 14 días|Soporte opcional",
     },
@@ -1354,7 +1354,7 @@ export const es = {
       eyebrow: "Preguntas",
       title: "Lo que suelen preguntar los anfitriones.",
       q1: "¿Qué significa pago único?",
-      a1: "Pagas cada app una sola vez y la usas sin mensualidades. Incluye 12 meses de actualizaciones; después la app sigue funcionando igual y puedes renovar cuando quieras por USD 10 al año para seguir recibiendo mejoras. El soporte mensual también es opcional.",
+      a1: "Pagas cada app una sola vez y la usas sin mensualidades. Incluye 12 meses de actualizaciones; después la app sigue funcionando igual, sin renovaciones ni cargos. El soporte mensual también es opcional.",
       q2: "¿Cuánto cuesta cada app?",
       a2: "Los precios están en la sección Precios, app por app. Si combinas dos o más, el 30% se descuenta automáticamente del subtotal. Las apps que todavía están en desarrollo aparecen como Próximamente y no se venden hasta que existan.",
       q3: "¿Se conecta con Airbnb o Booking?",

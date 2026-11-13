@@ -1,4 +1,4 @@
-import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, PROMO_PACK_PRICE, isAvailable, type PackId, type ProductId } from "./catalog";
+import { SUPPORT_PRICE, CROSS_SELL, LAUNCH_KIT, MULTIPACK_MIN_APPS, MULTIPACK_PERCENT, PACKS, PACK_IDS, PRODUCTS, PRODUCT_IDS, PACK_PRICE, PROMO_PACK_PRICE, isAvailable, type PackId, type ProductId } from "./catalog";
 
 export interface CartState {
   /** Apps in the cart. Each one is a single licence. */
@@ -54,14 +54,25 @@ export function computeTotals(cart: CartState, promo = false): Totals {
   const discount = discountActive ? cents((appsSubtotal * MULTIPACK_PERCENT) / 100) : 0;
   const originalTotal = appsSubtotal + kitPrice;
   const regularTotal = cents(originalTotal - discount);
+  // A ready-made pack (exactly its apps, nothing else) has its own price when that is better than the 30% rule.
+  const pack = !cart.kit ? PACK_IDS.find((id) => PACKS[id].status === "available" && PACKS[id].apps.length === apps.length && PACKS[id].apps.every((a) => apps.includes(a))) ?? null : null;
+  const fixed = pack && PACK_PRICE[pack] < regularTotal ? PACK_PRICE[pack] : null;
   // A launch promotion prices a ready-made pack. It only applies when the cart is exactly that pack (no kit, nothing else).
   const promoPack = promo && !cart.kit ? PACK_IDS.find((id) => PACKS[id].status === "available" && PACKS[id].apps.length === apps.length && PACKS[id].apps.every((a) => apps.includes(a))) ?? null : null;
-  if (promoPack && PROMO_PACK_PRICE[promoPack] < regularTotal) {
+  const standing = fixed ?? regularTotal;
+  if (promoPack && PROMO_PACK_PRICE[promoPack] < standing) {
     const price = PROMO_PACK_PRICE[promoPack];
     const promoDiscount = cents(originalTotal - price);
     return {
       lines, appCount: apps.length, appsSubtotal, kitPrice, originalTotal, discountActive: true,
-      discountPercent: Math.round((promoDiscount / appsSubtotal) * 1000) / 10, discount: promoDiscount, saved: promoDiscount, total: price, regularTotal, promoPack, appsToUnlock: 0,
+      discountPercent: Math.round((promoDiscount / appsSubtotal) * 1000) / 10, discount: promoDiscount, saved: promoDiscount, total: price, regularTotal: standing, promoPack, appsToUnlock: 0,
+    };
+  }
+  if (fixed !== null) {
+    const packDiscount = cents(originalTotal - fixed);
+    return {
+      lines, appCount: apps.length, appsSubtotal, kitPrice, originalTotal, discountActive: true,
+      discountPercent: Math.round((packDiscount / appsSubtotal) * 1000) / 10, discount: packDiscount, saved: packDiscount, total: fixed, regularTotal: fixed, promoPack: null, appsToUnlock: 0,
     };
   }
   return {

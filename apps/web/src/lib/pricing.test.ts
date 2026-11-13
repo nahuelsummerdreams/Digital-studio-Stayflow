@@ -38,13 +38,17 @@ describe("computeTotals", () => {
     expect(t).toMatchObject({ appsSubtotal: 55, discountActive: true, discount: 16.5, saved: 16.5, total: 38.5, appsToUnlock: 0 });
   });
 
-  it("the discount is the same 30% from 2 apps up to every app on sale", () => {
-    const ids = AVAILABLE_LIST.map((p) => p.id);
-    for (let n = 2; n <= ids.length; n++) {
-      const t = computeTotals({ apps: normalizeApps(ids.slice(0, n)), kit: false });
+  it("any combination that is not a ready-made pack gets 30% off", () => {
+    for (const apps of [["host", "guest"], ["guest", "profit", "operations"], ["host", "profit", "operations"]] as const) {
+      const t = computeTotals({ apps: normalizeApps(apps), kit: false });
       expect(t.discountPercent).toBe(30);
       expect(t.total).toBeCloseTo(t.appsSubtotal * 0.7, 2);
     }
+  });
+
+  it("a ready-made pack has its own, better price", () => {
+    expect(computeTotals({ apps: ["host", "guest", "profit"], kit: false })).toMatchObject({ total: 69, appsSubtotal: 104 });
+    expect(computeTotals({ apps: ["host", "guest", "profit", "operations"], kit: false })).toMatchObject({ total: 89, appsSubtotal: 133 });
   });
 
   it("the Launch Kit math stays correct (it is not on sale yet, but the rule is ready)", () => {
@@ -74,8 +78,8 @@ describe("recommendations", () => {
 
 describe("packs", () => {
   it("prices the ready-made packs with the 30% rule", () => {
-    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 104, discount: 31.2, total: 72.8 });
-    expect(packTotals("mega")).toMatchObject({ appCount: 4, appsSubtotal: 133, discount: 39.9, total: 93.1 });
+    expect(packTotals("essential")).toMatchObject({ appsSubtotal: 104, discount: 35, total: 69 });
+    expect(packTotals("mega")).toMatchObject({ appCount: 4, appsSubtotal: 133, discount: 44, total: 89 });
   });
 });
 
@@ -100,7 +104,7 @@ describe("offers (upsell and downsell)", () => {
     const o = offers({ apps: ["host", "guest", "profit", "operations"], kit: false }, 5);
     const drop = o.find((x) => x.kind === "drop") as { id: string; saving: number };
     expect(drop.id).toBe("host");
-    expect(drop.saving).toBeCloseTo(34.3, 2); // 49 * 0.7
+    expect(drop.saving).toBeCloseTo(30.2, 2); // Megapack 89 -> Guest + Business + Operations with 30% off = 58.8
   });
   it("nothing to offer for an empty cart", () => {
     expect(offers({ apps: [], kit: false })).toEqual([]);
@@ -126,9 +130,9 @@ describe("launch promotion (a real deadline)", () => {
     expect(promoIsOn(Date.now(), null)).toBe(false);
   });
   it("prices the two packs at 65 and 85 only while it lasts", () => {
-    expect(packTotals("essential", true)).toMatchObject({ total: 65, discount: 39, saved: 39, promoPack: "essential", regularTotal: 72.8, discountPercent: 37.5 });
-    expect(packTotals("mega", true)).toMatchObject({ total: 85, discount: 48, promoPack: "mega", regularTotal: 93.1 });
-    expect(packTotals("essential", false)).toMatchObject({ total: 72.8, promoPack: null });
+    expect(packTotals("essential", true)).toMatchObject({ total: 65, discount: 39, saved: 39, promoPack: "essential", regularTotal: 69, discountPercent: 37.5 });
+    expect(packTotals("mega", true)).toMatchObject({ total: 85, discount: 48, promoPack: "mega", regularTotal: 89 });
+    expect(packTotals("essential", false)).toMatchObject({ total: 69, promoPack: null });
     expect(PROMO_PACK_PRICE).toEqual({ essential: 65, mega: 85 });
   });
   it("applies only to the exact pack, never to other combinations or with the kit", () => {

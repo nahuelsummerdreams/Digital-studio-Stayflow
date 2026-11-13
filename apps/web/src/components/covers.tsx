@@ -2,6 +2,7 @@ import Image from "next/image";
 import { BrandMark } from "@stayflow/ui";
 import { PACKS, PRODUCTS, type PackId, type ProductId } from "@/lib/catalog";
 import { getMessages } from "@/i18n";
+import { packTotals } from "@/lib/pricing";
 import { ProductBox } from "./box";
 import { boxWidth, type BoxSize } from "./box-dims";
 import { ProductArt } from "./visuals";
@@ -121,7 +122,7 @@ export function PackCover({ id, size = "md" }: { id: PackId; size?: BoxSize }) {
             </span>
           ))}
         </div>
-        <Strip text="30% DE DESCUENTO · PAGO ÚNICO" hue={hue} />
+        <Strip text={`AHORRAS USD ${packTotals(id).saved} · PAGO ÚNICO`} hue={hue} />
       </div>
     </ProductBox>
   );

@@ -43,9 +43,8 @@ export const SOON_LIST: Product[] = PRODUCT_LIST.filter((p) => p.status === "soo
 /** The complementary premium product. Not built yet ("Próximamente"), so the site does not sell it. Not an app: the Multi-Pack discount never applies to it. */
 export const LAUNCH_KIT = { id: "kit", name: "Host Launch Kit", price: 159, status: "soon" } as const;
 
-/** Updates: every purchase includes this many months of improvements. After that the app keeps working exactly the same; renewing is optional, whenever the customer wants. Copy lives in i18n; change the numbers here AND there. */
+/** Updates: every purchase includes this many months of improvements. After that the app keeps working exactly the same; there is no renewal fee. Copy lives in i18n; change the number here AND there. */
 export const UPDATES_MONTHS = 12;
-export const UPDATES_RENEWAL_USD = 10;
 
 /** Multi-Pack: this much off the apps' subtotal when two or more apps are combined. */
 export const MULTIPACK_PERCENT = 30;
@@ -75,6 +74,9 @@ export const PACKS: Record<PackId, { id: PackId; apps: ProductId[]; status: Prod
   essential: { id: "essential", apps: ["host", "guest", "profit"], status: "available" },
   mega: { id: "mega", apps: PRODUCT_IDS.filter((id) => PRODUCTS[id].status === "available"), status: "available" },
 };
+
+/** Ready-made packs have their own price (whole dollars), a little better than the 30% rule. Any other combination keeps the 30% Multi-Pack rule. */
+export const PACK_PRICE: Record<PackId, number> = { essential: 69, mega: 89 };
 
 /**
  * Launch promotion with a REAL deadline. Pack prices while it lasts; when the deadline passes the site goes back to the normal prices by itself.

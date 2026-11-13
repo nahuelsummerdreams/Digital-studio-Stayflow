@@ -21,3 +21,5 @@ actualizado: 2026-11-12
 - **2026-11-12 · Rama hotel/hostel integrada** — `feat/hotel-hostel` se integró en la rama principal con pruebas SQL; las migraciones 0024 y 0025 ya estaban en producción. Pendiente de confirmar quién hace los merges.
 - **2026-11-12 · Cambio de categoría sin perder datos** — solo adapta módulos del menú; reservas, huéspedes y pagos no se tocan; se bloquea si hay habitaciones o camas que la nueva categoría no admite.
 
+
+- **2026-11-13 · Se elimina la renovación de USD 10/año** — pago único, 12 meses de actualizaciones incluidos y sin cargos después. Packs: Esencial 69 y Megapack 89 (antes 72,80 y 93,10). Host a 38 como precio de lanzamiento de noviembre: pendiente de confirmar fecha, cupo y medio de cobro.

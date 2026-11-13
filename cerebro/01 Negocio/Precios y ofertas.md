@@ -15,9 +15,9 @@ actualizado: 2026-11-12
 | Host Launch Kit | 159 (previsto) | No existe |
 
 **Regla Multi-Pack:** desde la 2.ª app, 30% sobre el subtotal de apps.
-**Packs:** Esencial (Host+Guest+Business) = **72,80**. Megapack Anfitrión Premium (todas las apps a la venta; hoy 4) = **93,10**.
+**Packs:** Esencial (Host+Guest+Business) = **69**. Megapack Anfitrión Premium (todas las apps a la venta; hoy 4) = **89**.
 **Soporte opcional (mensual, por herramienta):** Host 9 · Guest 9 · Business 5 · Operations 7 `[VERIFICAR]`.
-**Renovación de actualizaciones:** USD 10/año, opcional, después de los 12 meses incluidos.
+**Actualizaciones:** 12 meses incluidos; **sin renovación** (decisión 2026-11-13). La app sigue funcionando igual después.
 
 ## Promoción única (hecha, apagada)
 Esencial 65 / Megapack 85 con **cierre real**. Se enciende con la variable `NEXT_PUBLIC_PROMO_ENDS_AT` (fecha con huso horario) y se apaga sola.

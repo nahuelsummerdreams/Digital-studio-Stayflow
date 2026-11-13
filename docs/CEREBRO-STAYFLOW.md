@@ -16,11 +16,11 @@ Ecosistema de apps web instalables para **anfitriones de alquiler temporal** (Ai
 | AI, Listing, Academy, Experiences, Website | **No existen** → "Próximamente" con "Avísame" (sirve para medir demanda) | previstos 29/19/19/29/39 |
 | Host Launch Kit | No existe, fuera de la venta | previsto 159 |
 
-**Packs:** Esencial (Host+Guest+Business) = **72,80**; Megapack Anfitrión Premium (todas las apps a la venta, hoy 4) = **93,10**. Regla: desde la 2.ª app, **−30%** sobre el subtotal de apps.
+**Packs:** Esencial (Host+Guest+Business) = **69**; Megapack Anfitrión Premium (todas las apps a la venta, hoy 4) = **89**. Regla: desde la 2.ª app, **−30%** sobre el subtotal de apps.
 **Promoción única** (hecha, APAGADA): Esencial 65 / Megapack 85 con **fecha de cierre real**; se enciende con `NEXT_PUBLIC_PROMO_ENDS_AT` y se apaga sola. Regla innegociable: **nunca urgencia falsa** (nada de "solo por hoy" que se repite).
 
 ## 3. Decisiones tomadas (no re-discutir sin motivo)
-- Pago único, **sin mensualidad**. Incluye **12 meses de actualizaciones**; después la app sigue funcionando igual y se **renueva cuando el cliente quiera por USD 10/año**. (El mecanismo técnico de esa renovación aún no existe.)
+- Pago único, **sin mensualidad**. Incluye **12 meses de actualizaciones**; después la app sigue funcionando igual, **sin renovación ni cargos** (decisión 2026-11-13).
 - **Garantía de 14 días** (reembolso). Supuesto mío: confirmar con abogado.
 - **Soporte mensual opcional**, por herramienta (Host 9, Guest 9, Business 5, Operations 7). Precios provisionales.
 - **Solo se vende lo que existe.** Lo demás: "Próximamente", sin precio ni carrito.

@@ -16,7 +16,7 @@ interface ProductCopy {
 }
 
 const SOON = "En desarrollo. Todavía no está a la venta: déjanos tu email y te avisamos el día que salga.";
-const SUPPORT = "Guías de inicio y 12 meses de actualizaciones incluidas; después renuevas cuando quieras por USD 10 al año. El soporte directo es un plan opcional.";
+const SUPPORT = "Guías de inicio y 12 meses de actualizaciones incluidas, sin renovaciones ni cargos después. El soporte directo es un plan opcional.";
 
 export const es = {
   meta: {
@@ -200,7 +200,7 @@ export const es = {
       eyebrow: "Preguntas",
       title: "Antes de comprar, lo que suelen preguntar.",
       items: [
-        { q: "¿Qué significa pago único?", a: "Pagas cada app una sola vez y la usas sin mensualidades. Incluye 12 meses de actualizaciones; después la app sigue funcionando igual y puedes renovar cuando quieras por USD 10 al año para seguir recibiendo mejoras. El soporte mensual es opcional." },
+        { q: "¿Qué significa pago único?", a: "Pagas cada app una sola vez y la usas sin mensualidades. Incluye 12 meses de actualizaciones; después la app sigue funcionando igual, sin renovaciones ni cargos. El soporte mensual es opcional." },
         { q: "¿Se conecta con Airbnb y Booking?", a: "Sí. Pegas el enlace de calendario (iCal) de cada plataforma y las reservas entran solas. También publicas tu propio calendario para que tus fechas se bloqueen allá. Airbnb no entrega el nombre ni el importe por ese medio: esos datos los completas tú." },
         { q: "¿Sirve para hoteles, hostels o cabañas?", a: "Hoy está listo para alquileres temporarios (Rentals). Hotels y Hostels están en desarrollo y Cabins & Resorts viene después. Si te interesa alguno, avísanos desde el selector de arriba: así sabemos cuál construir primero y te avisamos el día que salga." },
         { q: "¿Funciona en el celular y en la computadora?", a: "Sí. Se abre desde el navegador y se instala como app en Android, iPhone, Windows y Mac. Tus datos son los mismos en todos tus dispositivos." },
@@ -255,7 +255,7 @@ export const es = {
   },
   packs: {
     title: "Packs listos para llevar",
-    body: "Elige uno y ya tiene el 30% aplicado. Después lo ajustas en tu carrito.",
+    body: "Elige uno y ya viene con precio especial. Después lo ajustas en tu carrito.",
     add: "Agregar este pack",
     inCart: "Pack en tu carrito",
     includes: "Incluye",
@@ -264,7 +264,7 @@ export const es = {
     saves: "Ahorras {amount}",
     list: {
       essential: { name: "Pack Esencial", for: "Reservas, guía para huéspedes y tus números: lo que más se usa.", badge: "" },
-      mega: { name: "Megapack Anfitrión Premium", for: "Todas las apps que ya funcionan hoy, con el mayor ahorro.", badge: "−30% · el más completo" },
+      mega: { name: "Megapack Anfitrión Premium", for: "Todas las apps que ya funcionan hoy, con el mayor ahorro.", badge: "El más completo" },
     },
   },
   offers: {
