@@ -139,9 +139,9 @@ export const es = {
       all: {
         label: "Todos",
         eyebrow: "Un ecosistema para todo tipo de alojamiento",
-        title: "Tu Airbnb, tu hotel o tu alojamiento,",
-        accent: "en un solo lugar y bajo control.",
-        sub: "Stayflow reúne reservas, huéspedes, limpieza, equipo y números en un ecosistema de apps que se adapta a cómo trabajas: alquileres, hoteles, cabañas u hostels.",
+        title: "Cada oportunidad que pierdes por una mala gestión",
+        accent: "le cuesta crecimiento a tu negocio.",
+        sub: "Tu alojamiento puede estar generando mucho más. Pero primero necesitas tener el control.",
         bullets: ["Un solo panel para ver quién llega, quién sale y qué falta por cobrar", "Apps que se conectan entre sí: reservas, guía para huéspedes, limpieza y ganancias", "Pago único por herramienta, sin mensualidades"],
       },
       rental: {
@@ -176,6 +176,15 @@ export const es = {
         sub: "Disponibilidad por cama y por habitación, compartida o privada, con la recepción del día y la limpieza por dormitorio.",
         bullets: ["Reserva por cama o por habitación completa", "Recepción del día con la ocupación en vivo", "Limpieza por dormitorio, no por cama"],
       },
+    },
+    manifesto: {
+      pains: ["Consultas sin responder", "Reservas desorganizadas", "Huéspedes esperando", "Tareas que se acumulan", "Operaciones repartidas en distintas herramientas"],
+      pivot: "Mientras intentas controlar todo, puedes estar perdiendo tiempo, oportunidades y rentabilidad.",
+      brand: "STAYflow transforma la manera en que gestionas tu alojamiento.",
+      ecosystem: "Un ecosistema digital pensado para hoteles, alquileres temporarios, cabañas, complejos turísticos y hostels. Hoy está listo para alquileres temporarios; el resto está en camino.",
+      closing: "Centraliza tu gestión, optimiza tus operaciones y convierte el desorden en una estructura preparada para crecer.",
+      tagline: "Menos oportunidades perdidas. Más control. Más crecimiento.",
+      cta: "Descúbrelo por {price}",
     },
     allStatus: { title: "Hoy, en cada tipo de alojamiento", items: ["Rentals|Listo hoy|ok", "Hotels y Hostels|En desarrollo|beta", "Cabins & Resorts|Próximamente|soon"], note: "Empieza hoy con Host. Si tienes hotel, hostel o cabañas, avísanos desde el selector: construimos primero lo que más piden." },
     ecosystem: {

@@ -216,11 +216,11 @@ export function AddPack({ pack }: { pack: import("@/lib/catalog").PackId }) {
 export { CartDrawer } from "./cart";
 
 /** The main call to action: puts Stayflow Host in the cart and opens it, so the visitor can mix and match right away. */
-export function GetHostButton({ className = "", where = "hero" }: { className?: string; where?: string }) {
+export function GetHostButton({ className = "", where = "hero", label: labelTemplate }: { className?: string; where?: string; label?: string }) {
   const { m } = useMessages();
   const { add, setOpen, totals } = useCart();
   const hostPrice = useHostPrice();
-  const label = fmt(m.hero.getHost, { price: usd(hostPrice) });
+  const label = fmt(labelTemplate ?? m.hero.getHost, { price: usd(hostPrice) });
   if (HOST_CHECKOUT_URL) {
     return (
       <a href={HOST_CHECKOUT_URL} target="_blank" rel="noopener noreferrer" onClick={() => track("select_promotion", { where, item_id: "host" })} className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}>

@@ -22,6 +22,7 @@ const STATUS_TONE: Record<string, string> = { ok: "border-success/40 bg-success/
 export function CategoryHero() {
   const [cat, setCat] = useState<Cat>("all");
   const c = m.funnel.cats[cat];
+  const mf = m.funnel.manifesto;
   const buyable = cat === "all" || cat === "rental";
   const openAssistant = () => window.dispatchEvent(new Event("stayflow:open-assistant"));
   return (
@@ -44,15 +45,30 @@ export function CategoryHero() {
           <span aria-hidden className={`pulse-ring h-1.5 w-1.5 shrink-0 rounded-full ${DOT[cat]}`} />
           <span className="truncate">{c.eyebrow}</span>
         </p>
-        <h1 className="font-display mt-5 text-[1.95rem] font-extrabold uppercase leading-[1.16] tracking-tight sm:text-4xl xl:text-[2.5rem]">
+        <h1 className={`font-display mt-5 font-extrabold uppercase tracking-tight ${cat === "all" ? "text-[1.6rem] leading-[1.2] sm:text-3xl xl:text-[2.15rem]" : "text-[1.95rem] leading-[1.16] sm:text-4xl xl:text-[2.5rem]"}`}>
           {c.title} <span className="text-gradient block">{c.accent}</span>
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg/85 md:text-xl">{c.sub}</p>
+        {cat === "all" ? (
+          <div className="mt-6 max-w-xl">
+            <ul className="grid gap-2 sm:grid-cols-2">
+              {mf.pains.map((x) => (
+                <li key={x} className="flex items-start gap-2.5 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger"><Icon name="close" className="h-3 w-3" /></span>{x}</li>
+              ))}
+            </ul>
+            <p className="mt-5 text-base leading-relaxed text-muted">{mf.pivot}</p>
+            <p className="font-display mt-6 text-xl leading-snug md:text-2xl">{mf.brand}</p>
+            <p className="mt-3 text-base leading-relaxed text-fg/85">{mf.ecosystem}</p>
+            <p className="mt-3 text-base leading-relaxed text-fg/85">{mf.closing}</p>
+            <p className="font-display text-gradient mt-5 text-lg font-extrabold uppercase leading-snug tracking-tight md:text-xl">{mf.tagline}</p>
+          </div>
+        ) : (
         <ul className="mt-6 space-y-2.5">
           {c.bullets.map((x) => (
             <li key={x} className="flex items-start gap-3 text-[15px] md:text-base"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
           ))}
         </ul>
+        )}
 
         {cat === "all" && (
           <ul aria-label={m.funnel.allStatus.title} className="mt-6 flex flex-wrap gap-2">
@@ -67,7 +83,7 @@ export function CategoryHero() {
           <>
             <LaunchBadge className="mt-8" />
             <div className="mt-4 flex flex-wrap items-center gap-3">
-              <GetHostButton where="hero" />
+              <GetHostButton where="hero" label={cat === "all" ? mf.cta : undefined} />
               <a href={cat === "all" ? "#ecosistema" : "#sistema"} className="inline-flex items-center gap-2 rounded-xl border border-line bg-surface/40 px-6 py-3.5 text-base font-semibold text-fg backdrop-blur transition hover:border-accent/60">{m.funnel.hero.how}</a>
               <button type="button" onClick={openAssistant} className="inline-flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-accent underline-offset-4 transition hover:underline">
                 <Icon name="message" className="h-4 w-4" />{m.hero.ask}
