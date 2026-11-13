@@ -74,7 +74,7 @@ export function Precios() {
             <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">{o.body}</p>
             <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-muted">{o.includes}</h3>
             <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-              {c.features.slice(0, 6).map((f) => <li key={f} className="flex items-start gap-2.5 text-sm"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{f}</li>)}
+              {c.features.slice(0, 6).map((f) => <li key={f} className="flex items-start gap-2.5 text-sm"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{f}</li>)}
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
               <p className="flex items-baseline gap-2"><span className="font-display text-gradient text-5xl tabular-nums md:text-6xl"><HostPrice /></span><RegularPrice className="text-xl" /><span className="text-sm text-muted">{m.solution.oneTime}</span></p>

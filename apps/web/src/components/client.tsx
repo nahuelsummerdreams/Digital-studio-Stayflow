@@ -223,7 +223,7 @@ export function GetHostButton({ className = "", where = "hero", label: labelTemp
   const label = fmt(labelTemplate ?? m.hero.getHost, { price: usd(hostPrice) });
   if (HOST_CHECKOUT_URL) {
     return (
-      <a href={HOST_CHECKOUT_URL} target="_blank" rel="noopener noreferrer" onClick={() => track("select_promotion", { where, item_id: "host" })} className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}>
+      <a href={HOST_CHECKOUT_URL} target="_blank" rel="noopener noreferrer" onClick={() => track("select_promotion", { where, item_id: "host" })} className={`${btnPrimary} cta-glow gap-2 !px-6 !py-3.5 !text-base ${className}`}>
         {label}
         <Icon name="arrow" className="h-4 w-4" />
       </a>
@@ -238,7 +238,7 @@ export function GetHostButton({ className = "", where = "hero", label: labelTemp
         track("select_promotion", { where, item_id: "host" });
         void totals;
       }}
-      className={`${btnPrimary} gap-2 !px-6 !py-3.5 !text-base ${className}`}
+      className={`${btnPrimary} cta-glow gap-2 !px-6 !py-3.5 !text-base ${className}`}
     >
       {label}
       <Icon name="arrow" className="h-4 w-4" />

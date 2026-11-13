@@ -76,7 +76,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <section>
             <h2 className="font-display text-2xl">{m.productPage.whatYouGet}</h2>
             <ul className="mt-5 space-y-3">
-              {c.benefits.map((b) => <li key={b} className="flex items-start gap-3"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{b}</li>)}
+              {c.benefits.map((b) => <li key={b} className="flex items-start gap-3"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{b}</li>)}
             </ul>
             <h2 className="font-display mt-10 text-2xl">{m.productPage.features}</h2>
             <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">

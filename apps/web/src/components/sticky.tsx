@@ -19,7 +19,7 @@ export function StickyBuy() {
   }, []);
   if (!show || totals.lines.length > 0) return null;
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-line/70 bg-bg/90 px-4 py-3 backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-[rgb(var(--accent-2)/0.45)] bg-bg/90 px-4 py-3 backdrop-blur md:hidden">
       <p className="min-w-0 leading-tight"><span className="block truncate text-sm font-semibold">Stayflow Host</span><span className="text-xs text-muted">{usd(hostPrice)} · pago único</span></p>
       <GetHostButton where="sticky" className="!px-4 !py-2.5 !text-sm" />
     </div>

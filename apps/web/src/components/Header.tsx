@@ -15,7 +15,7 @@ export function Wordmark() {
   return (
     <span className="flex items-center gap-3">
       <span className="flex items-center gap-2.5">
-        <BrandMark className="h-8 w-8" />
+        <span className="keep-blue"><BrandMark className="h-8 w-8" /></span>
         <span className="font-display text-lg tracking-tight">Stayflow</span>
       </span>
       <span aria-hidden className="h-6 w-px bg-line" />

@@ -43,7 +43,7 @@ function Strip({ text, hue }: { text: string; hue: number }) {
 function Brand() {
   return (
     <header className="absolute left-[0.9em] top-[0.8em] z-10 flex items-center gap-[0.45em]">
-      <BrandMark className="h-[1.5em] w-[1.5em] rounded-[0.4em]" />
+      <span className="keep-blue"><BrandMark className="h-[1.5em] w-[1.5em] rounded-[0.4em]" /></span>
       <span className="text-[0.55em] font-bold tracking-[0.3em] text-white/90">STAYFLOW</span>
     </header>
   );

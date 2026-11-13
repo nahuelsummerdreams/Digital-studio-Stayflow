@@ -60,7 +60,7 @@ export function CategoryHero() {
         ) : (
         <ul className="mt-6 space-y-2.5">
           {c.bullets.map((x) => (
-            <li key={x} className="flex items-start gap-3 text-[15px] md:text-base"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
+            <li key={x} className="flex items-start gap-3 text-[15px] md:text-base"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
           ))}
         </ul>
         )}

@@ -21,7 +21,7 @@ export function DailyOps() {
               <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">{it.body}</p>
               <ul className="mt-5 space-y-2.5">
                 {it.points.map((p) => (
-                  <li key={p} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{p}</li>
+                  <li key={p} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{p}</li>
                 ))}
               </ul>
             </div>
@@ -39,7 +39,7 @@ export function DailyOps() {
         <h3 className="font-display text-xl md:text-2xl">{d.extrasTitle}</h3>
         <ul className="mt-5 grid gap-3 md:grid-cols-2">
           {d.extras.map((x) => (
-            <li key={x} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
+            <li key={x} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
           ))}
         </ul>
       </div>

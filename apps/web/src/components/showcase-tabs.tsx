@@ -40,7 +40,7 @@ export function ShowcaseTabs({ items }: { items: ShowcaseItem[] }) {
           <p className="mt-4 text-base leading-relaxed text-muted md:text-lg">{it.body}</p>
           <ul className="mt-6 space-y-3">
             {it.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{b}</li>
+              <li key={b} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{b}</li>
             ))}
           </ul>
         </div>

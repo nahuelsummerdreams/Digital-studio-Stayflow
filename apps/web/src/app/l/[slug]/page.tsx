@@ -41,7 +41,7 @@ export default async function AdLanding({ params }: { params: Promise<{ slug: st
           <p className="mt-4 text-lg text-muted">{a.sub}</p>
           <ul className="mt-6 space-y-3">
             {a.points.map((x) => (
-              <li key={x} className="flex items-start gap-3"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-success/15 text-success"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
+              <li key={x} className="flex items-start gap-3"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{x}</li>
             ))}
           </ul>
           <p className="mt-7 flex items-baseline gap-2"><span className="font-display text-gradient text-5xl tabular-nums"><ProductPrice id={p.id} price={p.price} /></span><span className="text-sm text-muted">pago único · 12 meses de actualizaciones</span></p>

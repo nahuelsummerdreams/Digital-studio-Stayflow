@@ -68,6 +68,7 @@ export function LaunchBadge({ className = "", showRegular = false }: { className
   if (!on) return null;
   return (
     <p className={`inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-0.5 rounded-xl border border-[rgb(var(--accent-2)/0.5)] bg-[rgb(var(--accent-2)/0.1)] px-3 py-1.5 text-xs ${className}`}>
+      <span aria-hidden className="pulse-lime h-1.5 w-1.5 shrink-0 rounded-full bg-[rgb(var(--accent-2))]" />
       {showRegular && <RegularPrice />}
       <span className="font-semibold text-[rgb(var(--accent-2))]">{m.launch.badge}</span>
       <LaunchNote className="text-fg/80" />

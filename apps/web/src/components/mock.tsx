@@ -41,7 +41,7 @@ export function DashboardMock({ compact = false }: { compact?: boolean }) {
       {/* Title bar: the product and the studio behind it. */}
       <div className="flex items-center gap-1.5 border-b border-line/70 bg-surface2/40 px-4 py-2.5">
         <span aria-hidden className="flex gap-1.5"><i className="h-2.5 w-2.5 rounded-full bg-danger/70" /><i className="h-2.5 w-2.5 rounded-full bg-amber-300/70" /><i className="h-2.5 w-2.5 rounded-full bg-success/70" /></span>
-        <span className="mx-auto flex items-center gap-2"><BrandMark className="h-5 w-5 rounded-md" /><span className="font-display text-xs">Stayflow</span></span>
+        <span className="mx-auto flex items-center gap-2"><span className="keep-blue"><BrandMark className="h-5 w-5 rounded-md" /></span><span className="font-display text-xs">Stayflow</span></span>
         <span className="flex items-center gap-1.5">
           <span className="hidden text-[8px] uppercase tracking-[0.18em] text-muted sm:inline">{t("landing.nav.by")}</span>
           {/* eslint-disable-next-line @next/next/no-img-element */}
