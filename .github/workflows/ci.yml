@@ -1,0 +1,32 @@
+# Runs on every push and pull request: types, tests and a build of the landing.
+# It needs no secrets: the checks never talk to the production database.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Types (all packages and apps)
+        run: pnpm -r --if-present typecheck
+      - name: Tests (all packages and apps)
+        run: pnpm -r --if-present test
+      - name: Build the landing
+        run: pnpm --filter @stayflow/web build

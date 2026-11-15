@@ -20,6 +20,8 @@ export { HostDigestToggle } from "./screens/HostDigestToggle";
 export { HostImport } from "./screens/HostImport";
 export { HostToday } from "./screens/HostToday";
 export { useAutoSync } from "./useAutoSync";
+export { syncHealth, agoLabel, FRESH_MINUTES, OLD_MINUTES, type SyncHealth } from "./syncHealth";
+export { SyncNotice } from "./screens/SyncNotice";
 export { HostTasks } from "./screens/HostTasks";
 export * from "./insights";
 export * from "./assistant";

@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { Pilot } from "@/components/pilot";
 import { Precios } from "@/components/precios";
 import { Faq, FinalCta, Footer, Hero, Strip } from "@/components/sections";
 import { DailyOps } from "@/components/daily";
@@ -21,6 +22,7 @@ export default function Home() {
         <Showcase />
         <DailyOps />
         <Precios />
+        <Pilot />
         <Proximamente />
         <Faq />
         <FinalCta />

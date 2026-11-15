@@ -3,7 +3,7 @@
 import { useMemo, type ReactNode } from "react";
 import { useAccount } from "@stayflow/auth";
 import { useT } from "@stayflow/i18n";
-import { HostDataProvider, alertText, guestsDirectory, hostAlerts, localToday, useAutoSync, useHostData } from "@stayflow/module-host";
+import { HostDataProvider, SyncNotice, alertText, guestsDirectory, hostAlerts, localToday, useAutoSync, useHostData } from "@stayflow/module-host";
 import { AppShell, StayflowProviders, type SearchItem, type ShellAlert } from "@stayflow/shell";
 import { AssistantChat } from "@/components/AssistantChat";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
@@ -60,6 +60,7 @@ function Frame({ children }: { children: ReactNode }) {
         { href: "/properties", module: "properties", label: org?.lodgingType === "hostel" ? t("nav.roomsBeds") : org?.lodgingType === "hotel" ? t("nav.rooms") : org?.lodgingType === "cabins" ? t("unit.cabins.many").replace(/^./, (c) => c.toUpperCase()) : t("nav.properties"), icon: "building", description: t("navDesc.properties"), badge: properties.length },
       ]}
     >
+      <SyncNotice client={client} orgId={org?.id ?? ""} onDone={reload} />
       {children}
     </AppShell>
   );
