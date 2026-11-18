@@ -30,3 +30,9 @@ jobs:
         run: pnpm -r --if-present test
       - name: Build the landing
         run: pnpm --filter @stayflow/web build
+      - name: Build Stayflow Complete
+        # Placeholders only: the build never talks to a database.
+        run: pnpm --filter @stayflow/app-complete build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: https://example.supabase.co
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-placeholder
