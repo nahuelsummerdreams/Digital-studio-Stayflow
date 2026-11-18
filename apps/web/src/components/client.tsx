@@ -15,6 +15,7 @@ import { Breakdown, CartButton, DiscountMeter, OffersList, useCart } from "./car
 import { useBurst } from "./effects";
 import { btnGhost, btnPrimary } from "./styles";
 import { ProductArt } from "./visuals";
+import { useIsCompleteLanding } from "@/lib/route";
 
 export function AddToCart({ id, className = "", wide = false }: { id: ProductId; className?: string; wide?: boolean }) {
   const { m } = useMessages();
@@ -46,7 +47,7 @@ export function ViewItem({ id }: { id: ProductId }) {
 }
 
 /** Floating bar that appears once something is in the cart, so checkout is always one tap away. */
-export function CartBar() {
+function CartBarInner() {
   const { m, locale } = useMessages();
   const { totals, setOpen } = useCart();
   const count = totals.lines.length;
@@ -280,4 +281,10 @@ export function NotifyButton({ id, className = "", label }: { id: string; classN
       {label ?? m.soon.notify}
     </button>
   );
+}
+
+/** Steps aside on the single-product landing (/complete). */
+export function CartBar() {
+  const hide = useIsCompleteLanding();
+  return hide ? null : <CartBarInner />;
 }

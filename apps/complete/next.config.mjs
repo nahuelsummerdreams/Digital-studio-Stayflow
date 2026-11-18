@@ -13,6 +13,8 @@ export default {
   // A second build folder lets a check build run while the dev server is open on `.next`.
   distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
+  // Lets a screenshot be taken without the framework's corner badge.
+  ...(process.env.NO_DEV_BADGE ? { devIndicators: false } : {}),
   async headers() {
     return [
       { source: "/:path*", headers: SECURITY_HEADERS },

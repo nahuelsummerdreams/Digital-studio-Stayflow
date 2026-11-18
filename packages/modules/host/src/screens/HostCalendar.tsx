@@ -26,6 +26,8 @@ interface Props {
   onOpenBookings: () => void;
   /** Called after a block is added or removed so the shared data reloads. */
   onChanged: () => Promise<void>;
+  /** Which view opens first. Month by default; phones switch to week on their own. */
+  initialView?: "month" | "week";
 }
 
 const BAR: Record<BookingStatus, string> = {
@@ -56,11 +58,11 @@ function barShape(startsBefore: boolean, endsAfter: boolean): CSSProperties {
  * guests check in on the second square (after noon) and leave on the first (before noon), so the same day can
  * close one stay and open the next. Tap a free square to book it or to block the dates.
  */
-export function HostCalendar({ client, orgId, currency, properties, bookings, blocks, loading, onCreateBooking, onOpenBookings, onChanged }: Props) {
+export function HostCalendar({ client, orgId, currency, properties, bookings, blocks, loading, onCreateBooking, onOpenBookings, onChanged, initialView = "month" }: Props) {
   const { t, locale } = useI18n();
   const unit = useUnit();
   const today = localToday();
-  const [view, setView] = useState<View>("month");
+  const [view, setView] = useState<View>(initialView);
   /** Any day inside the window being shown. */
   const [anchor, setAnchor] = useState(today);
   // On a phone the week is the useful view: a whole month would need sideways scrolling.

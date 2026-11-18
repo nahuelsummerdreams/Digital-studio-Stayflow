@@ -10,6 +10,6 @@ import { ptP7 } from "./pt/p7";
 /**
  * Portuguese (Brazil). Typed as `Messages`, so a missing key is a compile error, not a blank screen.
  * Written by Claude for review by a native speaker: the wording is natural but has not been reviewed by one yet.
- * `landing` is a legacy block of the old marketing page; no app shows it, so it stays as the Spanish original.
+ * `landing` is the block of the marketing site, which is Spanish-only for now (it reads Spanish whatever the language), so here it stays as the Spanish original until the site is translated.
  */
 export const pt: Messages = { ...ptP1, ...ptP2, ...ptP3, ...ptP4, ...ptP5, ...ptP6, ...ptP7, landing: es.landing };

@@ -5,6 +5,7 @@ import { PROMO_PACK_PRICE, promoEndsAt, promoIsOn, type PackId } from "@/lib/cat
 import { packTotals, usd } from "@/lib/pricing";
 import { fmt } from "@/i18n";
 import { useMessages } from "@/i18n/client";
+import { useIsCompleteLanding } from "@/lib/route";
 
 /** True while the launch promotion is running. Starts false (same on server and browser), turns on after load, and turns itself off at the deadline. */
 export function usePromoOn(): boolean {
@@ -53,7 +54,7 @@ function endLabel(end: number, locale: string, words: { today: string; on: strin
 }
 
 /** The strip at the very top of the page while the promotion lasts. Real deadline, real prices. */
-export function PromoBar() {
+function PromoBarInner() {
   const { m, locale } = useMessages();
   const on = usePromoOn();
   const end = promoEndsAt();
@@ -89,4 +90,10 @@ export function PackPrice({ id }: { id: PackId }) {
       )}
     </>
   );
+}
+
+/** Steps aside on the single-product landing (/complete). */
+export function PromoBar() {
+  const hide = useIsCompleteLanding();
+  return hide ? null : <PromoBarInner />;
 }

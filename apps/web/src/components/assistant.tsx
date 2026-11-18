@@ -15,6 +15,7 @@ import { useCart } from "./cart";
 import { NotifyButton } from "./client";
 import { useLaunchLine, useLaunchOn } from "./launch";
 import { btnGhost, btnPrimary } from "./styles";
+import { useIsCompleteLanding } from "@/lib/route";
 
 type Step = "start" | "explain" | "buy" | "doubts" | "kind" | "notready" | "scale" | "pain" | "done";
 type Kind = "rental" | "hotel" | "hostel" | "cabins";
@@ -37,7 +38,7 @@ const short = (id: ProductId) => PRODUCTS[id].name.replace("Stayflow ", "");
  * Two layers: a guided mode that always works (rule-based, no AI), and free-text chat when the server has the AI configured.
  * It never changes the cart by itself: every offer is a button the visitor taps.
  */
-export function Assistant() {
+function AssistantInner() {
   const { m } = useMessages();
   const a = m.assistant;
   const cart = useCart();
@@ -438,4 +439,10 @@ function RecCard({ rec, onAdd }: { rec: Recommendation & { pain: Pain; scale: Sc
       <button type="button" onClick={() => onAdd(act)} className={`${btnPrimary} w-full !py-2.5 !text-sm`}><Icon name="plus" className="h-4 w-4" />{a.add}</button>
     </div>
   );
+}
+
+/** Steps aside on the single-product landing (/complete). */
+export function Assistant() {
+  const hide = useIsCompleteLanding();
+  return hide ? null : <AssistantInner />;
 }
