@@ -8,7 +8,7 @@ export const PRODUCT_BRAND = {
   listing: { name: "Stayflow Listing", tagline: "Presenta mejor tu alojamiento." },
   experiences: { name: "Stayflow Experiences", tagline: "Lo mejor del destino, a un toque." },
   website: { name: "Stayflow Website", tagline: "Tu propio sitio, sin depender de nadie." },
-  suite: { name: "Stayflow Suite", tagline: "Todo lo que tu alquiler necesita. Conectado." },
+  suite: { name: "STAYflow Complete", tagline: "Todo tu negocio de alojamientos bajo control, desde un solo lugar." },
 } as const;
 
 /** Parent brand. Shown as an endorsement ("Un producto de"), never as an app icon. */
