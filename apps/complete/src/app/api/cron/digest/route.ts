@@ -10,7 +10,7 @@ export const maxDuration = 60;
 /**
  * GET /api/cron/digest: the morning email ("tu día"). Vercel Cron calls it daily with `Authorization: Bearer $CRON_SECRET`.
  * Needs SUPABASE_SERVICE_ROLE_KEY (to read every organization), RESEND_API_KEY and DIGEST_FROM (a sender verified in Resend).
- * Without them it does nothing and says so. Only owners and admins of organizations with a live Host license get it.
+ * Without them it does nothing and says so. Only owners and admins of organizations with a live Host or Complete license get it.
  */
 export async function GET(req: Request) {
   const secret = process.env.CRON_SECRET;
@@ -23,12 +23,14 @@ export async function GET(req: Request) {
 
   const db = createClient(url, service, { auth: { persistSession: false, autoRefreshToken: false } });
   const today = localToday();
-  const { data: licenses } = await db.from("licenses").select("org_id").eq("product", "host").in("status", ["trialing", "active"]);
+  // A Complete (suite) license unlocks Host too, so it gets the morning email as well. One email per organization even with both.
+  const { data: licenses } = await db.from("licenses").select("org_id").in("product", ["host", "suite"]).in("status", ["trialing", "active"]);
+  const orgIds = [...new Set(((licenses ?? []) as { org_id: string }[]).map((l) => l.org_id))];
   const { data: off } = await db.from("organizations").select("id").eq("digest_enabled", false);
   const muted = new Set(((off ?? []) as { id: string }[]).map((o) => o.id));
   let sent = 0;
   let skipped = 0;
-  for (const { org_id } of (licenses ?? []) as { org_id: string }[]) {
+  for (const org_id of orgIds) {
     if (muted.has(org_id)) continue;
     try {
       const { data: org } = await db.from("organizations").select("name, currency").eq("id", org_id).single();
