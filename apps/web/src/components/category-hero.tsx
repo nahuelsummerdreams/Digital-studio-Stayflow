@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Icon } from "@stayflow/ui";
 import { getMessages } from "@/i18n";
 import { GetHostButton, NotifyButton } from "./client";
@@ -21,6 +21,17 @@ const STATUS_TONE: Record<string, string> = { ok: "border-success/40 bg-success/
  */
 export function CategoryHero() {
   const [cat, setCat] = useState<Cat>("all");
+  // Ad links can preselect a kind of lodging (?tipo=hotel), so a hotel manager lands on the honest "waitlist" view instead of a rentals promise.
+  useEffect(() => {
+    try {
+      const t = new URLSearchParams(window.location.search).get("tipo");
+      const map: Record<string, Cat> = { hotel: "hotel", hotels: "hotel", rental: "rental", alquiler: "rental", cabins: "cabins", cabanas: "cabins", hostel: "hostel", hostels: "hostel" };
+      const picked = t ? map[t.toLowerCase()] : undefined;
+      if (picked) setCat(picked);
+    } catch {
+      /* a preselected tab is a nicety */
+    }
+  }, []);
   const c = m.funnel.cats[cat];
   const mf = m.funnel.manifesto;
   const buyable = cat === "all" || cat === "rental";
