@@ -16,6 +16,8 @@ interface Props {
   orgId: string;
   currency: string;
   properties: { id: string; name: string; photoUrl?: string | null }[];
+  /** Show income as what guests actually paid (from the payments recorded on bookings). */
+  collected?: boolean;
 }
 
 const PERIOD_KEY = {
@@ -127,9 +129,9 @@ function MonthlyChart({ months, money, locale, t }: { months: MonthSummary[]; mo
   );
 }
 
-export function ProfitOverview({ client, orgId, currency, properties }: Props) {
+export function ProfitOverview({ client, orgId, currency, properties, collected }: Props) {
   const { t, locale } = useI18n();
-  const { ledger, loading, error } = useLedger(client, orgId);
+  const { ledger, loading, error } = useLedger(client, orgId, { collected });
   const [period, setPeriod] = useState<Period>("this_month");
   const range = useMemo(() => periodRange(period, localToday()), [period]);
 
@@ -180,6 +182,7 @@ export function ProfitOverview({ client, orgId, currency, properties }: Props) {
 
   return (
     <div className="anim-stagger space-y-6">
+      {ledger.basis === "collected" && <p className="text-xs text-muted">{t("overview.basisCollected")}</p>}
       <div role="group" aria-label={t("overview.periodLabel")} className="fx-card flex w-full gap-1 overflow-x-auto rounded-xl p-1 lg:w-fit">
         {PERIODS.map((p) => (
           <button

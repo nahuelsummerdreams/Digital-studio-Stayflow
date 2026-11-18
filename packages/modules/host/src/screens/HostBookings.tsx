@@ -24,6 +24,8 @@ interface Props {
   onGoProperties: () => void;
   /** Shared data from the parent, so tabs do not refetch. */
   data: ReturnType<typeof useHostData>;
+  /** Show the "send to Business" button. Off in Complete, where finances follow the payments recorded on each booking. */
+  sendToFinance?: boolean;
 }
 
 type Filter = "upcoming" | "all" | "past" | "canceled";
@@ -36,7 +38,7 @@ function dueField(value: string, original: string | null | undefined): string | 
   return original ? null : undefined;
 }
 
-export function HostBookings({ client, orgId, currency, properties, prefill, onGoProperties, data }: Props) {
+export function HostBookings({ client, orgId, currency, properties, prefill, onGoProperties, data, sendToFinance = true }: Props) {
   const { t, locale } = useI18n();
   const unit = useUnit();
   const today = localToday();
@@ -424,7 +426,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                       <button type="button" className={ghostButtonClass} onClick={() => { setPayFor(b.id); setPayValue(""); }}>{t("hx.payRegister")}</button>
                     )
                   )}
-                  {isActive(b) && b.amount > 0 && (
+                  {sendToFinance && isActive(b) && b.amount > 0 && (
                     <button type="button" className={ghostButtonClass} onClick={() => toProfit(b)} title={formatMoneyExact(b.amount, currency, locale)}>
                       {t("host.recordIncome")}
                     </button>

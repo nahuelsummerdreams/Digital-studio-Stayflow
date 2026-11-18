@@ -870,6 +870,9 @@ export const es = {
     none: "Aún no hay movimientos.",
     delete: "Eliminar",
     deleteLabel: "Eliminar {title}",
+    fromBooking: "Cobro de reserva",
+    fromBookingNote: "Se registra en la reserva",
+    incomeHintCollected: "Los cobros de tus reservas ya aparecen solos, con la fecha en que los registraste. Acá cargá solo otros ingresos (extras, otras fuentes) para no contarlos dos veces.",
     loadError: "No pudimos cargar tus números. Revisa tu conexión e inténtalo de nuevo.",
     showMore: "Mostrar más",
     showing: "Mostrando {shown} de {total}",
@@ -877,6 +880,7 @@ export const es = {
   overview: {
     loading: "Cargando tus números…",
     periodLabel: "Período",
+    basisCollected: "Los ingresos son lo que cobraste de tus reservas, en la fecha en que lo registraste, más los ingresos que cargaste a mano.",
     thisMonth: "Este mes",
     lastMonth: "Mes pasado",
     thisYear: "Este año",

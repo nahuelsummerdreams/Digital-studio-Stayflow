@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { collectedIncomes } from "./collected";
 import type { Expense, Income, Minor } from "./types";
 
 export const INCOME_SOURCES = ["airbnb", "booking", "vrbo", "direct", "other"] as const;
@@ -21,6 +22,10 @@ export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number];
 export interface IncomeRow extends Income {
   id: string;
   source: IncomeSource;
+  /** Set when the row came from a booking (the old full-price row, or a payment). */
+  bookingId?: string | null;
+  /** True for a row built from a payment recorded on a booking: it is read-only here. */
+  fromPayment?: boolean;
 }
 export interface ExpenseRow extends Expense {
   id: string;
@@ -30,6 +35,11 @@ export interface ExpenseRow extends Expense {
 export interface Ledger {
   incomes: IncomeRow[];
   expenses: ExpenseRow[];
+  /**
+   * What the income rows are: `booked` = the rows entered in the ledger (a booking's full price once sent or checked out);
+   * `collected` = what guests actually paid, from the payments recorded on bookings, plus income entered by hand.
+   */
+  basis?: "booked" | "collected";
 }
 
 interface IncomeDb {
@@ -39,6 +49,7 @@ interface IncomeDb {
   nights: number;
   received_on: string;
   source: IncomeSource;
+  booking_id?: string | null;
 }
 interface ExpenseDb {
   id: string;
@@ -62,12 +73,12 @@ export async function generateRecurring(client: SupabaseClient, orgId: string): 
 }
 
 /** Everything Profit needs for one organization. RLS + license gate apply server-side. */
-export async function loadLedger(client: SupabaseClient, orgId: string): Promise<Ledger> {
+export async function loadLedger(client: SupabaseClient, orgId: string, opts: { collected?: boolean } = {}): Promise<Ledger> {
   await generateRecurring(client, orgId);
   const [inc, exp] = await Promise.all([
     client
       .from("income_entries")
-      .select("id, property_id, amount_minor, nights, received_on, source")
+      .select("id, property_id, amount_minor, nights, received_on, source, booking_id")
       .eq("org_id", orgId)
       .order("received_on", { ascending: false })
       .returns<IncomeDb[]>(),
@@ -80,15 +91,37 @@ export async function loadLedger(client: SupabaseClient, orgId: string): Promise
   ]);
   if (inc.error) throw inc.error;
   if (exp.error) throw exp.error;
+  const booked: IncomeRow[] = (inc.data ?? []).map((r) => ({
+    id: r.id,
+    propertyId: r.property_id,
+    amount: Number(r.amount_minor),
+    nights: r.nights,
+    date: r.received_on,
+    source: r.source,
+    bookingId: r.booking_id ?? null,
+  }));
+
+  let incomes = booked;
+  let basis: Ledger["basis"] = "booked";
+  if (opts.collected) {
+    // Cash basis. If the payments cannot be read (no Host license, table missing), keep the booked rows rather than show nothing.
+    const [pay, bk] = await Promise.all([
+      client.from("booking_payments").select("id, booking_id, amount_minor, paid_on").eq("org_id", orgId).limit(5000).returns<{ id: string; booking_id: string; amount_minor: number | string; paid_on: string }[]>(),
+      client.from("bookings").select("id, property_id, nights, amount_minor, source").eq("org_id", orgId).eq("kind", "stay").limit(5000).returns<{ id: string; property_id: string; nights: number; amount_minor: number | string; source: IncomeSource }[]>(),
+    ]);
+    if (!pay.error && !bk.error) {
+      incomes = collectedIncomes({
+        incomes: booked,
+        payments: (pay.data ?? []).map((p) => ({ id: p.id, bookingId: p.booking_id, amount: Number(p.amount_minor), date: p.paid_on })),
+        bookings: (bk.data ?? []).map((b) => ({ id: b.id, propertyId: b.property_id, nights: b.nights, amount: Number(b.amount_minor), source: b.source })),
+      });
+      basis = "collected";
+    }
+  }
+
   return {
-    incomes: (inc.data ?? []).map((r) => ({
-      id: r.id,
-      propertyId: r.property_id,
-      amount: Number(r.amount_minor),
-      nights: r.nights,
-      date: r.received_on,
-      source: r.source,
-    })),
+    basis,
+    incomes,
     expenses: (exp.data ?? []).map((r) => ({
       id: r.id,
       propertyId: r.property_id,

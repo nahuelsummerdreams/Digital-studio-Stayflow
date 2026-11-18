@@ -114,3 +114,17 @@ describe("payment due dates", () => {
     expect(o.pastDue).toEqual({ count: 0, total: 0 });
   });
 });
+
+describe("ownerOverview: collected from the finance ledger", () => {
+  it("uses money received in the month (by payment date) when the ledger income is given, so Inicio and Finanzas agree", () => {
+    const o = ownerOverview({
+      today: TODAY, jobs: [],
+      bookings: [bk({ checkIn: "2026-12-10", checkOut: "2026-12-14", amount: 100_000, paid: 100_000 })],
+      expenses: [{ amount: 30_000, date: "2026-11-10" }],
+      // The guest of a December stay paid in November: that cash belongs to November.
+      collectedIncomes: [{ amount: 100_000, date: "2026-11-04" }, { amount: 5_000, date: "2026-10-30" }],
+    });
+    expect(o.month.collected).toBe(100_000);
+    expect(o.month.result).toBe(70_000);
+  });
+});

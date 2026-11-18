@@ -53,7 +53,7 @@ export interface OwnerOverview {
   owedList: OwedRow[];
   /** The part of it whose payment date has already passed. */
   pastDue: { count: number; total: number };
-  /** This calendar month, by check-in date. Collected = what guests have actually paid, never more than the stay's total. */
+  /** This calendar month. Billed and pending are by check-in date. Collected is what was received in the month (by payment date) when the ledger is provided; otherwise what guests have paid on the month's stays. */
   month: { billed: number; collected: number; pending: number; expenses: number; result: number };
   jobs: { cleaningOpen: number; maintenanceOpen: number; overdue: number };
 }
@@ -62,7 +62,7 @@ export interface OwnerOverview {
  * Everything the owner's home screen shows, in one pure function so it can be tested.
  * The headline money figure is what was COLLECTED (decision of 2026-11-18); what was billed is secondary.
  */
-export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[]; expenses: OverviewExpense[]; today: string }): OwnerOverview {
+export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[]; expenses: OverviewExpense[]; today: string; collectedIncomes?: OverviewExpense[] }): OwnerOverview {
   const { bookings, jobs, expenses, today } = input;
   const [y, m] = today.split("-").map(Number) as [number, number];
   const from = firstOfMonth(y, m);
@@ -86,6 +86,8 @@ export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[];
   const late = owedList.filter((r) => r.daysToDue !== null && r.daysToDue < 0);
 
   const totals = paymentTotals(bookings, from, to);
+  // When the finance ledger is available, "collected" is the money received IN the month (by payment date), the same figure Finanzas shows.
+  const received = input.collectedIncomes ? input.collectedIncomes.filter((e) => e.date >= from && e.date < to).reduce((s, e) => s + e.amount, 0) : totals.collected;
   const monthExpenses = expenses.filter((e) => e.date >= from && e.date < to).reduce((s, e) => s + e.amount, 0);
 
   const open = jobs.filter((j) => j.status !== "done");
@@ -98,7 +100,7 @@ export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[];
     owedTotal: owedList.reduce((s, r) => s + r.owed, 0),
     owedList,
     pastDue: { count: late.length, total: late.reduce((s, r) => s + r.owed, 0) },
-    month: { ...totals, expenses: monthExpenses, result: totals.collected - monthExpenses },
+    month: { ...totals, collected: received, expenses: monthExpenses, result: received - monthExpenses },
     jobs: {
       cleaningOpen: open.filter((j) => j.kind === "cleaning").length,
       maintenanceOpen: open.filter((j) => j.kind === "maintenance").length,

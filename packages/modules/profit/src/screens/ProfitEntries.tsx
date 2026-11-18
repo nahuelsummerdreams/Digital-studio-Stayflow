@@ -23,14 +23,16 @@ interface Props {
   orgId: string;
   currency: string;
   properties: { id: string; name: string }[];
+  /** Show income as what guests actually paid; payments recorded on bookings appear here read-only. */
+  collected?: boolean;
 }
 
 const today = () => new Date().toISOString().slice(0, 10);
 const SHARED = "__shared__";
 
-export function ProfitEntries({ client, orgId, currency, properties }: Props) {
+export function ProfitEntries({ client, orgId, currency, properties, collected }: Props) {
   const { t, locale } = useI18n();
-  const { ledger, loading, error: loadError, reload } = useLedger(client, orgId);
+  const { ledger, loading, error: loadError, reload } = useLedger(client, orgId, { collected });
   const [kind, setKind] = useState<"income" | "expense">("income");
   const [propertyId, setPropertyId] = useState("");
   const [amount, setAmount] = useState("");
@@ -117,8 +119,9 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
       kind: "income" as const,
       date: i.date,
       amount: i.amount,
-      title: `${t(`sources.${i.source}`)} · ${t("entries.nights", { count: i.nights })}`,
+      title: i.fromPayment ? `${t("entries.fromBooking")} · ${t(`sources.${i.source}`)}` : `${t(`sources.${i.source}`)} · ${t("entries.nights", { count: i.nights })}`,
       propertyId: i.propertyId as string | null,
+      readonly: Boolean(i.fromPayment),
     })),
     ...ledger.expenses.map((x) => ({
       key: `e-${x.id}`,
@@ -128,6 +131,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
       amount: x.amount,
       title: x.description ? `${t(`categories.${x.category}`)} · ${x.description}` : t(`categories.${x.category}`),
       propertyId: x.propertyId,
+      readonly: false,
     })),
   ].sort((a, b) => b.date.localeCompare(a.date));
 
@@ -155,6 +159,7 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
           {tab("income", t("entries.income"))}
           {tab("expense", t("entries.expense"))}
         </div>
+        {kind === "income" && ledger.basis === "collected" && <p className="rounded-xl bg-accent/10 px-3 py-2 text-xs leading-relaxed text-muted">{t("entries.incomeHintCollected")}</p>}
 
         <label className={labelClass}>
           {t("entries.property")}
@@ -267,9 +272,13 @@ export function ProfitEntries({ client, orgId, currency, properties }: Props) {
                     {r.kind === "expense" ? "−" : "+"}
                     {money(r.amount)}
                   </span>
-                  <button type="button" className={ghostButtonClass} onClick={() => remove(r.kind, r.id)} aria-label={t("entries.deleteLabel", { title: r.title })}>
-                    {t("entries.delete")}
-                  </button>
+                  {r.readonly ? (
+                    <span className="text-xs text-muted">{t("entries.fromBookingNote")}</span>
+                  ) : (
+                    <button type="button" className={ghostButtonClass} onClick={() => remove(r.kind, r.id)} aria-label={t("entries.deleteLabel", { title: r.title })}>
+                      {t("entries.delete")}
+                    </button>
+                  )}
                 </span>
               </li>
             ))}

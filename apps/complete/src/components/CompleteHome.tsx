@@ -53,11 +53,11 @@ const ACTIONS: { href: string; label: string; icon: IconName }[] = [
 export function CompleteHome({ client, orgId, currency, userName, properties }: { client: SupabaseClient; orgId: string; currency: string; userName: string; properties: HostProperty[] }) {
   const host = useHostData();
   const ops = useOpsData();
-  const { ledger } = useLedger(client, orgId);
+  const { ledger } = useLedger(client, orgId, { collected: true });
   const today = localToday();
   const money = (n: number) => formatMoney(n, currency);
 
-  const o = useMemo(() => ownerOverview({ bookings: host.bookings, jobs: ops.jobs, expenses: ledger.expenses, today }), [host.bookings, ops.jobs, ledger.expenses, today]);
+  const o = useMemo(() => ownerOverview({ bookings: host.bookings, jobs: ops.jobs, expenses: ledger.expenses, today, collectedIncomes: ledger.basis === "collected" ? ledger.incomes : undefined }), [host.bookings, ops.jobs, ledger.expenses, today]);
   const propName = (id: string) => properties.find((p) => p.id === id)?.name ?? "";
 
   if (host.loading) {

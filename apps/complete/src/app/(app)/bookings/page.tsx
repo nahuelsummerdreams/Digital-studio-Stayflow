@@ -22,6 +22,7 @@ function Screen() {
       properties={properties}
       prefill={prefill}
       data={data}
+      sendToFinance={false}
       onGoProperties={() => router.push("/properties")}
     />
   );
