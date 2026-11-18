@@ -20,6 +20,7 @@
   },
   "exports": {
     ".": "./src/index.tsx",
-    "./core": "./src/core.ts"
+    "./core": "./src/core.ts",
+    "./help": "./src/help.ts"
   }
 }

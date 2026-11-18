@@ -10,6 +10,8 @@ const SECURITY_HEADERS = [
 /** @type {import('next').NextConfig} */
 export default {
   reactStrictMode: true,
+  // A second build folder lets a check build run while the dev server is open on `.next`.
+  distDir: process.env.NEXT_DIST_DIR ?? ".next",
   poweredByHeader: false,
   async headers() {
     return [

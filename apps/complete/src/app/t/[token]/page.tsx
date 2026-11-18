@@ -16,7 +16,7 @@ export default function StaffPage({ params }: { params: Promise<{ token: string 
   }, []);
   if (!client) return null;
   return (
-    <I18nProvider>
+    <I18nProvider detect>
       <FxProvider />
       <StaffJobs client={client} token={token} />
     </I18nProvider>

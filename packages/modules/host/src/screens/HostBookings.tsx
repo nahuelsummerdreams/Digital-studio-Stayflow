@@ -300,7 +300,7 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
           <input className={inputClass} inputMode="decimal" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0,00" />
           {suggested > 0 && amount.trim() === "" && !editingId && (
             <button type="button" className="mt-1.5 text-left text-xs text-accent underline-offset-4 hover:underline" onClick={() => setAmount(String(suggested / 100).replace(".", ","))}>
-              {t("host.useRate", { amount: formatMoney(suggested, currency) })}
+              {t("host.useRate", { amount: formatMoney(suggested, currency, locale) })}
             </button>
           )}
         </label>

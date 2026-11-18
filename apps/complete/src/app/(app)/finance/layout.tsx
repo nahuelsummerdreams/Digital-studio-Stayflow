@@ -1,17 +1,20 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useT } from "@stayflow/i18n";
 import { SectionTabs } from "@/components/SectionTabs";
 
-const TABS = [
-  { href: "/finance", label: "Resumen" },
-  { href: "/finance/entries", label: "Ingresos y gastos" },
-  { href: "/finance/fixed", label: "Gastos fijos" },
-  { href: "/finance/calculator", label: "Calculadora" },
-];
-
 export default function FinanceLayout({ children }: { children: ReactNode }) {
+  const t = useT();
+  const tabs = [
+    { href: "/finance", label: t("complete.tabs.financeOverview") },
+    { href: "/finance/entries", label: t("complete.tabs.financeEntries") },
+    { href: "/finance/fixed", label: t("complete.tabs.financeFixed") },
+    { href: "/finance/calculator", label: t("complete.tabs.financeCalculator") },
+  ];
   return (
     <>
-      <SectionTabs tabs={TABS} label="Finanzas" />
+      <SectionTabs tabs={tabs} label={t("complete.tabs.financeLabel")} />
       {children}
     </>
   );

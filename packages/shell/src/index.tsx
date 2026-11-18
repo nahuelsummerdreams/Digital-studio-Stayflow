@@ -23,10 +23,10 @@ function MissingConfig() {
 }
 
 /** Language + account for a whole app. Pass the Supabase URL and publishable key from the app's env. */
-export function StayflowProviders({ url, anonKey, children }: { url?: string; anonKey?: string; children: ReactNode }) {
+export function StayflowProviders({ url, anonKey, detectLocale = false, children }: { url?: string; anonKey?: string; /** Let the visitor choose the language (saved in the browser; defaults to the browser's). Off = fixed Spanish, as before. */ detectLocale?: boolean; children: ReactNode }) {
   const client = useMemo(() => (url && anonKey ? createStayflowClient(url, anonKey) : null), [url, anonKey]);
   return (
-    <I18nProvider>
+    <I18nProvider detect={detectLocale}>
       <FxProvider />
       {client ? <AccountProvider client={client}>{children}</AccountProvider> : <MissingConfig />}
     </I18nProvider>
@@ -102,7 +102,7 @@ export function AppShell({ product, nav: navAll, children, quickAction, alerts =
     );
   }
   if (session && recovery) return <ResetPasswordScreen />;
-  if (!session) return <AuthScreen productName={brand.name} tagline={brand.tagline} />;
+  if (!session) return <AuthScreen productName={brand.name} tagline={product === "suite" ? t("complete.tagline") : brand.tagline} />;
   if (error) {
     return (
       <main className="mx-auto max-w-md px-5 pt-14">

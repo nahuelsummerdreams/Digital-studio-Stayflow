@@ -40,7 +40,15 @@
 | `CRON_SECRET` | Solo para el correo matinal | Vercel lo envía como `Authorization: Bearer …`. Sin él la ruta responde 401 |
 | `NEXT_PUBLIC_GUEST_PUBLIC_URL` | **No poner** | Si se deja vacía, los QR usan la dirección de la propia app (lo correcto en COMPLETE) |
 
-No hay `ANTHROPIC_API_KEY`: el asistente de IA **no está incluido** en COMPLETE.
+### Ayuda dentro de la aplicación (chatbot)
+El botón de ayuda responde «¿cómo hago…?» con **temas propios de la aplicación** (gratis, instantáneo, en inglés, español y portugués) y **funciona sin ninguna clave**. La IA es un extra opcional para las preguntas que los temas no cubren: solo recibe esos temas (no ve datos de la cuenta ni cambia nada).
+| Variable | Obligatoria | Para qué |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | No | Activa la IA de la ayuda. **Clave de servidor; nunca en el navegador ni en el chat.** Sin ella la ayuda sigue funcionando con los temas |
+| `HELP_DAILY_CAP` | No | Preguntas a la IA por negocio y por día (por defecto 40) |
+| `HELP_MODEL` | No | Modelo (por defecto `claude-haiku-5-5`, el más barato) |
+| `NEXT_PUBLIC_SUPPORT_URL` | No | Enlace de soporte (`mailto:` o WhatsApp) que se muestra bajo las respuestas de la IA |
+> **Antes de activar la IA:** poner un **tope de gasto mensual en la consola del proveedor** (ver `COSTO_POR_CLIENTE_STAYFLOW`, sección 9). El tope por negocio no alcanza si alguien abusa del servicio.
 
 ## 4. Supabase: direcciones permitidas
 En **Authentication → URL Configuration** agregar la dirección de COMPLETE a *Redirect URLs* (el restablecimiento de contraseña usa `window.location.origin`). Sin esto, el enlace del correo no vuelve a la app. Activar además, en **Authentication → Providers/Passwords**, la **protección contra contraseñas filtradas**.

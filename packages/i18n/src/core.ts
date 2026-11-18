@@ -1,9 +1,37 @@
+import { en } from "./en";
 import { es, type Messages } from "./es";
+import { pt } from "./pt";
 
-export type Locale = "es";
+export type Locale = "es" | "en" | "pt";
+/** The language of the source texts. Also the fallback when a visitor's language is not offered. */
 export const DEFAULT_LOCALE: Locale = "es";
-/** Add a language here (and its file) to make it available. `en` comes next. */
-const CATALOG: Record<Locale, Messages> = { es };
+/**
+ * Languages the apps are offered in. To add one: write `<code>.ts` typed as `Messages` (the compiler lists what is missing),
+ * add it to CATALOG and to this list. Anything not here falls back to English for strangers and to Spanish for the code base.
+ */
+export const LOCALES: { code: Locale; name: string; native: string }[] = [
+  { code: "en", name: "English", native: "English" },
+  { code: "es", name: "Spanish", native: "Español" },
+  { code: "pt", name: "Portuguese", native: "Português" },
+];
+const CATALOG: Record<Locale, Messages> = { es, en, pt };
+
+/** All the texts of one language (the help bot reads its topics from here). */
+export const messagesFor = (locale: Locale): Messages => CATALOG[locale];
+
+/** The best offered language for a list of browser languages (`navigator.languages`). English when none matches. */
+export function pickLocale(preferred: readonly string[] | undefined | null): Locale {
+  for (const raw of preferred ?? []) {
+    const base = raw.toLowerCase().split("-")[0];
+    const hit = LOCALES.find((l) => l.code === base);
+    if (hit) return hit.code;
+  }
+  return "en";
+}
+
+export function isLocale(value: unknown): value is Locale {
+  return typeof value === "string" && LOCALES.some((l) => l.code === value);
+}
 
 type Paths<T, P extends string = ""> = {
   [K in keyof T & string]: T[K] extends string ? `${P}${K}` : Paths<T[K], `${P}${K}.`>;

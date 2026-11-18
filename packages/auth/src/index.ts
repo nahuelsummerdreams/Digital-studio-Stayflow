@@ -1,6 +1,7 @@
 export * from "./api";
 export { AccountProvider, useAccount } from "./account";
 export { AuthScreen } from "./screens/AuthScreen";
+export { LanguageSwitch } from "./screens/LanguageSwitch";
 export { CreateOrgScreen } from "./screens/CreateOrgScreen";
 export { ActivateScreen } from "./screens/ActivateScreen";
 export { PropertiesScreen } from "./screens/PropertiesScreen";

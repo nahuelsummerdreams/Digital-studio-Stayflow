@@ -24,7 +24,7 @@ interface Props {
  * and the one action that grows it (add properties, cabins, rooms or beds).
  */
 export function HostCategoryBand({ lodgingType, currency, units, bookings, onAdd, changeSlot }: Props) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [open, setOpen] = useState(false);
   const today = localToday();
   const [y, m] = today.split("-").map(Number) as [number, number];
@@ -34,7 +34,7 @@ export function HostCategoryBand({ lodgingType, currency, units, bookings, onAdd
     { label: t("band.occupied"), value: `${snap.occupiedToday}`, sub: t("band.of", { total: snap.units }) + " " + many },
     { label: t("band.occupancy"), value: `${snap.occupancyToday} %`, sub: "" },
     { label: t("band.arrivals"), value: `${snap.arrivalsToday}`, sub: `${t("band.departures")}: ${snap.departuresToday}` },
-    { label: t("band.adr"), value: snap.adr ? formatMoney(snap.adr, currency) : "—", sub: snap.revPau ? `${t(`unit.${lodgingType}.revpau`)}: ${formatMoney(snap.revPau, currency)}` : "" },
+    { label: t("band.adr"), value: snap.adr ? formatMoney(snap.adr, currency, locale) : "—", sub: snap.revPau ? `${t(`unit.${lodgingType}.revpau`)}: ${formatMoney(snap.revPau, currency, locale)}` : "" },
   ];
   return (
     <section className={`${cardClass} !p-5`} aria-label={t(`unit.${lodgingType}.band`)}>
