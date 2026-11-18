@@ -165,22 +165,29 @@ export interface HalfSegment {
   endsAfter: boolean;
 }
 
-/** Bars for one property in one month, at half-day precision. Pass stays and blocks together. */
-export function monthHalfSegments(bookings: Booking[], propertyId: string, year: number, month: number): HalfSegment[] {
-  const from = firstOfMonth(year, month);
-  const to = firstOfNextMonth(year, month);
-  const days = daysBetween(from, to);
+/**
+ * Bars for one property over `days` days starting at `from` (a month, a week...), at half-day precision.
+ * Pass stays and blocks together. Half-slot 0 is the first half (before noon) of `from`.
+ */
+export function rangeHalfSegments(bookings: Booking[], propertyId: string, from: string, days: number): HalfSegment[] {
+  const to = addDays(from, days);
   return bookings
     .filter((b) => isActive(b) && b.propertyId === propertyId && b.checkIn < to && b.checkOut > from)
     .flatMap((b) => {
       const startsBefore = b.checkIn < from;
       const endsAfter = b.checkOut >= to;
-      const startHalf = startsBefore ? 0 : 2 * (toDate(b.checkIn).getUTCDate() - 1) + 1;
-      const endHalf = endsAfter ? 2 * days : 2 * (toDate(b.checkOut).getUTCDate() - 1) + 1;
+      const startHalf = startsBefore ? 0 : 2 * daysBetween(from, b.checkIn) + 1;
+      const endHalf = endsAfter ? 2 * days : 2 * daysBetween(from, b.checkOut) + 1;
       if (endHalf <= startHalf) return [];
       return [{ bookingId: b.id, label: b.guestName, status: b.status, kind: b.kind, startHalf, spanHalves: endHalf - startHalf, startsBefore, endsAfter }];
     })
     .sort((a, b) => a.startHalf - b.startHalf);
+}
+
+/** Bars for one property in one month, at half-day precision. Pass stays and blocks together. */
+export function monthHalfSegments(bookings: Booking[], propertyId: string, year: number, month: number): HalfSegment[] {
+  const from = firstOfMonth(year, month);
+  return rangeHalfSegments(bookings, propertyId, from, daysBetween(from, firstOfNextMonth(year, month)));
 }
 
 /** Days of the month where one guest leaves and another arrives on the same property. */

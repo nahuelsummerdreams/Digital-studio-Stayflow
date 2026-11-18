@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, type CSSProperties, type FormEvent } from "react";
+import { useEffect, useState, type CSSProperties, type FormEvent } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { errorKey, useI18n } from "@stayflow/i18n";
 import { formatMoney } from "@stayflow/money";
-import { Avatar, EmptyState, Icon, Pill, PropertyPhoto, Skeleton, buttonClass, cardClass, errorClass, ghostButtonClass, inputClass, labelClass } from "@stayflow/ui";
+import { Avatar, EmptyState, Icon, Pill, PropertyPhoto, Skeleton, activeTabClass, buttonClass, cardClass, errorClass, ghostButtonClass, idleTabClass, inputClass, labelClass } from "@stayflow/ui";
 import { addBlock, removeBooking } from "../data";
-import { addDays, daysInMonth, localToday, shiftMonth } from "../dates";
+import { addDays, daysBetween, daysInMonth, firstOfMonth, localToday, shiftMonth, toDate, weekStart } from "../dates";
 import { STATUS_KEY, monthTitle, shortDate } from "../format";
-import { monthRange } from "../insights";
-import { isActive, monthHalfSegments, nightsWithin, occupancyPct, owed, paymentState, turnoverDays } from "../logic";
+import { isActive, nightsWithin, occupancyPct, owed, paymentState, rangeHalfSegments, turnoverDays } from "../logic";
 import type { Booking, BookingStatus, HostProperty } from "../types";
 import { useUnit } from "../useHostData";
 
@@ -40,7 +39,9 @@ const BAR: Record<BookingStatus, string> = {
 const TONE = { inquiry: "muted", pending: "warning", confirmed: "accent", checked_in: "success", checked_out: "muted", canceled: "danger" } as const;
 const HATCH: CSSProperties = { backgroundImage: "repeating-linear-gradient(135deg, rgb(var(--muted) / 0.3) 0 6px, rgb(var(--surface-2)) 6px 12px)" };
 const NAME_COL = 13.5; // rem
-const DAY_MIN = 2.1; // rem per day (two half-day squares)
+const NAME_COL_COMPACT = 4.5; // rem, on phones: photo and a short name
+const DAY_MIN = { month: 2.1, week: 6.5, weekCompact: 2.3 } as const; // rem per day (two half-day squares)
+type View = "month" | "week";
 const SLANT = 7; // px: the diagonal that makes check-out and the next check-in meet like two puzzle pieces
 
 /** Parallelogram edges: a bar that really starts/ends inside the month is cut on the diagonal, the rest stay flat. */
@@ -59,8 +60,19 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
   const { t, locale } = useI18n();
   const unit = useUnit();
   const today = localToday();
-  const [ty, tm] = today.split("-").map(Number) as [number, number];
-  const [cursor, setCursor] = useState({ year: ty, month: tm });
+  const [view, setView] = useState<View>("month");
+  /** Any day inside the window being shown. */
+  const [anchor, setAnchor] = useState(today);
+  // On a phone the week is the useful view: a whole month would need sideways scrolling.
+  const [compact, setCompact] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    if (mq.matches) setView("week");
+    setCompact(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setCompact(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const [openId, setOpenId] = useState<string | null>(null);
   const [picked, setPicked] = useState<{ propertyId: string; day: string } | null>(null);
   const [blocking, setBlocking] = useState<{ propertyId: string; from: string; to: string; reason: string } | null>(null);
@@ -70,13 +82,18 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
   if (properties.length === 0) return <EmptyState icon="calendar" title={t("host.calEmpty")} />;
   if (loading) return <Skeleton className="h-72 rounded-card" />;
 
-  const days = daysInMonth(cursor.year, cursor.month);
-  const title = monthTitle(cursor.year, cursor.month, locale);
-  const mm = String(cursor.month).padStart(2, "0");
-  const iso = (d: number) => `${cursor.year}-${mm}-${String(d).padStart(2, "0")}`;
-  const weekday = (d: number) => new Date(Date.UTC(cursor.year, cursor.month - 1, d)).getUTCDay();
-  const { from, to } = monthRange(cursor.year, cursor.month);
-  const todayDay = today.startsWith(`${cursor.year}-${mm}`) ? Number(today.slice(8)) : null;
+  const [ay, am] = anchor.split("-").map(Number) as [number, number];
+  const from = view === "week" ? weekStart(anchor) : firstOfMonth(ay, am);
+  const days = view === "week" ? 7 : daysInMonth(ay, am);
+  const to = addDays(from, days);
+  const title = view === "week" ? `${shortDate(from, locale)} – ${shortDate(addDays(from, 6), locale, true)}` : monthTitle(ay, am, locale);
+  const dateAt = (i: number) => addDays(from, i);
+  const weekday = (i: number) => toDate(dateAt(i)).getUTCDay();
+  const todayIdx = today >= from && today < to ? daysBetween(from, today) : null;
+  const small = compact && view === "week";
+  const nameCol = small ? NAME_COL_COMPACT : NAME_COL;
+  const dayMin = view === "week" ? (small ? DAY_MIN.weekCompact : DAY_MIN.week) : DAY_MIN.month;
+  const colX = (idx: number) => `calc(${nameCol}rem + (100% - ${nameCol}rem) * ${(idx + 0.5) / days})`;
   const all = [...bookings, ...blocks];
   const open = all.find((b) => b.id === openId) ?? null;
   const nameOf = (id: string) => properties.find((p) => p.id === id)?.name ?? t("properties.archived");
@@ -87,7 +104,20 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
     setError(null);
   };
   const nav = (delta: number) => {
-    setCursor((c) => shiftMonth(c.year, c.month, delta));
+    // Functional updates: several quick taps each move one step from the latest position.
+    setAnchor((cur) => {
+      if (view === "week") return addDays(weekStart(cur), 7 * delta);
+      const [cy, cm] = cur.split("-").map(Number) as [number, number];
+      const next = shiftMonth(cy, cm, delta);
+      return firstOfMonth(next.year, next.month);
+    });
+    reset();
+  };
+  const switchView = (v: View) => {
+    if (v === view) return;
+    // Keep the day in sight: today when it is inside the window being left, otherwise the first day of it.
+    setAnchor(today >= from && today < to ? today : from);
+    setView(v);
     reset();
   };
 
@@ -99,13 +129,13 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
   const departures = monthStays.filter((b) => b.checkOut >= from && b.checkOut < to).length;
   const blockedNights = blocks.filter((b) => isActive(b) && ids.includes(b.propertyId)).reduce((s, b) => s + nightsWithin(b, from, to), 0);
   const summary: { label: string; value: string; icon: "chart" | "bed" | "key" | "lock" }[] = [
-    { label: t("hx.calOccupancy"), value: `${occupancyPct(bookings, ids, from, to).toFixed(0)}%`, icon: "chart" },
+    { label: t(view === "week" ? "hx.calOccupancyWeek" : "hx.calOccupancy"), value: `${occupancyPct(bookings, ids, from, to).toFixed(0)}%`, icon: "chart" },
     { label: t("hx.calNights"), value: String(nights), icon: "bed" },
     { label: t("hx.calArrivals"), value: `${arrivals} → ${departures}`, icon: "key" },
     { label: t("hx.calBlockedNights"), value: String(blockedNights), icon: "lock" },
   ];
 
-  const grid = { gridTemplateColumns: `${NAME_COL}rem repeat(${days * 2}, minmax(${DAY_MIN / 2}rem, 1fr))` } as const;
+  const grid = { gridTemplateColumns: `${nameCol}rem repeat(${days * 2}, minmax(${dayMin / 2}rem, 1fr))` } as const;
   const legend = (cls: string, label: string, style?: CSSProperties) => (
     <span className="flex items-center gap-1.5"><i className={`h-2.5 w-4 rounded-sm ${cls}`} style={style} />{label}</span>
   );
@@ -147,11 +177,18 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
           <span className="hidden text-xs text-muted lg:inline">{t("host.calHint")}</span>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <div role="group" aria-label={t("hx.calViewLabel")} className="flex rounded-xl border border-line p-0.5">
+            {(["week", "month"] as const).map((v) => (
+              <button key={v} type="button" aria-pressed={view === v} onClick={() => switchView(v)} className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${view === v ? activeTabClass : idleTabClass}`}>
+                {t(v === "week" ? "hx.calViewWeek" : "hx.calViewMonth")}
+              </button>
+            ))}
+          </div>
           <button type="button" className={ghostButtonClass} onClick={() => { setPicked(null); setBlocking({ propertyId: properties[0]!.id, from: today, to: addDays(today, 2), reason: "" }); }}>
             <Icon name="lock" className="mr-1.5 inline h-4 w-4" />{t("hx.blockTitle")}
           </button>
           <button type="button" className={ghostButtonClass} onClick={() => nav(-1)} aria-label={t("host.calPrev")}><Icon name="chevronLeft" className="h-4 w-4" /></button>
-          <button type="button" className={ghostButtonClass} onClick={() => { setCursor({ year: ty, month: tm }); reset(); }}>{t("host.calToday")}</button>
+          <button type="button" className={ghostButtonClass} onClick={() => { setAnchor(today); reset(); }}>{t("host.calToday")}</button>
           <button type="button" className={ghostButtonClass} onClick={() => nav(1)} aria-label={t("host.calNext")}><Icon name="chevronRight" className="h-4 w-4" /></button>
         </div>
       </div>
@@ -166,43 +203,48 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
       </ul>
 
       <div className={`${cardClass} anim-in overflow-x-auto !p-0`} role="group" aria-label={t("host.calLabel", { month: title })}>
-        <div style={{ minWidth: `${NAME_COL * 16 + days * DAY_MIN * 16}px` }}>
+        <div style={{ minWidth: `${nameCol * 16 + days * dayMin * 16}px` }}>
           <div className="grid border-b border-line bg-surface2/30" style={grid}>
-            <div className="sticky left-0 z-30 flex items-end bg-surface2 px-4 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{unit.label}</div>
-            {Array.from({ length: days }, (_, i) => i + 1).map((d) => {
-              const isToday = d === todayDay;
-              const weekend = weekday(d) === 0 || weekday(d) === 6;
+            <div className="sticky left-0 z-30 flex items-end bg-surface2 px-4 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">{small ? "" : unit.label}</div>
+            {Array.from({ length: days }, (_, i) => i).map((i) => {
+              const isToday = i === todayIdx;
+              const wd = weekday(i);
+              const weekend = wd === 0 || wd === 6;
+              const dayNum = Number(dateAt(i).slice(8));
               return (
-                <div key={d} style={{ gridColumn: `span 2` }} className={`py-2 text-center text-xs ${isToday ? "font-bold text-accent" : weekend ? "text-muted/60" : "text-muted"}`}>
-                  <div className={isToday ? "mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-accent text-onaccent" : ""}>{d}</div>
-                  <div className="mt-0.5 text-[10px] uppercase opacity-70">{new Date(Date.UTC(2024, 0, 7 + weekday(d))).toLocaleDateString(locale, { weekday: "narrow", timeZone: "UTC" })}</div>
+                <div key={i} style={{ gridColumn: `span 2` }} className={`py-2 text-center text-xs ${isToday ? "font-bold text-accent" : weekend ? "text-muted/60" : "text-muted"}`}>
+                  <div className={isToday ? "mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-accent text-onaccent" : ""}>{dayNum}</div>
+                  <div className="mt-0.5 text-[10px] uppercase opacity-70">{new Date(Date.UTC(2024, 0, 7 + wd)).toLocaleDateString(locale, { weekday: view === "week" ? "short" : "narrow", timeZone: "UTC" })}</div>
+                  {view === "week" && (dayNum === 1 || i === 0) && <div className="text-[10px] normal-case opacity-60">{toDate(dateAt(i)).toLocaleDateString(locale, { month: "short", timeZone: "UTC" })}</div>}
                 </div>
               );
             })}
           </div>
 
           {properties.map((p) => {
-            const segs = monthHalfSegments(all, p.id, cursor.year, cursor.month);
+            const segs = rangeHalfSegments(all, p.id, from, days);
             const occ = occupancyPct(bookings, [p.id], from, to);
             const turns = new Set(turnoverDays(bookings, p.id, from, to));
             return (
               <div key={p.id} className="relative grid border-b border-line/60 last:border-b-0" style={grid}>
-                <div className="sticky left-0 z-30 flex items-center gap-3 bg-surface px-4 py-2">
-                  <PropertyPhoto url={p.photoUrl} name={p.name} className="h-11 w-14 shrink-0 rounded-lg" />
-                  <div className="min-w-0">
-                    <p className="truncate text-sm font-medium">{p.name}</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="h-1.5 w-16 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full bg-gradient-to-r from-accent to-success" style={{ width: `${Math.min(100, occ)}%` }} /></span>
-                      <span className="text-[11px] tabular-nums text-muted">{occ.toFixed(0)}%</span>
-                    </div>
+                <div className={`sticky left-0 z-30 flex bg-surface ${small ? "flex-col items-center justify-center gap-1 px-1 py-2" : "items-center gap-3 px-4 py-2"}`}>
+                  <PropertyPhoto url={p.photoUrl} name={p.name} className={small ? "h-8 w-10 shrink-0 rounded-md" : "h-11 w-14 shrink-0 rounded-lg"} />
+                  <div className={small ? "w-full min-w-0" : "min-w-0"}>
+                    <p className={small ? "truncate text-center text-[10px] font-medium leading-tight" : "truncate text-sm font-medium"}>{p.name}</p>
+                    {!small && (
+                      <div className="mt-1 flex items-center gap-2">
+                        <span className="h-1.5 w-16 overflow-hidden rounded-full bg-line"><span className="block h-full rounded-full bg-gradient-to-r from-accent to-success" style={{ width: `${Math.min(100, occ)}%` }} /></span>
+                        <span className="text-[11px] tabular-nums text-muted">{occ.toFixed(0)}%</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {Array.from({ length: days * 2 }, (_, h) => h).map((h) => {
-                  const d = Math.floor(h / 2) + 1;
+                  const di = Math.floor(h / 2);
                   const second = h % 2 === 1;
-                  const date = iso(d);
-                  const weekend = weekday(d) === 0 || weekday(d) === 6;
+                  const date = dateAt(di);
+                  const weekend = weekday(di) === 0 || weekday(di) === 6;
                   // The first half of a day can only be free if no stay ends here; either way a new stay always starts on the second half.
                   const past = date < today;
                   const selected = picked?.propertyId === p.id && picked.day === date;
@@ -215,7 +257,7 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
                       aria-label={t("hx.calFree", { property: p.name, date: shortDate(date, locale) })}
                       onClick={() => { setOpenId(null); setBlocking(null); setPicked({ propertyId: p.id, day: date }); }}
                       style={{ gridColumn: h + 2, gridRow: 1 }}
-                      className={`group/cell h-[4.5rem] transition ${second ? "border-r border-line/70" : "border-l border-line/70 border-r border-dashed border-r-line/40"} ${d === todayDay ? (second ? "bg-accent/10" : "bg-accent/15") : weekend ? (second ? "bg-bg/40" : "bg-bg/60") : second ? "" : "bg-line/20"} ${selected ? "!bg-accent/25" : ""} ${past ? "cursor-default" : "hover:bg-accent/15"}`}
+                      className={`group/cell ${view === "week" ? (small ? "h-[4.5rem]" : "h-[5.5rem]") : "h-[4.5rem]"} transition ${second ? "border-r border-line/70" : "border-l border-line/70 border-r border-dashed border-r-line/40"} ${di === todayIdx ? (second ? "bg-accent/10" : "bg-accent/15") : weekend ? (second ? "bg-bg/40" : "bg-bg/60") : second ? "" : "bg-line/20"} ${selected ? "!bg-accent/25" : ""} ${past ? "cursor-default" : "hover:bg-accent/15"}`}
                     >
                       {!past && <Icon name="plus" className="mx-auto h-3 w-3 text-accent opacity-0 transition group-hover/cell:opacity-100" />}
                     </button>
@@ -226,7 +268,7 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
                   const b = all.find((x) => x.id === s.bookingId);
                   const selected = s.bookingId === openId;
                   const isBlock = s.kind === "block";
-                  const wide = s.spanHalves >= 6;
+                  const wide = s.spanHalves >= 6 && !small;
                   return (
                     <button
                       key={s.bookingId}
@@ -235,20 +277,25 @@ export function HostCalendar({ client, orgId, currency, properties, bookings, bl
                       aria-pressed={selected}
                       title={b ? `${b.guestName} · ${shortDate(b.checkIn, locale)} → ${shortDate(b.checkOut, locale)}` : s.label}
                       style={{ gridColumn: `${s.startHalf + 2} / span ${s.spanHalves}`, gridRow: 1, ...barShape(s.startsBefore, s.endsAfter), ...(isBlock ? HATCH : {}) }}
-                      className={`z-10 my-2 flex items-center gap-2 overflow-hidden text-left text-xs font-medium transition duration-300 hover:brightness-110 ${s.startsBefore ? "pl-2" : "pl-4"} ${s.endsAfter ? "pr-2" : "pr-4"} ${isBlock ? "text-muted" : BAR[s.status]} ${selected ? "brightness-125 saturate-150" : ""}`}
+                      className={`z-10 my-2 flex items-center gap-2 overflow-hidden text-left text-xs font-medium transition duration-300 hover:brightness-110 ${s.startsBefore || small ? "pl-2" : "pl-4"} ${s.endsAfter || small ? "pr-1" : "pr-4"} ${isBlock ? "text-muted" : BAR[s.status]} ${selected ? "brightness-125 saturate-150" : ""}`}
                     >
                       {isBlock ? <Icon name="lock" className="h-3.5 w-3.5 shrink-0" /> : wide && <Avatar name={s.label} className="h-6 w-6 shrink-0 text-[10px] ring-1 ring-white/30" />}
-                      <span className="truncate">{s.label}</span>
-                      {!isBlock && s.spanHalves >= 10 && b && <span className="ml-auto shrink-0 opacity-75">{t("entries.nights", { count: b.nights })}</span>}
+                      <span className="flex min-w-0 flex-col leading-tight">
+                        <span className="truncate">{s.label}</span>
+                        {view === "week" && !isBlock && b && owed(b) > 0 && b.amount > 0 && s.spanHalves >= 4 && (
+                          <span className="truncate text-[10px] font-normal opacity-90">{t("hx.calOwes", { amount: formatMoney(owed(b), currency, locale) })}</span>
+                        )}
+                      </span>
+                      {view === "month" && !isBlock && s.spanHalves >= 10 && b && <span className="ml-auto shrink-0 opacity-75">{t("entries.nights", { count: b.nights })}</span>}
                     </button>
                   );
                 })}
 
-                {todayDay !== null && (
-                  <span aria-hidden className="pointer-events-none absolute inset-y-0 z-20 w-px bg-accent shadow-[0_0_10px_rgb(var(--accent))]" style={{ left: `calc(${NAME_COL}rem + (100% - ${NAME_COL}rem) * ${(todayDay - 0.5) / days})` }} />
+                {todayIdx !== null && (
+                  <span aria-hidden className="pointer-events-none absolute inset-y-0 z-20 w-px bg-accent shadow-[0_0_10px_rgb(var(--accent))]" style={{ left: colX(todayIdx) }} />
                 )}
                 {[...turns].map((date) => (
-                  <span key={date} aria-label={t("hx.calTurnover")} title={t("hx.calTurnover")} className="pointer-events-none absolute bottom-0.5 z-20 -translate-x-1/2 text-[10px] text-amber-300" style={{ left: `calc(${NAME_COL}rem + (100% - ${NAME_COL}rem) * ${(Number(date.slice(8)) - 0.5) / days})` }}>⇄</span>
+                  <span key={date} aria-label={t("hx.calTurnover")} title={t("hx.calTurnover")} className="pointer-events-none absolute bottom-0.5 z-20 -translate-x-1/2 text-[10px] text-amber-300" style={{ left: colX(daysBetween(from, date)) }}>⇄</span>
                 ))}
               </div>
             );

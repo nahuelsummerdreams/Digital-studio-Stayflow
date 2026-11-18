@@ -124,6 +124,11 @@ export const es = {
     blockLabel: "Bloqueo",
     // payments
     payPaidLabel: "Cobrado ({currency})",
+    calOccupancyWeek: "Ocupación de la semana",
+    calViewMonth: "Mes",
+    calViewWeek: "Semana",
+    calViewLabel: "Vista del calendario",
+    calOwes: "Debe {amount}",
     payDepositDue: "Fecha límite de la seña",
     payBalanceDue: "Fecha límite del saldo",
     payDueHint: "Opcional. Te avisamos cuando pase la fecha y falte cobrar.",

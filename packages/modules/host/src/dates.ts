@@ -2,6 +2,8 @@ const DAY = 86_400_000;
 
 export const toDate = (iso: string): Date => new Date(`${iso}T00:00:00Z`);
 export const toIso = (d: Date): string => d.toISOString().slice(0, 10);
+/** The Monday of the week that contains `iso`. */
+export const weekStart = (iso: string): string => addDays(iso, -((toDate(iso).getUTCDay() + 6) % 7));
 export const addDays = (iso: string, n: number): string => toIso(new Date(toDate(iso).getTime() + n * DAY));
 /** Whole days from a to b (b - a). */
 export const daysBetween = (a: string, b: string): number => Math.round((toDate(b).getTime() - toDate(a).getTime()) / DAY);
