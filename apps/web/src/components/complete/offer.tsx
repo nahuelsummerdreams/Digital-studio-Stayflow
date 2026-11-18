@@ -27,7 +27,7 @@ export function useCompleteOffer(): CompleteOffer & { daysLeft: number } {
 
 const usd = (n: number) => `USD ${n}`;
 
-/** "30 de noviembre", in Argentina time so every visitor reads the same day. */
+/** "15 de diciembre", in Argentina time so every visitor reads the same day. */
 function endDay(): string {
   const end = completeLaunchEndsAt();
   if (end === null) return "";

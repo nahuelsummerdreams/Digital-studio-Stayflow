@@ -3,11 +3,11 @@
  * Prices are whole US dollars, one payment (no subscription).
  */
 export const COMPLETE_PRICE = 89;
-/** Launch price: valid until the launch ends (30 November 2026, Argentina time) and then the regular price applies. */
+/** Launch price: valid until the launch ends (15 December 2026, Argentina time) and then the regular price applies. */
 export const COMPLETE_LAUNCH_PRICE = 40;
 
 /** Last minute of the launch. Argentina has no daylight saving, so the offset is fixed. */
-export const DEFAULT_COMPLETE_LAUNCH_ENDS_AT = "2026-11-30T23:59:00-03:00";
+export const DEFAULT_COMPLETE_LAUNCH_ENDS_AT = "2026-12-15T23:59:00-03:00";
 
 /** The payment link (Whop, Impultienda…) once the store exists. While it is empty the page only collects the email. */
 export const COMPLETE_CHECKOUT_URL = (process.env.NEXT_PUBLIC_COMPLETE_CHECKOUT_URL ?? "").trim();
