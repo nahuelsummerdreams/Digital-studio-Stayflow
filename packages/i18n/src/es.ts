@@ -124,6 +124,12 @@ export const es = {
     blockLabel: "Bloqueo",
     // payments
     payPaidLabel: "Cobrado ({currency})",
+    payDepositDue: "Fecha límite de la seña",
+    payBalanceDue: "Fecha límite del saldo",
+    payDueHint: "Opcional. Te avisamos cuando pase la fecha y falte cobrar.",
+    payDueOrder: "El saldo no puede vencer antes que la seña.",
+    payDueOn: "Vence el {date}",
+    payOverdueOn: "Venció el {date}",
     payUnpriced: "Sin importe",
     payUnpaid: "Sin cobrar",
     payPartial: "Cobrado {paid} · falta {owed}",

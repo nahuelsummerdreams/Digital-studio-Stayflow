@@ -28,6 +28,10 @@ export interface Booking {
   kind: BookingKind;
   /** Set when the stay came from a synced calendar (Airbnb, Booking...). */
   externalUid: string | null;
+  /** Optional "YYYY-MM-DD" the deposit should be paid by. Only matters while nothing has been paid. */
+  depositDueOn?: string | null;
+  /** Optional "YYYY-MM-DD" the remaining balance should be paid by. */
+  balanceDueOn?: string | null;
 }
 
 export type BookingKind = "stay" | "block";
@@ -44,6 +48,9 @@ export interface NewBooking {
   amount: number;
   /** Collected so far. */
   paid?: number;
+  /** Payment due dates. `undefined` leaves them untouched, `null` clears them. */
+  depositDueOn?: string | null;
+  balanceDueOn?: string | null;
   /** Starting state when creating: inquiry (asks, holds nothing), pending (holds dates) or confirmed. */
   status?: BookingStatus;
   notes: string;

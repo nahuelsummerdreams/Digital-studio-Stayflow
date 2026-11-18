@@ -3,7 +3,8 @@
 import { useMemo, type ReactNode } from "react";
 import { useAccount } from "@stayflow/auth";
 import { useT } from "@stayflow/i18n";
-import { HostDataProvider, SyncNotice, alertText, guestsDirectory, hostAlerts, localToday, pendingPayments, useAutoSync, useHostData } from "@stayflow/module-host";
+import { HostDataProvider, SyncNotice, alertText, guestsDirectory, hostAlerts, localToday, nextDueOn, pendingPayments, useAutoSync, useHostData } from "@stayflow/module-host";
+import { formatMoney } from "@stayflow/money";
 import { OpsDataProvider, groupJobs, useOpsData } from "@stayflow/module-operations";
 import { AppShell, StayflowProviders, type SearchItem, type ShellAlert } from "@stayflow/shell";
 import { RegisterServiceWorker } from "@/components/RegisterServiceWorker";
@@ -30,9 +31,17 @@ function Frame({ children }: { children: ReactNode }) {
         const tone = a.kind === "departurePending" || a.kind === "arrivalPending" ? ("warning" as const) : a.kind === "arrivalsToday" ? ("success" as const) : ("accent" as const);
         return { id: a.id, tone, title: text.title, detail: text.detail, href: a.kind === "noAmount" ? "/bookings" : "/calendar" };
       }),
+      // A payment whose date the owner set has passed and money is still missing.
+      ...pendingPayments(bookings)
+        .filter((b) => {
+          const due = nextDueOn(b);
+          return due !== null && due < today;
+        })
+        .slice(0, 6)
+        .map((b) => ({ id: `due-${b.id}`, tone: "danger" as const, title: `Cobro vencido: ${b.guestName}`, detail: `Falta ${formatMoney(b.amount - b.paid, org?.currency ?? "USD")}`, href: "/bookings" })),
       ...g.overdue.slice(0, 6).map((j) => ({ id: `late-${j.id}`, tone: "danger" as const, title: j.title, detail: properties.find((p) => p.id === j.propertyId)?.name ?? "", href: "/operations/jobs" })),
     ],
-    [bookings, g, properties, today, t],
+    [bookings, g, properties, today, t, org?.currency],
   );
 
   const searchItems = useMemo<SearchItem[]>(

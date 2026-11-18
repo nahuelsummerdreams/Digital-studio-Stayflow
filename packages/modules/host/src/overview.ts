@@ -13,7 +13,10 @@ export interface OverviewExpense {
   date: string;
 }
 
-/** `overdue`: the guest already arrived and still owes. `soon`: arrives within a week with a balance. `later`: further out. */
+/**
+ * `overdue`: the payment date has passed, or (with no date set) the guest already arrived and still owes.
+ * `soon`: due, or arriving, within a week. `later`: further out.
+ */
 export type OwedUrgency = "overdue" | "soon" | "later";
 export interface OwedRow {
   booking: Booking;
@@ -21,7 +24,21 @@ export interface OwedRow {
   owed: number;
   /** Negative once the guest has already arrived. */
   daysToCheckIn: number;
+  /** The next date a payment is expected, if the owner set one. */
+  dueOn: string | null;
+  /** Negative once the due date has passed. Null without a due date. */
+  daysToDue: number | null;
   urgency: OwedUrgency;
+}
+
+/**
+ * The next date money is expected for a booking, if any: the deposit date while nothing has been paid,
+ * otherwise the balance date. Null when the owner did not set one or nothing is owed.
+ */
+export function nextDueOn(b: Pick<Booking, "amount" | "paid" | "depositDueOn" | "balanceDueOn">): string | null {
+  if (b.amount - b.paid <= 0) return null;
+  if (b.paid <= 0) return b.depositDueOn ?? b.balanceDueOn ?? null;
+  return b.balanceDueOn ?? null;
 }
 
 export interface OwnerOverview {
@@ -34,6 +51,8 @@ export interface OwnerOverview {
   /** Money still to collect, with the sorted list behind it. */
   owedTotal: number;
   owedList: OwedRow[];
+  /** The part of it whose payment date has already passed. */
+  pastDue: { count: number; total: number };
   /** This calendar month, by check-in date. Collected = what guests have actually paid, never more than the stay's total. */
   month: { billed: number; collected: number; pending: number; expenses: number; result: number };
   jobs: { cleaningOpen: number; maintenanceOpen: number; overdue: number };
@@ -55,10 +74,16 @@ export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[];
   const owedList: OwedRow[] = pendingPayments(bookings)
     .map((b) => {
       const days = daysBetween(today, b.checkIn);
-      const urgency: OwedUrgency = days < 0 ? "overdue" : days <= 7 ? "soon" : "later";
-      return { booking: b, owed: owed(b), daysToCheckIn: days, urgency };
+      const dueOn = nextDueOn(b);
+      const daysToDue = dueOn ? daysBetween(today, dueOn) : null;
+      // With a due date, that date decides; without one, the arrival does.
+      const ref = daysToDue ?? days;
+      const urgency: OwedUrgency = ref < 0 ? "overdue" : ref <= 7 ? "soon" : "later";
+      return { booking: b, owed: owed(b), daysToCheckIn: days, dueOn, daysToDue, urgency, ref };
     })
-    .sort((a, b) => a.daysToCheckIn - b.daysToCheckIn);
+    .sort((a, b) => a.ref - b.ref || a.daysToCheckIn - b.daysToCheckIn)
+    .map(({ ref: _ref, ...row }) => row);
+  const late = owedList.filter((r) => r.daysToDue !== null && r.daysToDue < 0);
 
   const totals = paymentTotals(bookings, from, to);
   const monthExpenses = expenses.filter((e) => e.date >= from && e.date < to).reduce((s, e) => s + e.amount, 0);
@@ -72,6 +97,7 @@ export function ownerOverview(input: { bookings: Booking[]; jobs: OverviewJob[];
     departuresToday: stays.filter((b) => b.checkOut === today).length,
     owedTotal: owedList.reduce((s, r) => s + r.owed, 0),
     owedList,
+    pastDue: { count: late.length, total: late.reduce((s, r) => s + r.owed, 0) },
     month: { ...totals, expenses: monthExpenses, result: totals.collected - monthExpenses },
     jobs: {
       cleaningOpen: open.filter((j) => j.kind === "cleaning").length,

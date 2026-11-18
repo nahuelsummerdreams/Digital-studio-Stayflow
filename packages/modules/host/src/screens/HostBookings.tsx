@@ -10,6 +10,7 @@ import { addDays, daysBetween, localToday } from "../dates";
 import { STATUS_KEY, STATUS_TONE, shortDate } from "../format";
 import { BookingHistory } from "./BookingHistory";
 import { isActive, nextStatuses, owed, paymentState, validateBooking } from "../logic";
+import { nextDueOn } from "../overview";
 import { BOOKING_SOURCES, type Booking, type BookingSource, type BookingStatus, type HostProperty } from "../types";
 import { useHostData, useUnit } from "../useHostData";
 
@@ -29,6 +30,12 @@ type Filter = "upcoming" | "all" | "past" | "canceled";
 const FILTERS: Filter[] = ["upcoming", "all", "past", "canceled"];
 const FILTER_KEY = { upcoming: "host.filterUpcoming", all: "host.filterAll", past: "host.filterPast", canceled: "host.filterCanceled" } as const;
 
+/** Form value to payload: a date sets it, an empty box clears one that existed, and an untouched empty box says nothing. */
+function dueField(value: string, original: string | null | undefined): string | null | undefined {
+  if (value) return value;
+  return original ? null : undefined;
+}
+
 export function HostBookings({ client, orgId, currency, properties, prefill, onGoProperties, data }: Props) {
   const { t, locale } = useI18n();
   const unit = useUnit();
@@ -45,6 +52,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
   const [source, setSource] = useState<BookingSource>(data.lodgingType === "rental" ? "airbnb" : "direct");
   const [amount, setAmount] = useState("");
   const [paidIn, setPaidIn] = useState("");
+  const [depositDue, setDepositDue] = useState("");
+  const [balanceDue, setBalanceDue] = useState("");
   const [startStatus, setStartStatus] = useState<BookingStatus>("confirmed");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [payFor, setPayFor] = useState<string | null>(null);
@@ -112,9 +121,16 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       source,
       amount: minor ?? -1,
       paid: paidIn.trim() === "" ? 0 : (parseMoney(paidIn) ?? -1),
+      // undefined = leave as is (also keeps working before migration 0035), null = clear, a date = set.
+      depositDueOn: dueField(depositDue, bookings.find((x) => x.id === editingId)?.depositDueOn),
+      balanceDueOn: dueField(balanceDue, bookings.find((x) => x.id === editingId)?.balanceDueOn),
       notes,
       status: editingId ? undefined : startStatus,
     };
+    if (depositDue && balanceDue && balanceDue < depositDue) {
+      setError(t("hx.payDueOrder"));
+      return;
+    }
     if ((input.paid ?? 0) < 0) {
       setError(t("hx.payErr"));
       return;
@@ -134,6 +150,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
       setGuestPhone("");
       setAmount("");
       setPaidIn("");
+      setDepositDue("");
+      setBalanceDue("");
       setNotes("");
       await reload();
     } catch (err) {
@@ -178,6 +196,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
     setSource(b.source);
     setAmount(b.amount > 0 ? String(b.amount / 100).replace(".", ",") : "");
     setPaidIn(b.paid > 0 ? String(b.paid / 100).replace(".", ",") : "");
+    setDepositDue(b.depositDueOn ?? "");
+    setBalanceDue(b.balanceDueOn ?? "");
     setNotes(b.notes);
     setError(null);
     document.getElementById("booking-guest")?.scrollIntoView({ block: "center", behavior: "smooth" });
@@ -190,6 +210,8 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
     setGuestPhone("");
     setAmount("");
     setPaidIn("");
+    setDepositDue("");
+    setBalanceDue("");
     setNotes("");
   }
 
@@ -286,6 +308,17 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
         </label>
         <div className="grid grid-cols-2 gap-3">
           <label className={labelClass}>
+            {t("hx.payDepositDue")}
+            <input className={inputClass} type="date" value={depositDue} onChange={(e) => setDepositDue(e.target.value)} />
+          </label>
+          <label className={labelClass}>
+            {t("hx.payBalanceDue")}
+            <input className={inputClass} type="date" value={balanceDue} onChange={(e) => setBalanceDue(e.target.value)} />
+          </label>
+          <p className="col-span-2 -mt-1 text-xs text-muted">{t("hx.payDueHint")}</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <label className={labelClass}>
             {t("host.guestEmail")}
             <input className={inputClass} type="email" value={guestEmail} onChange={(e) => setGuestEmail(e.target.value)} maxLength={200} />
           </label>
@@ -352,7 +385,17 @@ export function HostBookings({ client, orgId, currency, properties, prefill, onG
                       const st = paymentState(b);
                       const label = st === "unpriced" ? t("hx.payUnpriced") : st === "unpaid" ? t("hx.payUnpaid") : st === "paid" ? t("hx.payPaid") : t("hx.payPartial", { paid: formatMoney(b.paid, currency, locale), owed: formatMoney(owed(b), currency, locale) });
                       const tone = st === "paid" ? "bg-success/15 text-success" : st === "unpriced" ? "bg-line text-muted" : "bg-amber-400/10 text-amber-300";
-                      return <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${tone}`}>{label}</span>;
+                      const due = isActive(b) ? nextDueOn(b) : null;
+                      return (
+                        <>
+                          <span className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${tone}`}>{label}</span>
+                          {due && (
+                            <p className={`mt-1 text-xs ${due < today ? "font-medium text-danger" : "text-muted"}`}>
+                              {t(due < today ? "hx.payOverdueOn" : "hx.payDueOn", { date: shortDate(due, locale, true) })}
+                            </p>
+                          )}
+                        </>
+                      );
                     })()}
                   </div>
                 </div>

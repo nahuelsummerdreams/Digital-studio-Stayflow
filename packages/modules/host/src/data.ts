@@ -20,9 +20,14 @@ interface BookingDb {
   paid_minor: number;
   kind: BookingKind;
   external_uid: string | null;
+  deposit_due_on?: string | null;
+  balance_due_on?: string | null;
 }
 
-const COLUMNS = "id, property_id, guest_name, guest_email, guest_phone, guests_count, check_in, check_out, nights, source, status, amount_minor, notes, created_at, paid_minor, kind, external_uid";
+const BASE_COLUMNS = "id, property_id, guest_name, guest_email, guest_phone, guests_count, check_in, check_out, nights, source, status, amount_minor, notes, created_at, paid_minor, kind, external_uid";
+/** Payment due dates arrived with migration 0035. Until it is applied the app keeps working with the base columns. */
+const COLUMNS = `${BASE_COLUMNS}, deposit_due_on, balance_due_on`;
+let dueDatesAvailable = true;
 
 const toBooking = (r: BookingDb): Booking => ({
   id: r.id,
@@ -42,19 +47,29 @@ const toBooking = (r: BookingDb): Booking => ({
   paid: Number(r.paid_minor),
   kind: r.kind,
   externalUid: r.external_uid,
+  depositDueOn: r.deposit_due_on ?? null,
+  balanceDueOn: r.balance_due_on ?? null,
 });
 
+/** Due-date columns for an insert/update. Only included when the caller said something about them. */
+function duePayload(b: Pick<NewBooking, "depositDueOn" | "balanceDueOn">): Record<string, string | null> {
+  const out: Record<string, string | null> = {};
+  if (b.depositDueOn !== undefined) out.deposit_due_on = b.depositDueOn;
+  if (b.balanceDueOn !== undefined) out.balance_due_on = b.balanceDueOn;
+  return out;
+}
+
 async function loadByKind(client: SupabaseClient, orgId: string, kind: BookingKind): Promise<Booking[]> {
-  const { data, error } = await client
-    .from("bookings")
-    .select(COLUMNS)
-    .eq("org_id", orgId)
-    .eq("kind", kind)
-    .order("check_in", { ascending: false })
-    .limit(2000)
-    .returns<BookingDb[]>();
-  if (error) throw error;
-  return (data ?? []).map(toBooking);
+  const run = (columns: string) =>
+    client.from("bookings").select(columns).eq("org_id", orgId).eq("kind", kind).order("check_in", { ascending: false }).limit(2000).returns<BookingDb[]>();
+  let res = await run(dueDatesAvailable ? COLUMNS : BASE_COLUMNS);
+  // 42703 = undefined column: the database does not have migration 0035 yet. Fall back once and remember it.
+  if (res.error && res.error.code === "42703" && dueDatesAvailable) {
+    dueDatesAvailable = false;
+    res = await run(BASE_COLUMNS);
+  }
+  if (res.error) throw res.error;
+  return (res.data ?? []).map(toBooking);
 }
 
 /** Guest stays only. Blocked dates are loaded apart so the numbers (occupancy, income, guests) never count them. */
@@ -94,6 +109,7 @@ export async function addBooking(client: SupabaseClient, orgId: string, b: NewBo
     paid_minor: b.paid ?? 0,
     notes: b.notes.trim(),
     ...(b.status ? { status: b.status } : {}),
+    ...duePayload(b),
   });
   if (error) throw error;
 }
@@ -320,6 +336,7 @@ export async function updateBooking(client: SupabaseClient, id: string, b: NewBo
       amount_minor: b.amount,
       paid_minor: b.paid ?? 0,
       notes: b.notes.trim(),
+      ...duePayload(b),
     })
     .eq("id", id);
   if (error) throw error;

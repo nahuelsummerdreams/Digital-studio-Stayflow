@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { owedWhen, ownerOverview } from "./overview";
+import { nextDueOn, owedWhen, ownerOverview } from "./overview";
 import type { Booking } from "./types";
 
 let n = 0;
@@ -81,5 +81,36 @@ describe("owedWhen", () => {
     expect(owedWhen(0).kind).toBe("today");
     expect(owedWhen(1).kind).toBe("tomorrow");
     expect(owedWhen(9)).toEqual({ kind: "inDays", days: 9 });
+  });
+});
+
+describe("payment due dates", () => {
+  it("expects the deposit date while nothing is paid, then the balance date", () => {
+    const base = { amount: 100_000, depositDueOn: "2026-11-10", balanceDueOn: "2026-11-19" };
+    expect(nextDueOn({ ...base, paid: 0 })).toBe("2026-11-10");
+    expect(nextDueOn({ ...base, paid: 30_000 })).toBe("2026-11-19");
+    expect(nextDueOn({ ...base, paid: 100_000 })).toBeNull();
+    expect(nextDueOn({ amount: 100_000, paid: 0, depositDueOn: null, balanceDueOn: "2026-11-19" })).toBe("2026-11-19");
+    expect(nextDueOn({ amount: 100_000, paid: 0 })).toBeNull();
+  });
+
+  it("marks a payment as overdue once its date has passed, even before the guest arrives", () => {
+    const o = ownerOverview({
+      today: TODAY, jobs: [], expenses: [],
+      bookings: [
+        bk({ guestName: "Venció", checkIn: "2026-12-01", checkOut: "2026-12-04", amount: 100_000, paid: 20_000, balanceDueOn: "2026-11-15" }),
+        bk({ guestName: "Vence pronto", checkIn: "2026-12-10", checkOut: "2026-12-12", amount: 50_000, paid: 0, depositDueOn: "2026-11-21" }),
+        bk({ guestName: "Sin fecha", checkIn: "2026-12-30", checkOut: "2027-01-02", amount: 80_000, paid: 0 }),
+      ],
+    });
+    expect(o.owedList.map((r) => [r.booking.guestName, r.urgency])).toEqual([["Venció", "overdue"], ["Vence pronto", "soon"], ["Sin fecha", "later"]]);
+    expect(o.owedList[0]?.daysToDue).toBe(-3);
+    expect(o.pastDue).toEqual({ count: 1, total: 80_000 });
+  });
+
+  it("does not count a payment as past due when no date was set", () => {
+    const o = ownerOverview({ today: TODAY, jobs: [], expenses: [], bookings: [bk({ checkIn: "2026-11-16", checkOut: "2026-11-20", status: "checked_in", amount: 60_000, paid: 0 })] });
+    expect(o.owedList[0]?.urgency).toBe("overdue");
+    expect(o.pastDue).toEqual({ count: 0, total: 0 });
   });
 });

@@ -12,6 +12,12 @@ import { EmptyState, Icon, Pill, ProgressBar, Skeleton, StatCard, buttonClass, c
 const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
 
 function whenText(row: OwedRow): string {
+  if (row.dueOn !== null && row.daysToDue !== null) {
+    if (row.daysToDue < 0) return `Debía pagar hace ${plural(-row.daysToDue, "día", "días")}`;
+    if (row.daysToDue === 0) return "Debe pagar hoy";
+    if (row.daysToDue === 1) return "Debe pagar mañana";
+    return `Debe pagar en ${row.daysToDue} días`;
+  }
   const w = owedWhen(row.daysToCheckIn);
   switch (w.kind) {
     case "arrived": return `Llegó hace ${plural(w.days, "día", "días")}`;
@@ -22,10 +28,16 @@ function whenText(row: OwedRow): string {
 }
 
 const URGENCY: Record<OwedRow["urgency"], { tone: Tone; label: string }> = {
-  overdue: { tone: "danger", label: "Ya está alojado" },
+  overdue: { tone: "danger", label: "Vencido" },
   soon: { tone: "warning", label: "Esta semana" },
   later: { tone: "muted", label: "Más adelante" },
 };
+
+/** "Vencido" only when the owner's payment date passed; with no date, an already-arrived guest who owes is shown as such. */
+function urgencyOf(row: OwedRow): { tone: Tone; label: string } {
+  if (row.urgency === "overdue" && row.daysToDue === null) return { tone: "danger", label: "Ya está alojado" };
+  return URGENCY[row.urgency];
+}
 
 const ACTIONS: { href: string; label: string; icon: IconName }[] = [
   { href: "/properties", label: "Nueva propiedad", icon: "building" },
@@ -94,6 +106,12 @@ export function HomeView({ o, money, userName, propName }: { o: OwnerOverview; m
             <p className="mt-1 text-sm text-muted">
               {o.owedList.length === 0 ? "No hay saldos pendientes." : `${plural(o.owedList.length, "reserva con saldo", "reservas con saldo")}.`}
             </p>
+            {o.pastDue.count > 0 && (
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-danger/40 bg-danger/10 px-3 py-1 text-xs font-medium text-danger">
+                <Icon name="alert" className="h-3.5 w-3.5" />
+                {money(o.pastDue.total)} con fecha de pago vencida ({o.pastDue.count})
+              </p>
+            )}
           </div>
           {o.owedList.length > shown.length && (
             <Link href="/bookings" className={ghostButtonClass}>Ver las {o.owedList.length}</Link>
@@ -107,7 +125,7 @@ export function HomeView({ o, money, userName, propName }: { o: OwnerOverview; m
         ) : (
           <ul className="mt-5 divide-y divide-line/60">
             {shown.map((r) => {
-              const u = URGENCY[r.urgency];
+              const u = urgencyOf(r);
               const paid = Math.max(0, r.booking.amount - r.owed);
               return (
                 <li key={r.booking.id}>
