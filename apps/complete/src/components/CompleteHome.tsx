@@ -5,9 +5,10 @@ import { useMemo } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { useI18n, type TFn } from "@stayflow/i18n";
 import { formatMoney } from "@stayflow/money";
-import { localToday, owedWhen, ownerOverview, useHostData, type HostProperty, type OwedRow, type OwnerOverview } from "@stayflow/module-host";
+import { localToday, monthlyMoney, occupancyNext, owedWhen, ownerOverview, useHostData, type HostProperty, type OwedRow, type OwnerOverview } from "@stayflow/module-host";
 import { useOpsData } from "@stayflow/module-operations";
 import { useLedger } from "@stayflow/module-profit";
+import { HomeCharts, type HomeChartData } from "./HomeCharts";
 import { EmptyState, Icon, Pill, ProgressBar, Skeleton, StatCard, buttonClass, cardClass, ghostButtonClass, type IconName, type Tone } from "@stayflow/ui";
 
 function whenText(row: OwedRow, t: TFn): string {
@@ -55,6 +56,14 @@ export function CompleteHome({ client, orgId, currency, userName, properties }: 
 
   const o = useMemo(() => ownerOverview({ bookings: host.bookings, jobs: ops.jobs, expenses: ledger.expenses, today, collectedIncomes: ledger.basis === "collected" ? ledger.incomes : undefined }), [host.bookings, ops.jobs, ledger.expenses, today]);
   const propName = (id: string) => properties.find((p) => p.id === id)?.name ?? "";
+  const charts = useMemo<HomeChartData>(
+    () => ({
+      months: monthlyMoney(ledger.basis === "collected" ? ledger.incomes : [], ledger.expenses, today, 6),
+      occupancy: occupancyNext(host.bookings, properties.length, today, 14),
+      propertyCount: properties.length,
+    }),
+    [host.bookings, ledger.basis, ledger.incomes, ledger.expenses, properties.length, today],
+  );
 
   if (host.loading) {
     return (
@@ -66,11 +75,11 @@ export function CompleteHome({ client, orgId, currency, userName, properties }: 
     );
   }
 
-  return <HomeView o={o} money={money} userName={userName} propName={propName} />;
+  return <HomeView o={o} money={money} userName={userName} propName={propName} charts={charts} />;
 }
 
 /** The screen itself, without data fetching, so it can be previewed and tested with plain numbers. */
-export function HomeView({ o, money, userName, propName }: { o: OwnerOverview; money: (n: number) => string; userName: string; propName: (id: string) => string }) {
+export function HomeView({ o, money, userName, propName, charts }: { o: OwnerOverview; money: (n: number) => string; userName: string; propName: (id: string) => string; charts?: HomeChartData }) {
   const { t } = useI18n();
   const shown = o.owedList.slice(0, 6);
   return (
@@ -146,6 +155,8 @@ export function HomeView({ o, money, userName, propName }: { o: OwnerOverview; m
           </ul>
         )}
       </section>
+
+      {charts && <HomeCharts o={o} data={charts} money={money} />}
 
       <section aria-label={t("complete.home.summary")} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <StatCard label={t("complete.home.statActive")} icon="bed" sub={t("complete.home.statActiveSub")}>{o.activeBookings}</StatCard>
