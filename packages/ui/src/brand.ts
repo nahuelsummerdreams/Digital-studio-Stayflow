@@ -8,6 +8,7 @@ export const PRODUCT_BRAND = {
   listing: { name: "Stayflow Listing", tagline: "Presenta mejor tu alojamiento." },
   experiences: { name: "Stayflow Experiences", tagline: "Lo mejor del destino, a un toque." },
   website: { name: "Stayflow Website", tagline: "Tu propio sitio, sin depender de nadie." },
+  marketing: { name: "STAYflow Marketing", tagline: "Tu plan de contenido y tus anuncios, listos en minutos." },
   suite: { name: "STAYflow Complete", tagline: "Todo tu negocio de alojamientos bajo control, desde un solo lugar." },
 } as const;
 
