@@ -13,6 +13,7 @@
     "@anthropic-ai/sdk": "^1.8.0",
     "@stayflow/i18n": "workspace:*",
     "@stayflow/licensing": "workspace:*",
+    "@stayflow/module-marketing": "workspace:*",
     "@stayflow/ui": "workspace:*",
     "next": "^15.1.0",
     "react": "^19.0.0",
