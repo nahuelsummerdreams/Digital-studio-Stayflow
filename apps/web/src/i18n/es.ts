@@ -697,6 +697,8 @@ export const es = {
       trialNote: "Reservar no te compromete ni te cobra nada. Estamos abriendo el cobro: te escribimos con el enlace de pago en cuanto esté listo.",
       doneTitle: "Listo, reservaste tu lugar.",
       doneBody: "Te escribimos a {email} con el enlace de pago cuando se abra el cobro. No pagas nada ahora.",
+      doneLock: "Tu precio de lanzamiento de {price} queda reservado.",
+      lock: "Si reservas tu lugar hasta el {date}, te respetamos el precio de lanzamiento de {price} cuando se abra el cobro, aunque pagues después.",
       errEmail: "Escribe un correo válido.",
       errSave: "No pudimos guardar tu correo. Inténtalo de nuevo o escríbenos.",
       fine: "Precio en USD. Stayflow no garantiza resultados económicos.",
@@ -705,6 +707,7 @@ export const es = {
       eyebrow: "Preguntas",
       title: "Lo que suelen preguntar los anfitriones.",
       items: [
+        { q: "Si reservo ahora, ¿mantengo el precio de lanzamiento?", a: "Sí. Si reservas tu lugar mientras el precio de lanzamiento está vigente (la fecha que ves arriba), te respetamos ese precio cuando se abra el cobro, aunque pagues después. Pasada esa fecha, el precio es el regular." },
         { q: "¿Cuándo puedo pagar?", a: "Estamos abriendo el cobro. Reserva tu lugar con tu correo y te escribimos con el enlace de pago en cuanto esté listo. Reservar no te cobra nada." },
         { q: "¿Qué incluyen los bonos?", a: "Un pack de 25 mensajes para huéspedes, un checklist de limpieza y una guía para cobrar señas y saldos. Los recibes por correo al comprar." },
         { q: "¿Qué significa pago único?", a: "Pagas una vez y la usas sin mensualidades. Incluye 12 meses de actualizaciones; después la aplicación sigue funcionando." },

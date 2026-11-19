@@ -72,6 +72,8 @@ export function BuyBox({ where }: { where: string }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
+  /** The launch price this reservation keeps (set only when the person reserved while the launch price was still on). */
+  const [locked, setLocked] = useState<number | null>(null);
 
   if (COMPLETE_CHECKOUT_URL) {
     return (
@@ -90,6 +92,7 @@ export function BuyBox({ where }: { where: string }) {
     const ok = await saveLead(email, "checkout", { product: "complete", intent: "reserve", price: offer.price, launch: offer.launch, where });
     setBusy(false);
     if (!ok) return setError(p.errSave);
+    setLocked(offer.launch ? offer.price : null);
     setDone(email.trim());
   }
 
@@ -98,6 +101,7 @@ export function BuyBox({ where }: { where: string }) {
       <div role="status" className="rounded-2xl border border-success/40 bg-success/10 p-4 text-sm">
         <p className="font-semibold text-success">{p.doneTitle}</p>
         <p className="mt-1 text-fg/85">{fmt(p.doneBody, { email: done })}</p>
+        {locked !== null && <p className="mt-2 font-medium text-fg">{fmt(p.doneLock, { price: usd(locked) })}</p>}
       </div>
     );
   }
@@ -121,6 +125,11 @@ export function BuyBox({ where }: { where: string }) {
       <button type="submit" disabled={busy} className={`${btnPrimary} w-full !py-4 !text-base disabled:opacity-60`}>
         {busy ? p.sending : p.send}
       </button>
+      {offer.launch && (
+        <p className="rounded-xl border border-[rgb(var(--accent-2)/0.45)] bg-[rgb(var(--accent-2)/0.08)] px-3 py-2.5 text-xs font-medium leading-relaxed text-fg">
+          {fmt(p.lock, { date: endDay(), price: usd(offer.price) })}
+        </p>
+      )}
       <p className="text-xs leading-relaxed text-muted">{p.trialNote}</p>
     </form>
   );
