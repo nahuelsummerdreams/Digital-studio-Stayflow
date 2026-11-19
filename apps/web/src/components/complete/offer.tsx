@@ -87,7 +87,7 @@ export function BuyBox({ where }: { where: string }) {
     setError(null);
     if (!EMAIL.test(email.trim())) return setError(p.errEmail);
     setBusy(true);
-    const ok = await saveLead(email, "notify-trial", { product: "complete", intent: "trial", price: offer.price, launch: offer.launch, where });
+    const ok = await saveLead(email, "checkout", { product: "complete", intent: "reserve", price: offer.price, launch: offer.launch, where });
     setBusy(false);
     if (!ok) return setError(p.errSave);
     setDone(email.trim());

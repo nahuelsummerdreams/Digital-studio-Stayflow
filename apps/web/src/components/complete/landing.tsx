@@ -7,6 +7,7 @@ import { Motes } from "../effects";
 import { btnGhost, btnPrimary } from "../styles";
 import { BuyBox, PriceBlock } from "./offer";
 import { InicioScene } from "./inicio";
+import { PainTabs } from "./pains";
 import { Countdown, ProductScene } from "./scenes";
 
 const m = getMessages().complete;
@@ -83,10 +84,12 @@ export function CompleteHero() {
             <span aria-hidden className="pulse-ring h-1.5 w-1.5 rounded-full bg-accent" />
             {h.eyebrow}
           </p>
-          <h1 className="font-display mt-5 text-[2rem] font-extrabold uppercase leading-[1.1] tracking-tight sm:text-4xl xl:text-[2.6rem]">
+          <h1 className="font-display mt-5 text-[2rem] font-extrabold uppercase leading-[1.1] tracking-tight sm:text-4xl xl:text-[2.3rem]">
             {h.title} <span className="text-gradient block">{h.accent}</span>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg/85 md:text-xl">{h.body}</p>
+          {/* On phones the main button would sit more than a screen down: show it right under the promise. */}
+          <a href="#precio" className={`${btnPrimary} cta-glow mt-6 w-full !py-4 !text-base lg:hidden`}>{h.cta}</a>
         </div>
         <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
           <InicioScene autoplay />
@@ -109,28 +112,11 @@ export function CompleteHero() {
 }
 
 export function CompletePain() {
-  const p = m.pain;
+  const p = m.pains;
   return (
     <section id="como" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-20">
       <Head eyebrow={p.eyebrow} title={p.title} body={p.body} center />
-      <div className="mt-12 grid gap-5 md:grid-cols-2">
-        <div className="fx-card rounded-3xl p-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-danger/90">{p.beforeTitle}</p>
-          <ul className="mt-4 space-y-3">
-            {p.before.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-[15px] text-fg/85"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-danger/15 text-danger"><Icon name="close" className="h-3 w-3" /></span>{b}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="fx-card fx-hero rounded-3xl p-6">
-          <p className="text-sm font-semibold uppercase tracking-wide text-accent">{p.afterTitle}</p>
-          <ul className="mt-4 space-y-3">
-            {p.after.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-[15px]"><span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full tick"><Icon name="check" className="h-3 w-3" /></span>{b}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <PainTabs />
     </section>
   );
 }
@@ -178,6 +164,30 @@ export function CompleteAreas() {
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+const BONUS_ICONS: IconName[] = ["message", "tasks", "wallet"];
+
+export function CompleteBonus() {
+  const b = m.bonus;
+  return (
+    <section id="bonos" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
+      <Head eyebrow={b.eyebrow} title={b.title} body={b.body} center />
+      <ul className="mt-12 grid gap-5 md:grid-cols-3">
+        {b.items.map((it, i) => (
+          <li key={it.title} className="fx-card fx-hero reveal relative overflow-hidden rounded-3xl p-6">
+            <span className="absolute right-4 top-4 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#06130a]" style={{ background: "rgb(var(--accent-2))" }}>{b.tag}</span>
+            <span className="flex h-12 w-12 items-center justify-center rounded-2xl text-accent" style={{ background: "linear-gradient(135deg, rgb(var(--accent) / 0.25), rgb(var(--accent-2) / 0.25))" }}>
+              <Icon name={BONUS_ICONS[i] ?? "check"} className="h-6 w-6" />
+            </span>
+            <h3 className="font-display mt-5 text-xl leading-snug">{it.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{it.body}</p>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-6 text-center text-xs text-muted">{b.note}</p>
     </section>
   );
 }

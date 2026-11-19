@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/sections";
 import {
   CompleteAreas,
+  CompleteBonus,
   CompleteCalendar,
   CompleteFaq,
   CompleteFinalCta,
@@ -13,6 +14,7 @@ import {
   CompletePricing,
   CompleteSteps,
 } from "@/components/complete/landing";
+import { CostCalc } from "@/components/complete/calc";
 import { StickyCta } from "@/components/complete/scenes";
 import { getMessages } from "@/i18n";
 
@@ -37,6 +39,8 @@ export default function CompletePage() {
         <CompleteMoney />
         <CompleteCalendar />
         <CompleteAreas />
+        <CompleteBonus />
+        <CostCalc />
         <CompleteHonest />
         <CompleteSteps />
         <CompletePricing />
