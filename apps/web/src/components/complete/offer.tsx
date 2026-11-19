@@ -87,7 +87,7 @@ export function BuyBox({ where }: { where: string }) {
     setError(null);
     if (!EMAIL.test(email.trim())) return setError(p.errEmail);
     setBusy(true);
-    const ok = await saveLead(email, "checkout", { product: "complete", price: offer.price, launch: offer.launch, where });
+    const ok = await saveLead(email, "notify-trial", { product: "complete", intent: "trial", price: offer.price, launch: offer.launch, where });
     setBusy(false);
     if (!ok) return setError(p.errSave);
     setDone(email.trim());
@@ -121,7 +121,7 @@ export function BuyBox({ where }: { where: string }) {
       <button type="submit" disabled={busy} className={`${btnPrimary} w-full !py-4 !text-base disabled:opacity-60`}>
         {busy ? p.sending : p.send}
       </button>
-      <p className="text-xs leading-relaxed text-muted">{p.notLive}</p>
+      <p className="text-xs leading-relaxed text-muted">{p.trialNote}</p>
     </form>
   );
 }
