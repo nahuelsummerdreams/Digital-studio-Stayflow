@@ -9,6 +9,9 @@ export const COMPLETE_LAUNCH_PRICE = 40;
 /** Last minute of the launch. Argentina has no daylight saving, so the offset is fixed. */
 export const DEFAULT_COMPLETE_LAUNCH_ENDS_AT = "2026-12-15T23:59:00-03:00";
 
+/** Where "Entrar" goes: the COMPLETE application. Override with NEXT_PUBLIC_COMPLETE_APP_URL once it has its own domain. */
+export const COMPLETE_APP_URL = (process.env.NEXT_PUBLIC_COMPLETE_APP_URL ?? "https://stayflow-complete-nahuelsummerdreams-2754.vercel.app").trim();
+
 /** The payment link (Whop, Impultienda…) once the store exists. While it is empty the page only collects the email. */
 export const COMPLETE_CHECKOUT_URL = (process.env.NEXT_PUBLIC_COMPLETE_CHECKOUT_URL ?? "").trim();
 

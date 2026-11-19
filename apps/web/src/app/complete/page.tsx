@@ -11,8 +11,9 @@ import {
   CompleteMoney,
   CompletePain,
   CompletePricing,
-  CompleteWorld,
+  CompleteSteps,
 } from "@/components/complete/landing";
+import { StickyCta } from "@/components/complete/scenes";
 import { getMessages } from "@/i18n";
 
 const m = getMessages().complete;
@@ -30,19 +31,20 @@ export default function CompletePage() {
   return (
     <>
       <CompleteHeader />
-      <main>
+      <main className="overflow-x-clip">
         <CompleteHero />
         <CompletePain />
         <CompleteMoney />
         <CompleteCalendar />
         <CompleteAreas />
-        <CompleteWorld />
         <CompleteHonest />
+        <CompleteSteps />
         <CompletePricing />
         <CompleteFaq />
         <CompleteFinalCta />
       </main>
       <Footer />
+      <StickyCta />
     </>
   );
 }

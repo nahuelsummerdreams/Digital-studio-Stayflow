@@ -55,3 +55,27 @@
 @media (prefers-reduced-motion: reduce) {
   .cta-glow, .pulse-lime { animation: none; }
 }
+
+/* ---- COMPLETE landing: the animated product scene ---- */
+@keyframes cx-toast {
+  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
+  10%, 78% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+.cx-toast { animation: cx-toast 2.6s ease both; }
+
+@keyframes cx-orb {
+  50% { transform: translate3d(0, -16px, 0) scale(1.07); }
+}
+.cx-orb { animation: cx-orb 9s ease-in-out infinite; }
+
+/* The stay bars grow in when the scene loads. */
+@keyframes cx-bar-in {
+  from { opacity: 0; transform: scaleX(0.4); }
+  to { opacity: 1; transform: none; }
+}
+.cx-bar { transform-origin: left center; animation: cx-bar-in 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cx-toast, .cx-orb, .cx-bar { animation: none; }
+}
