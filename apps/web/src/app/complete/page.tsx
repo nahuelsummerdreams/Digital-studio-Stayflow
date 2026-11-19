@@ -3,6 +3,7 @@ import { Footer } from "@/components/sections";
 import {
   CompleteAreas,
   CompleteBonus,
+  CompleteCompare,
   CompleteCalendar,
   CompleteFaq,
   CompleteFinalCta,
@@ -36,11 +37,12 @@ export default function CompletePage() {
       <main className="overflow-x-clip">
         <CompleteHero />
         <CompletePain />
-        <CompleteMoney />
-        <CompleteCalendar />
+        <div className="hidden md:block"><CompleteMoney /></div>
+        <div className="hidden md:block"><CompleteCalendar /></div>
         <CompleteAreas />
         <CompleteBonus />
         <CostCalc />
+        <CompleteCompare />
         <CompleteHonest />
         <CompleteSteps />
         <CompletePricing />

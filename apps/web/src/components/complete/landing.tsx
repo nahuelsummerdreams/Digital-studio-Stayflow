@@ -155,12 +155,12 @@ export function CompleteAreas() {
   return (
     <section className="mx-auto max-w-6xl px-5 py-20">
       <Head eyebrow={a.eyebrow} title={a.title} body={a.body} center />
-      <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {a.items.map((it, i) => (
-          <li key={it.title} className={`fx-card reveal rounded-3xl p-6 ${i === 0 ? "lg:col-span-2" : ""}`}>
+          <li key={it.title} className={`fx-card reveal rounded-3xl p-4 sm:p-6 ${i === 0 ? "col-span-2" : ""}`}>
             <span className="flex h-11 w-11 items-center justify-center rounded-xl text-accent" style={{ background: "linear-gradient(135deg, rgb(var(--accent) / 0.22), rgb(var(--accent-2) / 0.22))" }}><Icon name={AREA_ICONS[i] ?? "check"} className="h-5 w-5" /></span>
-            <h3 className="font-display mt-4 text-xl">{it.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">{it.body}</p>
+            <h3 className="font-display mt-3 text-base leading-snug sm:mt-4 sm:text-xl">{it.title}</h3>
+            <p className="mt-1.5 line-clamp-3 text-xs leading-relaxed text-muted sm:mt-2 sm:line-clamp-none sm:text-sm">{it.body}</p>
           </li>
         ))}
       </ul>
@@ -206,6 +206,48 @@ export function CompleteSteps() {
           </li>
         ))}
       </ol>
+    </section>
+  );
+}
+
+export function CompleteCompare() {
+  const c = m.compare;
+  return (
+    <section id="comparar" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
+      <Head eyebrow={c.eyebrow} title={c.title} body={c.body} center />
+
+      <div className="reveal mt-10 overflow-x-auto rounded-3xl border border-line">
+        <table className="w-full min-w-[680px] border-collapse text-left text-sm">
+          <thead>
+            <tr className="bg-surface/70">
+              <th className="px-4 py-3" />
+              {c.cols.map((col, i) => (
+                <th key={col} scope="col" className={`px-4 py-3 font-display text-base ${i === 2 ? "text-[rgb(var(--accent-2))]" : "text-fg/90"}`}>{col}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {c.rows.map((r) => (
+              <tr key={r.label} className="border-t border-line/60">
+                <th scope="row" className="px-4 py-4 font-medium text-fg/90">{r.label}</th>
+                <td className="px-4 py-4 text-muted">{r.a}</td>
+                <td className="px-4 py-4 text-muted">{r.b}</td>
+                <td className="px-4 py-4 font-medium" style={{ background: "rgb(var(--accent-2) / 0.07)" }}>
+                  <span className="flex items-start gap-2">
+                    <span className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${r.win ? "tick" : "bg-line text-muted"}`}>
+                      <Icon name={r.win ? "check" : "info"} className="h-2.5 w-2.5" />
+                    </span>
+                    {r.c}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p className="mt-4 text-center text-xs text-muted md:hidden" aria-hidden>→</p>
+      <p className="mt-6 text-center text-xs text-muted">{c.note}</p>
     </section>
   );
 }

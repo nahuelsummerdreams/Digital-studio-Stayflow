@@ -615,6 +615,21 @@ export const es = {
       zero: "Si hoy usas una planilla gratis, tu ahorro es el tiempo: cobros, limpieza y mensajes en un solo lugar.",
       note: "Cálculo simple con lo que escribes. No incluye otros costos ni garantiza un ahorro.",
     },
+    compare: {
+      eyebrow: "Compara",
+      title: "¿Planilla, sistema por mensualidad o STAYflow COMPLETE?",
+      body: "Una comparación honesta: lo que cada opción hace bien y dónde se queda corta.",
+      cols: ["Planilla y WhatsApp", "Sistema por mensualidad", "STAYflow COMPLETE"],
+      rows: [
+        { label: "Costo", a: "Gratis, pero pagas con tu tiempo", b: "Una cuota todos los meses", c: "Un solo pago", win: true },
+        { label: "Quién debe y cuánto", a: "A mano, en una planilla", b: "Depende del sistema", c: "«Por cobrar» automático, con fechas límite", win: true },
+        { label: "Limpieza al salir un huésped", a: "Por mensajes, a último momento", b: "Suele incluirse", c: "Se crea sola, con enlace privado para tu personal", win: true },
+        { label: "Guía del huésped con QR", a: "No", b: "Depende del sistema", c: "Incluida", win: true },
+        { label: "Sincronización con Airbnb y Booking", a: "Manual", b: "Suele ser automática y casi en tiempo real", c: "Por calendario (iCal), con posible retraso", win: false },
+        { label: "Procesa pagos de huéspedes", a: "No", b: "Algunos sí", c: "No: registra los cobros que ya hiciste", win: false },
+      ],
+      note: "Los sistemas por mensualidad son distintos entre sí: revisa lo que ofrece el tuyo. Esta tabla describe categorías generales, no una marca en particular.",
+    },
     money: {
       eyebrow: "Cobros",
       title: "Sabrás cuánto te deben y cuándo vence cada pago.",
