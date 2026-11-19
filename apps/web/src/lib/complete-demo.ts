@@ -74,3 +74,14 @@ export function canBook(list: readonly DemoBooking[], row: number, start: number
 export function addBooking(list: readonly DemoBooking[], b: DemoBooking): DemoBooking[] {
   return canBook(list, b.row, b.start, b.len) ? [...list, b] : [...list];
 }
+
+/** Money collected in each of the last six months (USD, invented) and how full the properties are over 14 nights (percent, invented). */
+export const DEMO_TREND: readonly number[] = [900, 1400, 2100, 1800, 2600, 1760];
+export const DEMO_OCCUPANCY: readonly number[] = [67, 100, 67, 67, 100, 67, 67, 67, 33, 67, 67, 33, 33, 33];
+
+/** Share of the booked money that has already been collected, whole percent (0 when there is nothing booked). */
+export function collectedPct(list: readonly DemoBooking[]): number {
+  const total = list.reduce((s, b) => s + b.total, 0);
+  if (total <= 0) return 0;
+  return Math.round((list.reduce((s, b) => s + Math.min(b.paid, b.total), 0) / total) * 100);
+}

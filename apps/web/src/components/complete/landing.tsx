@@ -6,6 +6,7 @@ import { t } from "@/lib/t";
 import { Motes } from "../effects";
 import { btnGhost, btnPrimary } from "../styles";
 import { BuyBox, PriceBlock } from "./offer";
+import { InicioScene } from "./inicio";
 import { Countdown, ProductScene } from "./scenes";
 
 const m = getMessages().complete;
@@ -88,7 +89,7 @@ export function CompleteHero() {
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-fg/85 md:text-xl">{h.body}</p>
         </div>
         <div className="lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-center">
-          <ProductScene autoplay />
+          <InicioScene autoplay />
         </div>
         <div className="lg:col-start-1 lg:row-start-2">
           <PriceBlock />

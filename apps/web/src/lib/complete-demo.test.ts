@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { addBooking, canBook, DEMO_BOOKINGS, nextPayment, nextToPay, owedOf, registerPayment, statusOf, totalOwed } from "./complete-demo";
+import { addBooking, canBook, collectedPct, DEMO_BOOKINGS, nextPayment, nextToPay, owedOf, registerPayment, statusOf, totalOwed } from "./complete-demo";
 
 describe("COMPLETE demo", () => {
   it("starts with money still to collect, and totals what is owed", () => {
@@ -52,5 +52,11 @@ describe("COMPLETE demo", () => {
     const added = addBooking(DEMO_BOOKINGS, { id: "n1", guest: "Nueva reserva", place: "Casa del Lago", row: 0, start: 4, len: 1, total: 300, paid: 0 });
     expect(added).toHaveLength(DEMO_BOOKINGS.length + 1);
     expect(addBooking(added, { id: "n2", guest: "x", place: "y", row: 0, start: 4, len: 1, total: 1, paid: 0 })).toHaveLength(added.length);
+  });
+
+  it("the collected share starts partial, reaches 100 when everyone paid, and is 0 with nothing booked", () => {
+    expect(collectedPct(DEMO_BOOKINGS)).toBe(Math.round(((360 + 500 + 0 + 700) / (1200 + 500 + 650 + 1400)) * 100));
+    expect(collectedPct(DEMO_BOOKINGS.map((b) => ({ ...b, paid: b.total })))).toBe(100);
+    expect(collectedPct([])).toBe(0);
   });
 });
