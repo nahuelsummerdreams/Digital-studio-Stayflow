@@ -1,0 +1,918 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>WonderDays · MegaPack de la Experiencia Navideña</title>
+<meta name="description" content="25 días de aventuras navideñas sin pantallas para toda la familia. Imprimilo, abrí una puerta por día y jueguen juntos.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0B3326">
+<meta property="og:type" content="website">
+<meta property="og:title" content="WonderDays · MegaPack de la Experiencia Navideña">
+<meta property="og:description" content="25 días de Navidad sin pantallas: calendario de 25 puertas, tarjetas, pasaporte, insignias y más. Se imprime en casa. USD 25.">
+<meta property="og:image" content="assets/hero-megapack.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23C8323C'/%3E%3Ctext x='32' y='44' font-size='34' font-weight='700' text-anchor='middle' fill='%23ffffff' font-family='Georgia'%3E25%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Figtree:wght@400;500;600;700&family=Courgette&display=swap">
+<style>
+/* Concepto: el Polo Norte de noche. Hero de cielo nocturno con nieve, secciones de nieve y hielo, ofertas en azul noche. Tipografia: Gloock (titulos) + Figtree (texto) + Caveat (notas de Santa). */
+:root{
+ --night:#0B3326;--night2:#1C6A4E;--pine:#14503E;--berry:#C8323C;--berry-d:#8F1F29;--gold:#F6C453;--gold-d:#C99A1E;
+ --snow:#FFFCF6;--ice:#EAF4EE;--mist:#CFE3D6;--ink:#12281F;--muted:#4B5F55;--white:#fff;
+ --f-display:"Courgette","Lobster Two","Segoe Script",cursive;--f-body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;--f-hand:"Caveat","Segoe Script",cursive;
+ --gx:max(16px,env(safe-area-inset-left,0px));--gxr:max(16px,env(safe-area-inset-right,0px));
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--f-body);font-size:1.0625rem;color:var(--ink);background:var(--snow);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--night);z-index:60}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.3;margin:0;text-wrap:balance}
+img{max-width:100%;height:auto;display:block}
+.wrap{width:min(1160px,100%);margin:auto;padding-left:var(--gx);padding-right:var(--gxr)}
+section{position:relative;padding-block:clamp(64px,9vw,112px)}
+.center{text-align:center}
+.eyebrow{display:inline-block;font:700 .78rem/1 var(--f-body);letter-spacing:.22em;text-transform:uppercase;color:var(--berry)}
+.on-dark .eyebrow,.hero .eyebrow,.dark .eyebrow,.close .eyebrow{color:var(--gold)}
+h2{font-size:clamp(1.7rem,4vw,2.7rem);color:var(--night);margin:.7rem 0 1rem}
+.on-dark h2,.dark h2,.close h2{color:#fff}
+.lead{font-size:clamp(1.05rem,1.9vw,1.25rem);max-width:660px;color:var(--muted);margin:0}
+.center .lead{margin-left:auto;margin-right:auto}
+.on-dark .lead,.dark .lead,.close .lead,.hero .lead{color:#d6eadf}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.skip{position:absolute;left:-999px;top:8px;z-index:90;background:var(--gold);color:#2a1d00;padding:.6rem 1rem;border-radius:10px;font-weight:700;text-decoration:none}
+.skip:focus{left:8px}
+section[id]{scroll-margin-top:70px}
+
+/* progreso y barra superior */
+.progress{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);height:4px;z-index:70;transform-origin:left;transform:scaleX(0);background:linear-gradient(90deg,var(--gold),var(--berry))}
+.topbar{position:fixed;left:0;right:0;top:env(safe-area-inset-top,0px);z-index:50;padding-block:14px;transition:background .3s,box-shadow .3s,padding .3s}
+.topbar.solid{background:rgba(11,51,38,.94);backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.25);padding-block:8px}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.topbar img{height:44px;width:auto}
+.topbar nav{display:flex;align-items:center;gap:22px}
+.topbar nav a:not(.btn){color:#e9f5ee;text-decoration:none;font-weight:600;font-size:.95rem}
+.topbar nav a:not(.btn):hover{color:var(--gold)}
+@media(max-width:720px){.topbar nav a:not(.btn){display:none}}
+
+/* botones */
+.btn{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:56px;padding:0 1.9rem;border-radius:999px;border:0;cursor:pointer;font:700 1.05rem/1.15 var(--f-body);text-decoration:none;text-align:center;transition:transform .15s,box-shadow .15s}
+.btn-red{background:linear-gradient(180deg,#e2444e,var(--berry));color:#fff;box-shadow:0 5px 0 var(--berry-d),0 14px 28px rgba(200,50,60,.38)}
+.btn-red:hover{transform:translateY(-2px)}
+.btn-red:active{transform:translateY(3px);box-shadow:0 1px 0 var(--berry-d)}
+.btn-red::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.45) 50%,transparent 65%);transform:translateX(-120%);animation:shine 3.6s ease-in-out infinite}
+@keyframes shine{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+.btn-sm{min-height:42px;padding:0 1.15rem;font-size:.92rem;box-shadow:0 3px 0 var(--berry-d)}
+.cta-big{min-height:64px;padding:0 2.3rem;font-size:clamp(1rem,2.5vw,1.25rem)}
+.cta-row{margin-top:1.8rem}
+.fine{font-size:.92rem;color:#cfe6d9;margin:.9rem 0 0}
+
+/* hero */
+.hero{background:radial-gradient(130% 100% at 50% 0%,var(--night2) 0%,var(--night) 62%);color:#fff;padding-top:132px;padding-bottom:0;overflow:hidden;text-align:center}
+.sky,.aurora,#snowc{position:absolute;inset:0;pointer-events:none}
+.sky{background-image:radial-gradient(2px 2px at 12% 22%,#fff,transparent),radial-gradient(2px 2px at 78% 14%,#fff,transparent),radial-gradient(1.5px 1.5px at 40% 40%,#fff,transparent),radial-gradient(2.5px 2.5px at 90% 48%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 6% 62%,#fff,transparent),radial-gradient(2px 2px at 60% 8%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 28% 12%,#fff,transparent),radial-gradient(2px 2px at 52% 56%,#fff,transparent);animation:twinkle 4s ease-in-out infinite alternate}
+@keyframes twinkle{from{opacity:.45}to{opacity:1}}
+.aurora{background:radial-gradient(40% 30% at 20% 20%,rgba(70,200,130,.30),transparent 70%),radial-gradient(36% 28% at 82% 30%,rgba(226,68,78,.30),transparent 70%);animation:drift 14s ease-in-out infinite alternate;filter:blur(18px)}
+@keyframes drift{from{transform:translateX(-3%) scale(1)}to{transform:translateX(3%) scale(1.08)}}
+.hero .wrap{position:relative;z-index:2}
+.hero h1{font-size:clamp(2rem,5.2vw,3.7rem);max-width:980px;margin:1rem auto 1.1rem;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.35)}
+.hero h1 em{font-style:normal;color:var(--gold);position:relative;white-space:normal}
+.hero .lead{margin:0 auto 1rem;font-size:clamp(1.1rem,2.2vw,1.35rem)}
+.hero .lead2{max-width:680px;margin:0 auto;color:#cfe6d9;font-size:1.05rem}
+.herolist{list-style:none;padding:0;margin:1.6rem auto 0;display:grid;gap:8px;max-width:620px;text-align:left}
+.herolist li{background:rgba(255,255,255,.07);border:1px solid rgba(246,196,83,.4);border-radius:16px;padding:.7rem 1rem;color:#fff3cf;font-weight:600}
+.priceline{font:400 1.5rem var(--f-display);color:var(--gold);margin:.6rem 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:.6rem;justify-content:center;margin-top:1.3rem}
+.chip{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;padding:.35rem .95rem;font-weight:600;font-size:.88rem}
+.mock{position:relative;margin:2.8rem auto 0;max-width:1120px;perspective:1200px}
+.mock img{width:100%;border-radius:26px;box-shadow:0 -10px 60px rgba(246,196,83,.18);transition:transform .25s ease-out;transform-style:preserve-3d;animation:float 7s ease-in-out infinite}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.wave{display:block;width:100%;height:clamp(40px,7vw,90px);margin-top:-2px;position:relative;z-index:3}
+
+/* franja de numeros */
+.stats{background:var(--snow);padding-block:34px 18px}
+.stats ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;text-align:center}
+.stats b{display:block;font:400 clamp(2.4rem,5vw,3.6rem) var(--f-display);color:var(--berry);line-height:1}
+.stats span{font-weight:600;color:var(--muted);font-size:.95rem}
+.ribbon{overflow:hidden;background:var(--night);color:#fff;padding-block:14px;margin-top:26px;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.ribbon div{display:flex;gap:42px;width:max-content;animation:roll 60s linear infinite}
+.ribbon:hover div{animation-play-state:paused}
+.ribbon span{font:400 1.15rem var(--f-display);white-space:nowrap}
+.ribbon span::before{content:"✦";color:var(--gold);margin-right:42px}
+@keyframes roll{to{transform:translateX(-50%)}}
+
+/* cajas y tarjetas */
+.ice{background:var(--ice)}
+.pains{list-style:none;padding:0;margin:2.2rem 0 0;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));text-align:left}
+.pains li{background:#fff;border-radius:24px;padding:26px;border:2px solid var(--mist);box-shadow:0 14px 34px rgba(16,34,58,.08);font-size:1.12rem}
+.pains b{color:var(--berry)}
+.pains .n{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--night);color:var(--gold);font:400 1.3rem var(--f-display);margin-bottom:14px}
+.lines{list-style:none;padding:0;margin:2rem auto 0;display:grid;gap:10px;max-width:660px;text-align:left}
+.lines li{background:#fff;border-radius:16px;padding:14px 18px 14px 48px;position:relative;border:2px solid var(--mist);font-size:1.06rem}
+.lines li::before{content:"✦";position:absolute;left:18px;top:13px;color:var(--berry)}
+.big2{font:400 clamp(1.4rem,3.3vw,2.1rem)/1.35 var(--f-display);color:var(--night);max-width:780px;margin:1.8rem auto 0;text-wrap:balance}
+.big2 em{font-style:normal;color:var(--berry)}
+.tag{display:inline-block;background:var(--night);color:var(--gold);font:700 .74rem var(--f-body);letter-spacing:.16em;text-transform:uppercase;border-radius:999px;padding:.45rem .95rem}
+.block{display:grid;gap:36px;align-items:center;grid-template-columns:1fr;margin-top:clamp(40px,6vw,72px)}
+@media(min-width:860px){.block{grid-template-columns:1fr 1fr}}
+.block>*,.two>*{min-width:0}
+.block h3,.sub{font-size:clamp(1.6rem,3.2vw,2.3rem);color:var(--night);margin:.8rem 0 .6rem}
+.block p,.sub+p{color:var(--muted);margin:.2rem 0 1rem}
+.ticks{list-style:none;padding:0;margin:0}.ticks li{padding-left:1.8rem;position:relative;margin:.4rem 0}.ticks li::before{content:"✦";position:absolute;left:0;color:var(--berry)}
+.frame{background:linear-gradient(160deg,var(--night2),var(--night));padding:clamp(14px,2.4vw,26px);border-radius:30px;box-shadow:0 24px 50px rgba(11,51,38,.35)}
+.frame>img{border-radius:18px}
+[data-lb]{cursor:zoom-in;border-radius:14px;transition:transform .25s,box-shadow .25s}
+[data-lb]:hover{transform:translateY(-5px) scale(1.015)}
+.strip{list-style:none;margin:0;padding:12px 4px 26px;display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.strip li{flex:0 0 auto;scroll-snap-align:start}
+.pimg{width:min(240px,62vw);box-shadow:0 12px 26px rgba(11,51,38,.28);border-radius:16px}
+.wimg{width:min(300px,72vw);box-shadow:0 10px 24px rgba(11,51,38,.22);border-radius:12px}
+.hint{font:700 .78rem var(--f-body);letter-spacing:.12em;text-transform:uppercase;color:var(--night2);margin:.3rem 0 0}
+.stages{list-style:none;margin:1.4rem 0 0;padding:0;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.stages li{background:#fff;border-radius:16px;padding:14px;display:grid;gap:2px;border:2px solid var(--mist)}
+.stn{width:32px;height:32px;border-radius:50%;background:var(--berry);color:#fff;display:grid;place-items:center;font:400 1.05rem var(--f-display)}
+.stages b{font:700 .78rem var(--f-body);color:var(--berry);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.badges{list-style:none;padding:0;margin:1.4rem 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:12px}
+.badge{border-radius:50%!important;box-shadow:0 6px 14px rgba(11,51,38,.28)}
+.two{display:grid;gap:36px;grid-template-columns:1fr;align-items:center;margin-top:2rem}
+@media(min-width:860px){.two{grid-template-columns:1fr 1fr}}
+
+/* puertas interactivas */
+.doors-wrap{display:grid;gap:30px;grid-template-columns:1fr;align-items:start;margin-top:2.4rem}
+@media(min-width:900px){.doors-wrap{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.doors{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(6px,1.3vw,12px);width:100%;max-width:560px;margin:auto;padding:clamp(10px,2vw,18px);background:linear-gradient(160deg,#fff,var(--ice));border:3px solid var(--night);border-radius:26px;box-shadow:0 8px 0 var(--night),0 24px 40px rgba(11,51,38,.25)}
+.door{position:relative;aspect-ratio:3/4;border:0;padding:0;background:var(--night);border-radius:10px;cursor:pointer;perspective:520px;overflow:visible}
+.door::before{content:"★";position:absolute;inset:0;display:grid;place-items:center;color:var(--gold);font-size:clamp(1rem,3vw,1.6rem);background:radial-gradient(circle,#fff6d8,#f6c453 70%);border-radius:10px}
+.door i{position:absolute;inset:0;border-radius:10px;background:var(--berry);color:#fff;display:grid;place-items:center;font:400 clamp(1.1rem,3.4vw,1.9rem) var(--f-display);font-style:normal;transform-origin:left center;transition:transform .7s cubic-bezier(.3,1.2,.4,1);border:2px solid rgba(255,255,255,.55);box-shadow:inset 0 0 0 3px rgba(0,0,0,.1)}
+.door:nth-child(even) i{background:var(--pine)}
+.door i::after{content:"";position:absolute;right:9%;top:50%;width:11%;aspect-ratio:1;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px rgba(0,0,0,.18)}
+.door:hover i{transform:rotateY(-18deg)}
+.door[aria-pressed="true"] i,.door.seen i{transform:rotateY(-115deg)}
+.door[aria-pressed="true"]{outline:3px solid var(--gold);outline-offset:2px}
+.panel{background:#fff;border:2px solid var(--mist);border-radius:26px;padding:clamp(18px,3vw,28px);box-shadow:0 16px 40px rgba(11,51,38,.12);min-height:300px}
+.panel .pd{font:700 .78rem var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--berry)}
+.panel h3{font-size:clamp(1.5rem,3vw,2.1rem);color:var(--night);margin:.4rem 0 .6rem}
+.panel p{color:var(--muted);margin:.4rem 0}
+.panel .pc{display:flex;gap:12px;margin-top:14px;flex-wrap:wrap}
+.panel .pc img{width:min(46%,200px);border-radius:12px;box-shadow:0 8px 18px rgba(11,51,38,.25);cursor:zoom-in}
+.panel .hand{font:600 1.45rem/1.2 var(--f-hand);color:var(--pine);margin-top:12px}
+.panel.pop{animation:pop .45s cubic-bezier(.3,1.4,.5,1)}
+@keyframes pop{from{transform:scale(.96);opacity:.4}to{transform:none;opacity:1}}
+
+/* recibis */
+.rcv{list-style:none;margin:2.2rem 0 0;padding:0;display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));text-align:left}
+.rcv li{background:#fff;border-radius:22px;padding:12px 12px 16px;border:2px solid var(--mist);box-shadow:0 12px 28px rgba(11,51,38,.08);min-width:0;transition:transform .25s}
+.rcv li:hover{transform:translateY(-6px) rotate(-.6deg)}
+.rcv img{width:100%;aspect-ratio:3/4;object-fit:contain;background:var(--ice);border-radius:14px}
+.rcv b{display:block;font:400 1.1rem var(--f-display);color:var(--night);margin:.8rem 0 .15rem}
+.rcv span{font-size:.9rem;color:var(--muted)}
+.need{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));margin:2rem auto 0;max-width:900px;text-align:left}
+.need div{background:#fff;border:2px dashed var(--mist);border-radius:20px;padding:22px}
+.need h3{font-size:1.25rem;color:var(--night);margin-bottom:.4rem}
+.need p{margin:.3rem 0;color:var(--muted)}
+
+/* banda de compra intermedia */
+.cta-band{margin-top:clamp(40px,6vw,70px);background:linear-gradient(120deg,var(--night),var(--night2));color:#fff;border-radius:30px;padding:clamp(22px,4vw,38px);display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;box-shadow:0 20px 44px rgba(11,51,38,.3)}
+.cta-band b{display:block;font:400 clamp(1.4rem,3vw,2rem) var(--f-display)}
+.cta-band span{color:#d6eadf}
+.cta-band>div{min-width:0;flex:1 1 260px}
+
+/* como funciona */
+.how{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin:2.2rem 0 0;padding:0;list-style:none;text-align:left;counter-reset:s}
+.how li{background:#fff;border-radius:24px;padding:26px 24px;border:2px solid var(--mist);counter-increment:s;position:relative}
+.how li::before{content:counter(s);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:var(--berry);color:#fff;font:400 1.4rem var(--f-display);margin-bottom:14px}
+.how li:not(:last-child)::after{content:"→";position:absolute;right:-16px;top:34px;color:var(--berry);font-size:1.5rem;z-index:2}
+@media(max-width:900px){.how li::after{display:none!important}}
+.how b{display:block;font:400 1.35rem var(--f-display);color:var(--night);margin-bottom:.35rem}
+.how span{color:var(--muted)}
+.imagine{list-style:none;padding:0;margin:1.8rem auto 0;display:grid;gap:12px;max-width:640px;text-align:left}
+.imagine li{padding:15px 18px 15px 52px;position:relative;background:#fff;border-radius:18px;border:2px solid var(--mist);font-size:1.1rem}
+.imagine li::before{content:"✦";position:absolute;left:20px;top:14px;color:var(--berry);font-size:1.2rem}
+
+/* oferta */
+.dark{background:radial-gradient(120% 90% at 50% 0%,var(--night2),var(--night) 65%);color:#fff;overflow:hidden}
+.dark::before{content:"";position:absolute;inset:0;background-image:radial-gradient(2px 2px at 10% 20%,#fff,transparent),radial-gradient(2px 2px at 85% 30%,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 60% 80%,#fff,transparent),radial-gradient(2px 2px at 30% 70%,#fff,transparent);animation:twinkle 4s ease-in-out infinite alternate;pointer-events:none}
+.dark .wrap{position:relative}
+.price{background:#fff;border-radius:34px;padding:clamp(26px,5vw,50px);max-width:740px;margin:2.2rem auto 0;color:var(--ink);text-align:center;box-shadow:0 10px 0 var(--gold-d),0 30px 60px rgba(0,0,0,.45)}
+.price .amt{font:400 clamp(3.4rem,10vw,5.2rem) var(--f-display);color:var(--berry);line-height:1.2}
+.price .per{display:inline-block;background:var(--ice);color:var(--night2);font-weight:700;border-radius:999px;padding:.3rem .9rem;margin:.6rem 0 0}
+.price ul{list-style:none;padding:0;margin:1.4rem auto;text-align:left;max-width:460px}
+.price li{margin:.5rem 0;padding-left:1.8rem;position:relative}
+.price li::before{content:"✓";position:absolute;left:0;color:var(--pine);font-weight:800}
+.trust{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:1.2rem 0 0;padding:0;list-style:none}
+.trust li{background:var(--ice);border-radius:999px;padding:.35rem .9rem;font-weight:700;font-size:.82rem;color:var(--night2);margin:0}
+.trust li::before{display:none}
+
+/* FAQ */
+details{background:#fff;border:2px solid var(--mist);border-radius:18px;padding:18px 22px;margin:12px 0;transition:box-shadow .2s}
+details[open]{box-shadow:0 12px 28px rgba(11,51,38,.1)}
+summary{font:400 1.2rem var(--f-display);cursor:pointer;color:var(--night);list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font:700 1.5rem var(--f-body);color:var(--berry);transition:transform .25s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:.7rem 0 0;color:var(--muted)}
+
+/* cierre */
+.close{background:radial-gradient(110% 120% at 50% 0%,#1d6a52,var(--pine) 60%,#0d3a2d);color:#fff;text-align:center;overflow:hidden}
+.close .big{font:400 clamp(1.6rem,4vw,2.5rem)/1.35 var(--f-display);max-width:860px;margin:.8rem auto 0;text-wrap:balance}
+.close .big em{font-style:normal;color:var(--gold)}
+.close .lead{margin:1.1rem auto 0}
+footer{background:var(--night);color:#cfe6d9;text-align:center;padding:44px var(--gxr) 120px var(--gx);font-size:.9rem}
+footer img{height:52px;margin:0 auto 12px;width:auto}
+
+/* sticky + pedido + visor */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:10px var(--gxr) calc(10px + env(safe-area-inset-bottom,0px)) var(--gx);background:rgba(11,51,38,.96);backdrop-filter:blur(8px);display:flex;gap:14px;justify-content:center;align-items:center;transform:translateY(110%);transition:transform .3s}
+.sticky.on{transform:none}
+.sticky span{color:#fff;font-weight:700}
+.sticky small{display:block;color:#cfe6d9;font-weight:500;font-size:.78rem}
+.sticky .btn{min-height:48px;padding:0 1.4rem;font-size:1rem}
+.modal{position:fixed;inset:0;z-index:80;background:rgba(6,32,24,.82);display:flex;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) var(--gxr) calc(16px + env(safe-area-inset-bottom,0px)) var(--gx);overflow:auto}
+.sheet{position:relative;background:#fff;border-radius:28px;width:min(520px,100%);padding:clamp(24px,4vw,36px);box-shadow:0 30px 80px rgba(0,0,0,.5);animation:pop .4s cubic-bezier(.3,1.4,.5,1)}
+.sheet h3{font-size:1.8rem;color:var(--night);margin:.4rem 0 .8rem}
+.sheet ul{list-style:none;margin:0 0 1rem;padding:0;display:grid;gap:6px}
+.sheet li{padding-left:1.6rem;position:relative}
+.sheet li::before{content:"✓";position:absolute;left:0;color:var(--pine);font-weight:800}
+.sheet .tot{display:flex;justify-content:space-between;align-items:baseline;border-top:2px dashed var(--mist);padding-top:14px;margin-top:8px}
+.sheet .tot b{font:400 2.6rem var(--f-display);color:var(--berry)}
+.sheet small{display:block;color:var(--muted);margin:.2rem 0 1rem}
+.sheet .btn{width:100%}
+.sheet .mx{position:absolute;right:12px;top:12px;width:40px;height:40px;border-radius:50%;border:0;background:var(--ice);color:var(--night);font-size:1.4rem;cursor:pointer}
+#go-note{margin:.9rem 0 0;padding:.7rem 1rem;border-radius:14px;background:#fff3cf;color:#5a3d00;font-weight:700;font-size:.95rem}
+#lb{position:fixed;inset:0;z-index:90;background:rgba(6,32,24,.95);display:none;align-items:center;justify-content:center;padding:56px 12px 70px}
+#lb.open{display:flex}
+#lb img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.6);cursor:default;touch-action:pan-y}
+#lb .cap{position:absolute;left:0;right:0;bottom:18px;text-align:center;color:#fff;font:400 1.05rem var(--f-display);padding:0 70px}
+#lb button{position:absolute;border:0;border-radius:50%;width:52px;height:52px;background:rgba(255,255,255,.95);color:var(--night);font:700 1.6rem/1 var(--f-body);cursor:pointer}
+#lb .x{top:10px;right:10px}#lb .p{left:8px;top:50%;margin-top:-26px}#lb .n{right:8px;top:50%;margin-top:-26px}
+#lb .count{position:absolute;top:22px;left:18px;color:#cfe6d9;font:700 .9rem var(--f-body)}
+
+/* animaciones de entrada: visibles por defecto, solo se ocultan si el JS las arma */
+.rv{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.rv.arm{opacity:0;transform:translateY(28px)}
+.rv.arm.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}.rv.arm{opacity:1;transform:none}}
+
+/* ===== version concisa: verde y rojo ===== */
+.hero{background:radial-gradient(120% 100% at 50% 0%,#1f7a58 0%,#0f4a37 55%,#0a3226 100%)}
+.hero h1 em{color:var(--gold)}
+.herocard{max-width:520px;margin:1.8rem auto 0;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:28px;padding:22px 22px 24px;backdrop-filter:blur(6px)}
+.herocard .amt{font:400 clamp(3.4rem,10vw,5rem) var(--f-display);color:#fff;line-height:1}
+.herocard .amt small{font:600 1rem var(--f-body);color:#ffd9dc;display:block;margin-top:.3rem;letter-spacing:.02em}
+.herocard .btn{width:100%;margin-top:1rem}
+.band{background:linear-gradient(180deg,#d2373f,#a8242d);color:#fff;padding-block:30px}
+.band ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;text-align:center}
+.band b{display:block;font:400 clamp(2.4rem,5vw,3.4rem) var(--f-display);line-height:1}
+.band span{font-weight:600;color:#ffe3e5;font-size:.95rem}
+.why{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin-top:2.2rem;padding:0;list-style:none;text-align:left}
+.why li{background:#fff;border:2px solid var(--mist);border-radius:24px;padding:24px;box-shadow:0 14px 34px rgba(11,51,38,.08)}
+.why b{display:block;font:400 1.4rem var(--f-display);color:var(--night);margin:.2rem 0 .3rem}
+.why span{color:var(--muted)}
+.why i{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--berry);color:#fff;font:400 1.3rem var(--f-display);font-style:normal}
+.greensec{background:radial-gradient(120% 100% at 50% 0%,#1b6a4e,#0f4a37 60%,#0a3226);color:#fff;overflow:hidden}
+.greensec h2{color:#fff}
+.greensec .lead{color:#d6eadf}
+.greensec .rcv li{background:#fff;border-color:transparent}
+.greensec .need div{background:rgba(255,255,255,.08);border:2px dashed rgba(255,255,255,.35)}
+.greensec .need h3{color:#fff}
+.greensec .need p{color:#d6eadf}
+.redsec{background:radial-gradient(120% 100% at 50% 0%,#d63a43,#b02a33 55%,#8f1f29);color:#fff;overflow:hidden}
+.redsec h2{color:#fff}
+.redsec .lead,.redsec .doors-wrap p{color:#ffe3e5}
+.redsec .sub{color:#fff}
+.redsec .doors{border-color:#fff;box-shadow:0 8px 0 rgba(0,0,0,.25),0 24px 40px rgba(0,0,0,.3)}
+.redsec .door i{background:var(--pine)}
+.redsec .door:nth-child(even) i{background:var(--berry)}
+.redsec .panel p{color:var(--muted)}
+.redsec .panel .hand{color:var(--pine)}
+.offer{background:radial-gradient(120% 100% at 50% 0%,#d63a43,#b02a33 55%,#8f1f29);color:#fff}
+.offer h2{color:#fff}
+.offer .eyebrow{color:#ffe9a8}
+.offer .price{box-shadow:0 10px 0 #6e141c,0 30px 60px rgba(0,0,0,.4)}
+.offer .price .per{background:#fde8ea;color:var(--berry-d)}
+.offer .btn-red{background:linear-gradient(180deg,#1f7a58,#14503E);box-shadow:0 5px 0 #0a3226,0 14px 28px rgba(0,0,0,.3)}
+.offer .btn-red:active{box-shadow:0 1px 0 #0a3226}
+.offer .trust li{background:#e8f4ee;color:var(--night)}
+.offer::before{display:none}
+.how{margin-top:2rem}
+.greensec .how li{background:#fff}
+.greensec .how li::after{color:var(--gold)}
+.close{background:radial-gradient(110% 120% at 50% 0%,#c9323c,#a8242d 60%,#7e1a23)}
+.close .btn-red{background:linear-gradient(180deg,#1f7a58,#14503E);box-shadow:0 5px 0 #0a3226,0 14px 28px rgba(0,0,0,.3)}
+footer{background:#0a3226}
+.sticky{background:rgba(10,50,38,.96)}
+
+
+/* ===== asistente de compra ===== */
+.chat-fab{position:fixed;right:var(--gxr);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;align-items:center;gap:10px;border:0;cursor:pointer;background:linear-gradient(180deg,#e2444e,var(--berry));color:#fff;font:700 .95rem var(--f-body);padding:0 18px 0 14px;height:56px;border-radius:999px;box-shadow:0 5px 0 var(--berry-d),0 14px 30px rgba(0,0,0,.35);transition:transform .2s,bottom .3s}
+.chat-fab:hover{transform:translateY(-2px)}
+.chat-fab svg{width:26px;height:26px;flex:none}
+.chat-fab .dot{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid #fff;animation:ping 1.8s ease-out infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(246,196,83,.7)}100%{box-shadow:0 0 0 14px rgba(246,196,83,0)}}
+body.sb .chat-fab{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.chat-tip{position:fixed;right:var(--gxr);bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:45;max-width:min(270px,calc(100% - 32px));background:#fff;color:var(--ink);border-radius:18px 18px 4px 18px;padding:12px 38px 12px 14px;box-shadow:0 14px 34px rgba(0,0,0,.3);font-size:.95rem;line-height:1.35;animation:pop .45s cubic-bezier(.3,1.4,.5,1);transition:bottom .3s}
+body.sb .chat-tip{bottom:calc(156px + env(safe-area-inset-bottom,0px))}
+.chat-tip button{position:absolute;top:4px;right:6px;border:0;background:none;font-size:1.3rem;line-height:1;cursor:pointer;color:var(--muted);padding:4px 8px}
+.chat-tip b{color:var(--berry)}
+.chat{padding:0;position:fixed;right:var(--gxr);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:75;width:min(390px,calc(100% - var(--gx) - var(--gxr)));height:min(600px,calc(100% - 32px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px)));background:#fff;border-radius:24px;box-shadow:0 30px 80px rgba(0,0,0,.5);display:flex;flex-direction:column;overflow:hidden;animation:pop .35s cubic-bezier(.3,1.3,.5,1)}
+.chat-h{background:linear-gradient(135deg,#1c6a4e,#0f4a37);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.chat-logo{height:46px;width:auto;flex:none}
+.logobox{display:block;background:linear-gradient(135deg,#1c6a4e,#0f4a37);border-radius:14px;padding:10px 16px;margin:0 0 10px;text-align:center}
+.logobox img{height:58px;width:auto;margin:auto}
+.tiplogo{display:inline-block;background:#14503E;border-radius:10px;padding:4px 12px;margin-bottom:6px}
+.tiplogo img{height:30px;width:auto}
+.chat-h .av{flex:none;width:42px;height:42px;border-radius:50%;background:var(--berry);display:grid;place-items:center;font:400 1.1rem var(--f-display);border:2px solid rgba(255,255,255,.7)}
+.chat-h b{display:block;font:400 1.15rem var(--f-display);line-height:1.1}
+.chat-h small{color:#cfe6d9;font-size:.78rem}
+.chat-h .cx{margin-left:auto;border:0;background:rgba(255,255,255,.16);color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.3rem;cursor:pointer}
+.chat-b{flex:1;overflow-y:auto;padding:16px 14px;background:var(--ice);display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msg{max-width:86%;padding:10px 14px;border-radius:18px;font-size:.96rem;line-height:1.45;animation:pop .3s ease-out;overflow-wrap:anywhere}
+.msg.bot{background:#fff;color:var(--ink);border-bottom-left-radius:4px;align-self:flex-start;box-shadow:0 2px 8px rgba(11,51,38,.08)}
+.msg.me{background:var(--pine);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.msg.bot b{color:var(--night)}
+.msg .go{display:block;margin-top:10px;width:100%;border:0;cursor:pointer;background:linear-gradient(180deg,#e2444e,var(--berry));color:#fff;font:700 .95rem var(--f-body);padding:11px 14px;border-radius:999px;box-shadow:0 3px 0 var(--berry-d)}
+.typing{display:flex;gap:4px;padding:12px 14px}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.chips-q{display:flex;flex-wrap:wrap;gap:8px;padding:10px 14px 4px;background:var(--ice);border-top:1px solid var(--mist)}
+.chips-q button{border:2px solid var(--pine);background:#fff;color:var(--pine);font:600 .85rem var(--f-body);padding:7px 12px;border-radius:999px;cursor:pointer;transition:background .15s,color .15s}
+.chips-q button:hover{background:var(--pine);color:#fff}
+.chips-q button.hot{background:var(--berry);border-color:var(--berry);color:#fff}
+.chat-f{display:flex;gap:8px;padding:10px 12px calc(12px + env(safe-area-inset-bottom,0px));background:var(--ice)}
+.chat-f input{flex:1;min-width:0;border:2px solid var(--mist);border-radius:999px;padding:0 16px;height:46px;font:500 1rem var(--f-body);background:#fff;color:var(--ink)}
+.chat-f input:focus{outline:none;border-color:var(--pine)}
+.chat-f button{flex:none;width:46px;height:46px;border:0;border-radius:50%;background:var(--berry);color:#fff;cursor:pointer;display:grid;place-items:center}
+.chat-f button svg{width:20px;height:20px}
+.chat-note{font-size:.72rem;color:var(--muted);text-align:center;padding:0 12px 8px;background:var(--ice)}
+@media(max-width:560px){.chat{right:0;left:0;width:100%;bottom:0;height:min(86dvh,640px);border-radius:24px 24px 0 0;padding-bottom:env(safe-area-inset-bottom,0px)}}
+.askline{margin:1rem 0 0;font-size:.95rem;color:#d6eadf}
+.askline a,.askline button{color:#fff;font-weight:700;text-decoration:underline;background:none;border:0;cursor:pointer;font:inherit;padding:0}
+
+/* ===== escenario del hero ===== */
+.mock{max-width:1120px;margin:2.2rem auto 0;perspective:1200px}
+.stage{position:relative;aspect-ratio:10/7.4;border-radius:28px;overflow:hidden;background:radial-gradient(90% 80% at 50% 28%,#1b6e4e,#0b3326 72%);box-shadow:0 24px 64px rgba(0,0,0,.45);transition:transform .25s ease-out;transform-style:preserve-3d}
+.stage .s{position:absolute;height:auto;box-shadow:0 14px 28px rgba(0,0,0,.45);border-radius:5px;max-width:none}
+.stage .s-cb{left:2.5%;top:9%;width:17%;transform:rotate(-7deg);z-index:1}
+.stage .s-gd{left:18%;top:4%;width:18.5%;transform:rotate(-3deg);z-index:2}
+.stage .s-cal{left:35.5%;top:3%;width:20.5%;z-index:3;animation:float 7s ease-in-out infinite}
+.stage .s-doors{left:46%;top:30%;width:28%;transform:rotate(2.5deg);z-index:4;border-radius:6px}
+.stage .s-pas{left:70%;top:6%;width:19.5%;transform:rotate(5deg);z-index:2;animation:float 8s ease-in-out -2s infinite}
+.stage .s-env{left:85.5%;top:46%;width:12.5%;transform:rotate(7deg);z-index:5}
+.stage .s-c1,.stage .s-c2,.stage .s-c3,.stage .s-c4,.stage .s-c5{width:12.5%;border-radius:8px}
+.stage .s-c1{left:17%;bottom:2%;transform:rotate(-9deg);z-index:6}
+.stage .s-c2{left:28.5%;bottom:3.5%;transform:rotate(-4deg);z-index:7}
+.stage .s-c3{left:40%;bottom:1.5%;transform:rotate(0deg);z-index:8}
+.stage .s-c4{left:51.5%;bottom:3.5%;transform:rotate(4deg);z-index:9}
+.stage .s-c5{left:63%;bottom:2%;transform:rotate(9deg);z-index:10}
+.stage .b{width:8.4%;border-radius:50%;box-shadow:0 6px 14px rgba(0,0,0,.5);z-index:11}
+.stage .b1{left:3.5%;top:55%}.stage .b2{left:11.5%;top:66%}.stage .b3{left:3%;top:77%}.stage .b4{left:12%;top:86%}
+.stage .b5{left:88%;top:72%}.stage .b6{left:80%;top:84%}.stage .b7{left:90.5%;top:85%}
+@media(prefers-reduced-motion:reduce){.stage .s-cal,.stage .s-pas{animation:none}}
+
+/* ===== qué incluye: orden pedido ===== */
+.rcv{grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:900px){.rcv{grid-template-columns:repeat(4,1fr);gap:18px}}
+.rcv li.wide{grid-column:1/-1;display:grid;gap:18px;grid-template-columns:1fr;align-items:center;text-align:left;padding:18px}
+@media(min-width:900px){.rcv li.wide{grid-template-columns:minmax(0,.8fr) minmax(0,3fr)}}
+.rcv li.wide:hover{transform:none}
+.rcv .wtxt b{font:400 1.7rem var(--f-display);color:var(--night);margin:0 0 .4rem}
+.rcv .wtxt span{font-size:1rem}
+.rcv .wimgs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.rcv .wimgs img{aspect-ratio:3/4;object-fit:cover;border-radius:10px;width:100%;cursor:zoom-in;box-shadow:0 6px 16px rgba(11,51,38,.18)}
+.badgegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8%;align-content:center;aspect-ratio:3/4;background:var(--ice);border-radius:14px;padding:10%}
+.rcv .badgegrid img{aspect-ratio:1;object-fit:contain;background:none;border-radius:50%;width:100%;box-shadow:0 3px 8px rgba(11,51,38,.25)}
+
+/* ===== chat: foto y nombre ===== */
+.chat-fab{background:#fff;color:var(--night);padding:6px 20px 6px 6px;height:66px;gap:12px;box-shadow:0 8px 26px rgba(0,0,0,.38);border:2px solid var(--berry)}
+.chat-fab:hover{transform:translateY(-3px)}
+.chat-fab .av{position:relative;flex:none;width:52px;height:52px}
+.chat-fab .av img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid var(--berry);background:#fff}
+.chat-fab .av i{position:absolute;right:0;bottom:2px;width:13px;height:13px;border-radius:50%;background:#2bb673;border:2px solid #fff;font-style:normal}
+.chat-fab .tx{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left}
+.chat-fab .tx b{font:400 1.05rem var(--f-display);color:var(--night)}
+.chat-fab .tx small{font:500 .74rem var(--f-body);color:var(--muted)}
+.chat-fab .dot{display:none}
+.chat-h .chat-av{flex:none;width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid #fff;background:#fff}
+.chat-h b{font:400 1.2rem var(--f-display)}
+.msg.bot.first{padding-top:12px}
+.tiplogo{display:none}
+.chat-tip .tav{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.chat-tip .tav img{width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--berry)}
+.chat-tip .tav strong{font:400 1.05rem var(--f-display);color:var(--night)}
+@media(max-width:560px){.chat-fab{height:60px;padding:5px 16px 5px 5px}.chat-fab .av,.chat-fab .av img{width:48px;height:48px}}
+.rcv li:nth-child(5) img{object-fit:cover}
+
+/* ===== hero: portada + guia a la izquierda, calendario completo al centro, pasaporte + colorear a la derecha ===== */
+.stage .s-cal{left:2%;top:15%;width:16.5%;transform:rotate(-6deg);z-index:2;animation:float 7s ease-in-out infinite}
+.stage .s-gd{left:14.5%;top:7%;width:16.5%;transform:rotate(3deg);z-index:3}
+.stage .s-board{left:31%;top:4%;width:38%;transform:none;z-index:4;border-radius:8px;animation:float 9s ease-in-out -3s infinite;box-shadow:0 18px 40px rgba(0,0,0,.55)}
+.stage .s-pas{left:68%;top:7%;width:16.5%;transform:rotate(-3deg);z-index:3;animation:float 8s ease-in-out -2s infinite}
+.stage .s-cb{left:81%;top:15%;width:16.5%;transform:rotate(6deg);z-index:2;animation:none}
+.stage .s-env{left:85.5%;top:51%;width:12.5%;transform:rotate(7deg);z-index:5}
+@media(prefers-reduced-motion:reduce){.stage .s-board{animation:none}}
+.stage{aspect-ratio:10/6.9}
+
+/* ===== mejoras de la auditoría ===== */
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px 22px;justify-content:center;align-items:center;margin:1.6rem 0 0}
+.ghost{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:4px;min-height:44px;display:inline-flex;align-items:center;padding:0 6px}
+.ghost:hover{color:var(--gold)}
+.chat-fab{transition:opacity .3s,transform .3s,bottom .3s}
+body.fabhide .chat-fab{opacity:0;pointer-events:none;transform:translateY(24px)}
+details{padding:0}
+summary{padding:16px 22px;min-height:52px}
+details p{padding:0 22px 18px;margin:0}
+.askline button{min-height:44px;padding:0 10px}
+#legal{margin-top:8px;opacity:.85}
+@media(max-width:560px){.stage .s-env{display:none}.hero-cta .btn{width:100%}}
+.lead-below{margin:2rem auto 0}.hero .lead.lead-below{margin:2rem auto 0}.hero-cta{margin-top:1.4rem}
+
+/* ===== versión 13 secciones ===== */
+.hero .eyebrow{max-width:92%}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3.3rem)}
+.hl{list-style:none;padding:0;margin:1.6rem auto 0;display:grid;gap:10px;max-width:760px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));text-align:left}
+.hl li{background:rgba(255,255,255,.08);border:1px solid rgba(246,196,83,.4);border-radius:18px;padding:.8rem 1rem;color:#fff3cf;font-weight:600;line-height:1.35}
+.hl b{display:block;color:#fff;font-weight:800;letter-spacing:.03em;font-size:.8rem;text-transform:uppercase}
+.twoc{display:grid;gap:34px;grid-template-columns:1fr;align-items:center;margin-top:2.2rem;text-align:left}
+@media(min-width:900px){.twoc{grid-template-columns:1fr 1fr}.twoc.rev .ph{order:2}}
+.twoc>*{min-width:0}
+.ph{position:relative;border-radius:28px;overflow:hidden;box-shadow:0 22px 50px rgba(11,51,38,.3);border:4px solid #fff}
+.ph img{width:100%;height:auto;display:block}
+.ph figcaption{position:absolute;left:12px;bottom:10px;font:600 .74rem var(--f-body);color:rgba(255,255,255,.92);text-shadow:0 1px 5px rgba(0,0,0,.8)}
+.ph{margin:0}
+.pk{list-style:none;padding:0;margin:0;display:grid;gap:14px}
+.pk li{background:#fff;border:2px solid var(--mist);border-radius:22px;padding:18px 20px;box-shadow:0 10px 26px rgba(11,51,38,.07)}
+.pk b{display:block;font:400 1.2rem var(--f-display);color:var(--night);margin-bottom:.25rem;line-height:1.35}
+.pk span{color:var(--muted);font-size:.98rem}
+.soft{max-width:720px;margin:1.6rem auto 0;color:var(--muted);font-size:1.08rem}
+.soft b{color:var(--night)}
+.checks{list-style:none;padding:0;margin:1.2rem 0 0;display:grid;gap:10px}
+.checks li{padding-left:2rem;position:relative;font-size:1.05rem}
+.checks li::before{content:"✦";position:absolute;left:0;color:var(--berry);font-size:1.1rem}
+.quote{font:400 clamp(1.3rem,3vw,1.9rem)/1.4 var(--f-display);color:var(--night);background:linear-gradient(135deg,#fff,var(--ice));border:2px solid var(--mist);border-radius:24px;padding:22px 26px;margin:1.6rem 0 0;position:relative}
+.quote::before{content:"“";position:absolute;left:12px;top:-6px;font:400 4rem var(--f-display);color:var(--berry);line-height:1}
+.bonus{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));margin:2.2rem 0 0;padding:0;list-style:none;text-align:left}
+.bonus li{background:#fff;border:3px dashed var(--berry);border-radius:26px;padding:16px 16px 20px;position:relative;min-width:0;box-shadow:0 14px 30px rgba(143,31,41,.15)}
+.bonus .tg{position:absolute;top:-14px;left:18px;background:var(--berry);color:#fff;font:700 .74rem var(--f-body);letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:.4rem .9rem;box-shadow:0 3px 0 var(--berry-d)}
+.bonus img,.bonus .pl{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:16px;background:var(--ice);display:block}
+.bonus .pl{display:grid;place-items:center;background:linear-gradient(135deg,var(--night2),var(--pine));color:#fff;font:400 1.5rem var(--f-display);text-align:center;padding:12px}
+.bonus b{display:block;font:400 1.3rem var(--f-display);color:var(--night);margin:.8rem 0 .2rem}
+.bonus span{color:var(--muted);font-size:.95rem}
+.bonus a.go2{display:inline-block;margin-top:.6rem;font-weight:700;color:var(--berry)}
+.rcv li .rb{position:absolute;top:8px;left:8px;z-index:2;background:var(--berry);color:#fff;font:700 .66rem var(--f-body);letter-spacing:.12em;text-transform:uppercase;border-radius:999px;padding:.3rem .7rem;box-shadow:0 2px 0 var(--berry-d)}
+.rcv li{position:relative}
+.steps5{list-style:none;padding:0;margin:1.4rem auto 0;display:grid;gap:10px;max-width:560px;text-align:left;counter-reset:s5}
+.steps5 li{counter-increment:s5;position:relative;padding:10px 12px 10px 54px;background:var(--ice);border-radius:14px;font-size:.98rem}
+.steps5 li::before{content:counter(s5);position:absolute;left:12px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--berry);color:#fff;display:grid;place-items:center;font:400 1rem var(--f-display)}
+.cwhy{list-style:none;padding:0;margin:1.2rem auto 0;display:grid;gap:8px;max-width:520px;text-align:left}
+.cwhy li{padding-left:1.8rem;position:relative}
+.cwhy li::before{content:"✓";position:absolute;left:0;color:var(--pine);font-weight:800}
+.big3{font:400 clamp(1.3rem,3vw,1.8rem)/1.35 var(--f-display);color:var(--berry-d);margin:1.4rem auto 0;max-width:640px}
+.small{font-size:.88rem;color:var(--muted);margin-top:.8rem}
+.gar{background:var(--ice)}
+.gar .chips3{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:1.4rem}
+.gar .chips3 span{background:#fff;border:2px solid var(--mist);border-radius:999px;padding:.5rem 1rem;font-weight:700;color:var(--night)}
+#legal-links{display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;margin-top:10px}
+#legal-links button{background:none;border:0;color:#fff;text-decoration:underline;cursor:pointer;font:inherit;min-height:36px;padding:0 4px}
+.sheet .lbody{white-space:pre-line;color:var(--ink);max-height:60vh;overflow:auto}
+.closeprice{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:.5rem 1.2rem;font:400 1.5rem var(--f-display);color:var(--gold);margin-top:1rem}
+.close ul.cl{list-style:none;padding:0;margin:1.2rem auto 0;display:grid;gap:6px;max-width:520px;text-align:left}
+.close ul.cl li{color:#fff3f3}
+</style>
+</head><body>
+
+<a class="skip" href="#adentro">Saltar al contenido</a>
+<div class="progress" aria-hidden="true"></div>
+<header class="topbar"><div class="wrap"><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><nav><a href="#adentro">Qué incluye</a><a href="#como">Cómo funciona</a><a href="#faq">Preguntas</a><a class="btn btn-red btn-sm" href="#checkout" data-buy>Comprar</a></nav></div></header>
+<main id="top">
+
+<!-- 01 HERO -->
+<section class="hero"><div class="sky"></div><div class="aurora"></div><canvas id="snowc" aria-hidden="true"></canvas><div class="wrap">
+<span class="eyebrow">The Christmas Experience · Mega Pack</span>
+<h1>Esta Navidad, regalale a tu familia recuerdos que van a guardar en el corazón para siempre.</h1>
+<div class="mock"><div class="stage" role="img" aria-label="El MegaPack WonderDays: guía para padres, calendario de adviento con sus 25 puertas, libro para colorear, pasaporte, tarjetas de misión, sobre e insignias"><img class="s s-cb" src="assets/cb-cover-s.webp" width="360" height="509" alt="" decoding="async"><img class="s s-gd" src="assets/guide-cover-real-s.webp" width="360" height="508" alt="" decoding="async" fetchpriority="high"><img class="s s-cal" src="assets/adv-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-board" src="assets/adv-board-s.webp" width="760" height="692" alt="" decoding="async" fetchpriority="high"><img class="s s-pas" src="assets/pas-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-env" src="assets/env-2-s.webp" width="280" height="365" alt="" decoding="async"><img class="s s-c1" src="assets/card-05-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c2" src="assets/card-01-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c3" src="assets/card-12-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c4" src="assets/card-18-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c5" src="assets/card-25-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s b b1" src="assets/badge-01-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b2" src="assets/badge-06-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b3" src="assets/badge-10-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b4" src="assets/badge-14-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b5" src="assets/badge-20-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b6" src="assets/badge-23-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b7" src="assets/badge-17-s.webp" width="120" height="120" alt="" decoding="async"></div></div>
+<p class="lead lead-below">Transformá cada uno de los 25 días de diciembre en una oportunidad para conectar, jugar y disfrutar juntos. Creen momentos llenos de magia, risas y amor que tus hijos recordarán toda la vida.</p>
+<p class="lead lead2" style="margin-top:1rem"><b>25 días para compartir en familia.</b> 25 momentos para celebrar el amor, la ilusión y la magia de la Navidad.</p>
+<ul class="hl">
+<li><b>🎁 Pago único</b>Lo comprás una sola vez.</li>
+<li><b>⚡ Entrega inmediata</b>Recibís los materiales por email tras la confirmación del pago.</li>
+<li><b>❤️ Sin suscripciones</b>Sin mensualidades ni cargos recurrentes.</li>
+</ul>
+<div class="herocard">
+<div class="amt">USD 25<small>Un solo pago · sin suscripciones</small></div>
+<a class="btn btn-red cta-big" href="#checkout" data-buy>Quiero vivir esta experiencia</a>
+<p class="fine priceuntil" hidden style="margin:.5rem 0 0"></p>
+<p class="fine" style="margin-bottom:0">Entrega digital · Se imprime en casa · Solo USD 1 por día</p>
+</div>
+<p class="askline">¿Dudas? <button type="button" data-chat>Preguntale al asistente</button></p>
+<div class="chips"><span class="chip">Para chicos de 3 a 10 años</span><span class="chip" id="cd" hidden></span></div>
+</div>
+<svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path fill="#D2373F" d="M0 40 C 120 85 240 85 360 50 C 480 15 600 15 720 50 C 840 85 960 85 1080 50 C 1200 15 1320 15 1440 45 L1440 90 L0 90 Z"/></svg>
+</section>
+
+<div class="band"><div class="wrap"><ul>
+<li><b data-count="25">25</b><span>días de aventura</span></li>
+<li><b data-count="25">25</b><span>tarjetas de misión</span></li>
+<li><b data-count="25">25</b><span>insignias para coleccionar</span></li>
+<li><b data-count="9">9</b><span>piezas para imprimir</span></li>
+</ul></div></div>
+
+<!-- 02 EL PROBLEMA -->
+<section><div class="wrap center">
+<span class="eyebrow">Lo que pasa en muchas familias</span>
+<h2 class="rv">¿Sentís que diciembre pasa volando y que cada vez cuesta más encontrar momentos para disfrutar en familia?</h2>
+<p class="soft">Entre el trabajo, las responsabilidades, las compras y las pantallas, muchas veces los días pasan sin que podamos detenernos a compartir esos pequeños momentos que realmente importan.</p>
+<div class="twoc">
+<figure class="ph rv"><img src="assets/foto-dolor.webp" width="1000" height="679" alt="Una familia en el sillón, cada uno con su pantalla, junto al árbol de Navidad" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
+<ul class="pk">
+<li class="rv"><b>Demasiado tiempo frente a las pantallas</b><span>Los celulares, las tablets y la televisión terminan ocupando gran parte del tiempo libre de los chicos. Y muchas veces, aunque estemos todos en casa, no estamos compartiendo realmente.</span></li>
+<li class="rv d1"><b>Queremos compartir más, pero no siempre sabemos cómo</b><span>Tenemos ganas de hacer cosas juntos, pero muchas veces nos faltan ideas, tiempo y actividades para organizar.</span></li>
+<li class="rv d2"><b>Diciembre llega y se va demasiado rápido</b><span>Entre los preparativos, las obligaciones y las corridas, podemos terminar viviendo la Navidad con apuro en lugar de disfrutarla.</span></li>
+</ul></div>
+<p class="big2 rv">Tus hijos crecen más rápido de lo que imaginás. <em>Esos pequeños momentos que hoy parecen cotidianos, mañana pueden ser algunos de sus recuerdos más lindos.</em></p>
+<p class="soft">Esta Navidad puede ser una oportunidad para detenernos, estar presentes y disfrutar juntos.</p>
+</div></section>
+
+<!-- 03 LA TRANSFORMACIÓN -->
+<section class="ice"><div class="wrap">
+<div class="center"><span class="eyebrow">Imaginá una Navidad diferente</span>
+<h2 class="rv">¿Y si este diciembre cada día tuviera algo especial para compartir?</h2></div>
+<div class="twoc rev">
+<div><p class="soft" style="margin:0">Imaginá decorar el árbol en familia, descubrir una nueva actividad, preparar algo creativo, jugar, reírse y compartir esos pequeños momentos que terminan convirtiéndose en grandes recuerdos. Una Navidad donde lo más importante no sea lo que hay debajo del árbol, sino las personas que están alrededor.</p>
+<p style="margin:1.2rem 0 .2rem;font-weight:800;color:var(--night);letter-spacing:.04em;text-transform:uppercase;font-size:.85rem">Con The Christmas Experience podés:</p>
+<ul class="checks">
+<li>Crear momentos de conexión entre padres e hijos.</li>
+<li>Compartir juegos y actividades sin pantallas.</li>
+<li>Despertar la creatividad y la imaginación.</li>
+<li>Construir nuevas tradiciones familiares.</li>
+<li>Disfrutar de propuestas para diferentes momentos del día.</li>
+<li>Convertir pequeños instantes en recuerdos inolvidables.</li>
+</ul>
+<p class="quote">Porque los mejores regalos muchas veces no se compran. Se viven.</p></div>
+<figure class="ph rv"><img src="assets/foto-beneficio.webp" width="1000" height="747" alt="Una familia con los abuelos riendo y jugando juntos en la mesa, con el pasaporte y las tarjetas del MegaPack" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
+</div></div></section>
+
+<!-- 04 PRESENTACIÓN -->
+<section><div class="wrap center">
+<span class="eyebrow">Conocé The Christmas Experience</span>
+<h2 class="rv">No es solamente un calendario de Adviento. Es una experiencia para vivir la Navidad en familia.</h2>
+<p class="lead">Creamos The Christmas Experience – Mega Pack para acompañarte durante los 25 días de diciembre con propuestas de juegos, creatividad, imaginación y conexión familiar. Una experiencia digital con diferentes recursos navideños para que cada día encuentres una nueva oportunidad de compartir.</p>
+<p class="lead" style="margin-top:1rem">No necesitás pasar horas buscando actividades, inventando juegos o pensando qué hacer. Todo está organizado para que puedas preparar las propuestas y disfrutar de cada momento con tus hijos.</p>
+<div class="mock"><div class="stage" role="img" aria-label="El MegaPack WonderDays: guía para padres, calendario de adviento con sus 25 puertas, libro para colorear, pasaporte, tarjetas de misión, sobre e insignias"><img class="s s-cb" src="assets/cb-cover-s.webp" width="360" height="509" alt="" decoding="async"><img class="s s-gd" src="assets/guide-cover-real-s.webp" width="360" height="508" alt="" decoding="async" fetchpriority="high"><img class="s s-cal" src="assets/adv-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-board" src="assets/adv-board-s.webp" width="760" height="692" alt="" decoding="async" fetchpriority="high"><img class="s s-pas" src="assets/pas-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-env" src="assets/env-2-s.webp" width="280" height="365" alt="" decoding="async"><img class="s s-c1" src="assets/card-05-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c2" src="assets/card-01-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c3" src="assets/card-12-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c4" src="assets/card-18-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c5" src="assets/card-25-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s b b1" src="assets/badge-01-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b2" src="assets/badge-06-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b3" src="assets/badge-10-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b4" src="assets/badge-14-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b5" src="assets/badge-20-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b6" src="assets/badge-23-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b7" src="assets/badge-17-s.webp" width="120" height="120" alt="" decoding="async"></div></div>
+<p class="big2 rv">25 días para compartir. <em>Momentos para recordar toda la vida.</em></p>
+</div></section>
+
+<!-- 05 TODO LO QUE VAS A RECIBIR -->
+<section class="greensec" id="adentro"><div class="wrap center">
+<span class="eyebrow">El Mega Pack completo</span>
+<h2 class="rv">Una experiencia completa para disfrutar la magia de diciembre</h2>
+<p class="lead">Nueve piezas en archivos digitales para imprimir en casa. No se envía nada físico.</p>
+<ul class="rcv">
+<li class="rv"><img src="assets/adv-cover.webp" width="800" height="1035" alt="Portada del Calendario de Adviento" loading="lazy" decoding="async" data-lb="rc" data-cap="Calendario de Adviento" data-src="assets/adv-cover.webp" role="button" tabindex="0" aria-label="Ampliar: Portada del Calendario de Adviento"><b>Calendario de Adviento</b><span>La espera de Navidad se vuelve una aventura: 25 puertas, una por día</span></li>
+<li class="rv d1"><img src="assets/guide-cover-real.webp" width="760" height="1074" alt="Portada de la Guía para Padres" loading="lazy" decoding="async" data-lb="rc" data-cap="Guía para Padres" data-src="assets/guide-cover-real.webp" role="button" tabindex="0" aria-label="Ampliar: Portada de la Guía para Padres"><b>Guía para Padres</b><span>Cómo preparar y organizar los 25 días sin improvisar</span></li>
+<li class="rv d2"><img src="assets/card-01-f.webp" width="640" height="960" alt="Tarjeta de aventura del día 1" loading="lazy" decoding="async" data-lb="rc" data-cap="25 Tarjetas de Aventura" data-src="assets/card-01-f.webp" role="button" tabindex="0" aria-label="Ampliar: Tarjeta de aventura del día 1"><b>25 Tarjetas de Aventura</b><span>Actividades, juegos y desafíos para decorar, crear y compartir</span></li>
+<li class="rv d3"><img src="assets/pas-cover.webp" width="760" height="983" alt="Pasaporte de Aventuras" loading="lazy" decoding="async" data-lb="rc" data-cap="Pasaporte de Aventuras" data-src="assets/pas-cover.webp" role="button" tabindex="0" aria-label="Ampliar: Pasaporte de Aventuras"><b>Pasaporte de Aventuras</b><span>Cada misión cumplida se registra y suma recuerdos</span></li>
+<li class="rv"><i class="rb">Bonus</i><img src="assets/puzzle.webp" width="1100" height="777" alt="Rompecabezas navideño" loading="lazy" decoding="async" data-lb="rc" data-cap="Rompecabezas navideño" data-src="assets/puzzle.webp" role="button" tabindex="0" aria-label="Ampliar: Rompecabezas navideño"><b>Rompecabezas navideño</b><span>Para armar entre todos</span></li>
+<li class="rv d1"><i class="rb">Bonus</i><img src="assets/cb-cover.webp" width="760" height="1075" alt="Libro para Colorear" loading="lazy" decoding="async" data-lb="rc" data-cap="Libro para Colorear" data-src="assets/cb-cover.webp" role="button" tabindex="0" aria-label="Ampliar: Libro para Colorear"><b>Libro para Colorear</b><span>Dibujos para colorear en familia</span></li>
+<li class="rv d2"><img src="assets/env-2.webp" width="845" height="1104" alt="Instrucciones del Sobre de Misiones" loading="lazy" decoding="async" data-lb="rc" data-cap="Sobres de Misiones" data-src="assets/env-2.webp" role="button" tabindex="0" aria-label="Ampliar: Instrucciones del Sobre de Misiones"><b>Sobres de Misiones</b><span>Un sobre para guardar tarjetas, notas y tesoros</span></li>
+<li class="rv d3"><div class="badgegrid"><img src="assets/badge-01.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-02.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-03.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-04.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-05.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-06.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-07.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-08.webp" width="260" height="260" alt="" loading="lazy" decoding="async"><img src="assets/badge-09.webp" width="260" height="260" alt="" loading="lazy" decoding="async"></div><b>25 Insignias</b><span>Una por cada misión cumplida</span></li>
+<li class="wide rv"><div class="wtxt"><b>Guía de armado</b><span>Medidas, materiales y un diagrama para cada paso. Todo para armar el calendario en unos 90 minutos.</span></div><div class="wimgs"><img src="assets/adv-guide-1.webp" width="760" height="983" alt="Guía de armado: medidas y tamaño" loading="lazy" decoding="async" data-lb="gb" data-cap="Guía de armado · medidas y tamaño" data-src="assets/adv-guide-1.webp" role="button" tabindex="0" aria-label="Ampliar: Guía de armado: medidas y tamaño"><img src="assets/adv-guide-2.webp" width="760" height="983" alt="Guía de armado: paso a paso (1)" loading="lazy" decoding="async" data-lb="gb" data-cap="Guía de armado · paso a paso (1)" data-src="assets/adv-guide-2.webp" role="button" tabindex="0" aria-label="Ampliar: Guía de armado: paso a paso (1)"><img src="assets/adv-guide-3.webp" width="760" height="983" alt="Guía de armado: paso a paso (2)" loading="lazy" decoding="async" data-lb="gb" data-cap="Guía de armado · paso a paso (2)" data-src="assets/adv-guide-3.webp" role="button" tabindex="0" aria-label="Ampliar: Guía de armado: paso a paso (2)"><img src="assets/adv-guide-4.webp" width="760" height="983" alt="Guía de armado: qué poner en cada puerta" loading="lazy" decoding="async" data-lb="gb" data-cap="Guía de armado · qué poner en cada puerta" data-src="assets/adv-guide-4.webp" role="button" tabindex="0" aria-label="Ampliar: Guía de armado: qué poner en cada puerta"></div></li>
+</ul>
+<p class="soft" style="color:#d6eadf"><b style="color:#fff">No estás comprando una actividad aislada.</b> Estás recibiendo una colección de recursos pensados para acompañar a tu familia durante toda la cuenta regresiva hacia Navidad.</p>
+<div class="need">
+<div><h3>Lo que necesitás tener</h3><p>Una impresora, papel, cartulina, tijera y pegamento.</p></div>
+<div><h3>Lo que no viene incluido</h3><p>Los regalitos para llenar las puertas los elegís vos. No se envía nada físico.</p></div>
+</div>
+<p class="cta-row"><a class="btn btn-red cta-big" href="#checkout" data-buy>Quiero mi WonderDays</a></p>
+</div></section>
+
+<!-- 06 LOS 25 DÍAS -->
+<section class="redsec"><div class="wrap">
+<div class="center"><span class="eyebrow" style="color:#ffe9a8">Así se vive la experiencia</span>
+<h2 class="rv">Cada día, una nueva oportunidad para crear un recuerdo</h2>
+<p class="lead">Durante 25 días, tu familia encontrará nuevas propuestas para jugar, crear, conversar y disfrutar juntos. Algunas actividades serán tranquilas y emotivas. Otras, divertidas y llenas de energía. Todas tienen algo en común: están pensadas para compartir.</p></div>
+<div class="doors-wrap"><div>
+<p><b>Día 1 · ¡Transformemos la casa en Navidad!</b> Toda la familia se reúne para decorar la casa y el árbol con adornos y luces. Abrí las puertas y mirá las 25 aventuras reales:</p>
+<div class="doors" id="doors"></div></div>
+<div class="panel" id="panel" aria-live="polite"><div class="pd">Día 1 de 25 · Etapa 1</div><h3>Elegí una puerta</h3><p>Tocá cualquier número y descubrí la aventura de ese día.</p><p class="hand">¡Empezá por la que más te guste!</p></div></div>
+<div style="margin-top:36px"><ul class="strip"><li><img src="assets/card-01-f.webp" width="640" height="960" alt="Día 1, frente: ¡Transformemos la casa en Navidad!" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 1 · ¡Transformemos la casa en Navidad! · frente" data-src="assets/card-01-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 1, frente: ¡Transformemos la casa en Navidad!"></li><li><img src="assets/card-01-b.webp" width="640" height="960" alt="Día 1, dorso: ¡Transformemos la casa en Navidad!" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 1 · ¡Transformemos la casa en Navidad! · dorso (la misión)" data-src="assets/card-01-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 1, dorso: ¡Transformemos la casa en Navidad!"></li><li><img src="assets/card-02-f.webp" width="640" height="960" alt="Día 2, frente: El buzón mágico de Navidad" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 2 · El buzón mágico de Navidad · frente" data-src="assets/card-02-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 2, frente: El buzón mágico de Navidad"></li><li><img src="assets/card-02-b.webp" width="640" height="960" alt="Día 2, dorso: El buzón mágico de Navidad" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 2 · El buzón mágico de Navidad · dorso (la misión)" data-src="assets/card-02-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 2, dorso: El buzón mágico de Navidad"></li><li><img src="assets/card-03-f.webp" width="640" height="960" alt="Día 3, frente: Una carta para Santa" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 3 · Una carta para Santa · frente" data-src="assets/card-03-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 3, frente: Una carta para Santa"></li><li><img src="assets/card-03-b.webp" width="640" height="960" alt="Día 3, dorso: Una carta para Santa" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 3 · Una carta para Santa · dorso (la misión)" data-src="assets/card-03-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 3, dorso: Una carta para Santa"></li><li><img src="assets/card-05-f.webp" width="640" height="960" alt="Día 5, frente: El gran rompecabezas navideño" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 5 · El gran rompecabezas navideño · frente" data-src="assets/card-05-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 5, frente: El gran rompecabezas navideño"></li><li><img src="assets/card-05-b.webp" width="640" height="960" alt="Día 5, dorso: El gran rompecabezas navideño" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 5 · El gran rompecabezas navideño · dorso (la misión)" data-src="assets/card-05-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 5, dorso: El gran rompecabezas navideño"></li><li><img src="assets/card-12-f.webp" width="640" height="960" alt="Día 12, frente: El gran taller de arte navideño" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 12 · El gran taller de arte navideño · frente" data-src="assets/card-12-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 12, frente: El gran taller de arte navideño"></li><li><img src="assets/card-12-b.webp" width="640" height="960" alt="Día 12, dorso: El gran taller de arte navideño" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 12 · El gran taller de arte navideño · dorso (la misión)" data-src="assets/card-12-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 12, dorso: El gran taller de arte navideño"></li><li><img src="assets/card-18-f.webp" width="640" height="960" alt="Día 18, frente: El código secreto del Polo Norte" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 18 · El código secreto del Polo Norte · frente" data-src="assets/card-18-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 18, frente: El código secreto del Polo Norte"></li><li><img src="assets/card-18-b.webp" width="640" height="960" alt="Día 18, dorso: El código secreto del Polo Norte" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 18 · El código secreto del Polo Norte · dorso (la misión)" data-src="assets/card-18-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 18, dorso: El código secreto del Polo Norte"></li><li><img src="assets/card-25-f.webp" width="640" height="960" alt="Día 25, frente: La gran celebración WonderDays" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 25 · La gran celebración WonderDays · frente" data-src="assets/card-25-f.webp" role="button" tabindex="0" aria-label="Ampliar: Día 25, frente: La gran celebración WonderDays"></li><li><img src="assets/card-25-b.webp" width="640" height="960" alt="Día 25, dorso: La gran celebración WonderDays" class="pimg" loading="lazy" decoding="async" data-lb="cards" data-cap="Día 25 · La gran celebración WonderDays · dorso (la misión)" data-src="assets/card-25-b.webp" role="button" tabindex="0" aria-label="Ampliar: Día 25, dorso: La gran celebración WonderDays"></li></ul><p class="hint" style="color:#ffe3e5">Deslizá para ver más · Tocá para ampliar</p></div>
+</div></section>
+
+<!-- 07 PARA COMPARTIR CON TODOS -->
+<section><div class="wrap">
+<div class="center"><span class="eyebrow">Una experiencia para compartir con todos</span>
+<h2 class="rv">La magia de Navidad se disfruta mucho más cuando estamos juntos</h2></div>
+<div class="twoc">
+<div><p class="soft" style="margin:0">Podés disfrutar The Christmas Experience con:</p>
+<ul class="checks"><li>Mamá y papá.</li><li>Hermanos.</li><li>Primos.</li><li>Abuelos.</li><li>Toda la familia reunida.</li></ul>
+<p class="soft" style="margin-left:0">No necesitás grandes preparativos ni dedicarle horas todos los días. Lo importante es encontrar esos pequeños espacios para jugar, compartir y disfrutar.</p></div>
+<figure class="ph rv"><img src="assets/foto-generaciones.webp" width="800" height="980" alt="Abuela, madre y chicos riendo juntos durante un juego navideño" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
+</div></div></section>
+
+<!-- 08 BONUS -->
+<section class="ice"><div class="wrap center">
+<span class="eyebrow">Regalos para hacer la experiencia todavía más mágica</span>
+<h2 class="rv">Tenemos regalos especiales para vos</h2>
+<p class="lead">Además de todo el contenido principal, vas a recibir recursos complementarios para acompañar tus momentos navideños.</p>
+<ul class="bonus">
+<li class="rv"><span class="tg">Bonus 1</span><div class="pl">♪ Música navideña para jugar, decorar y compartir</div><b>Christmas Family Playlist</b><span>Una playlist especial de Spotify con música navideña para ambientar las actividades, decorar el árbol, jugar y disfrutar juntos.</span><a class="go2" id="pl-link" href="#" hidden>Escuchar la playlist</a></li>
+<li class="rv d1"><span class="tg">Bonus 2</span><img src="assets/cb-cover.webp" width="760" height="1075" alt="Libro para Colorear" loading="lazy" decoding="async"><b>Libro para Colorear</b><span>Dibujos de línea limpia para colorear en familia: Papá Noel, el reno, la casita de jengibre y más.</span></li>
+<li class="rv d2"><span class="tg">Bonus 3</span><img src="assets/puzzle.webp" width="1100" height="777" alt="Rompecabezas navideño" loading="lazy" decoding="async"><b>Rompecabezas navideño</b><span>Una ilustración del taller de Santa para imprimir, recortar y armar entre todos.</span></li>
+</ul>
+</div></section>
+
+<!-- 09 PRECIO Y CÓMO FUNCIONA -->
+<section class="offer" id="checkout"><div class="wrap center">
+<span class="eyebrow">Una sola compra, toda una experiencia</span>
+<h2 class="rv">Una sola compra. 25 días de momentos inolvidables.</h2>
+<p class="lead" style="color:#ffe3e5;margin:0 auto">Todo lo que necesitás para transformar diciembre en una experiencia especial para compartir con tu familia.</p>
+<div class="price"><div style="color:var(--night);font:400 1.3rem var(--f-display)">The Christmas Experience · Mega Pack</div>
+<div class="amt">USD 25</div><div class="per">Solo USD 1 por día de aventura</div>
+<ul><li>Calendario de Adviento de 25 puertas</li><li>Guía para Padres y Guía de armado</li><li>25 Tarjetas de Aventura (doble faz)</li><li>Pasaporte de Aventuras y 25 insignias</li><li>Sobres de Misiones</li><li>Bonus: Libro para Colorear y Rompecabezas navideño</li><li>Bonus: Christmas Family Playlist</li></ul>
+<ul class="cwhy"><li><b>Pago único:</b> comprás el Mega Pack una sola vez.</li><li><b>Entrega inmediata:</b> recibís los materiales por correo electrónico una vez confirmado el pago.</li><li><b>Sin suscripciones:</b> no hay mensualidades ni cargos recurrentes.</li><li><b>Todo incluido:</b> recibís todos los materiales y bonus de la oferta.</li></ul>
+<p class="big3">Comprás una sola vez. Recibís todo. Empezás a crear recuerdos.</p>
+<p class="cta-row" style="margin-top:1.2rem"><a class="btn btn-red cta-big" id="buy-main" href="#checkout" data-buy>Quiero mi Mega Pack 🎄</a></p>
+<p class="small">Pago único · Sin mensualidades · Entrega digital inmediata tras confirmar el pago.</p>
+</div>
+<div class="price" id="como" style="margin-top:1.6rem"><div style="color:var(--night);font:400 1.5rem var(--f-display)">¿Cómo funciona?</div>
+<ol class="steps5"><li>Elegís comprar The Christmas Experience.</li><li>Realizás el pago<span class="secure" hidden> de forma segura</span>.</li><li>Se confirma tu compra.</li><li>Recibís los materiales digitales por email.</li><li>¡Ya podés comenzar a preparar tu Navidad!</li></ol></div>
+</div></section>
+
+<!-- 10 GARANTÍA (aparece solo cuando se escribe la política real) -->
+<section class="gar" id="garantia" hidden><div class="wrap center">
+<span class="eyebrow">Comprá con tranquilidad</span>
+<h2 class="rv">Queremos que disfrutes tu experiencia desde el primer momento</h2>
+<p class="lead" id="garantia-txt"></p>
+<div class="chips3"><span>Entrega digital</span><span>Acceso a los materiales</span><span class="secure" hidden>Compra segura</span></div>
+</div></section>
+
+<!-- 11 PREGUNTAS FRECUENTES -->
+<section id="faq"><div class="wrap" style="max-width:780px">
+<div class="center"><span class="eyebrow">Preguntas frecuentes</span><h2 class="rv">Antes de decidir</h2></div>
+<details><summary>¿Qué es The Christmas Experience?</summary><p>Es una experiencia digital navideña que reúne actividades, juegos, propuestas creativas y recursos para disfrutar los 25 días de diciembre en familia.</p></details>
+<details><summary>¿Para qué edades está pensado?</summary><p>Para niños de 3 a 10 años. Con los más chicos, un adulto lee la tarjeta y ayuda con la tijera; con los más grandes, pueden hacerlo casi solos. Cada familia puede adaptar las actividades a sus chicos.</p></details>
+<details><summary>¿Cómo recibo mi compra?</summary><p>Una vez confirmado el pago, recibirás un correo electrónico con acceso a los materiales digitales.</p></details>
+<details><summary>¿La entrega es inmediata?</summary><p>Sí. Una vez confirmada la compra, recibirás los materiales por email para comenzar a preparar tu experiencia.</p></details>
+<details><summary>¿Tengo que pagar todos los meses?</summary><p>No. Es un pago único de USD 25. Comprás el Mega Pack una sola vez y no tenés mensualidades ni suscripciones.</p></details>
+<details><summary>¿Tengo que pagar nuevamente para recibir las actividades de diciembre?</summary><p>No. Los materiales incluidos en la oferta se entregan como parte de tu compra única.</p></details>
+<details><summary>¿Necesito imprimir los materiales?</summary><p>El calendario, las tarjetas, el pasaporte, las insignias, los sobres, el libro para colorear y el rompecabezas están pensados para imprimir. La Guía para Padres se puede leer en pantalla o imprimir.</p></details>
+<details><summary>¿Necesito comprar materiales especiales?</summary><p>Una impresora, papel, cartulina, tijera y pegamento. Algunas actividades usan cosas que ya tenés en casa, y los regalitos para las puertas del calendario los elegís vos.</p></details>
+<details><summary>¿Puedo compartir las actividades con toda mi familia?</summary><p>Sí, la experiencia está pensada para disfrutar en familia. Es para uso familiar, no para reventa.</p></details>
+<details><summary>¿Cuándo puedo empezar?</summary><p>Una vez que recibas los materiales, podés comenzar a preparar las actividades. La fecha pensada para empezar es el 1 de diciembre, y el calendario se arma en unos 90 minutos, una sola vez.</p></details>
+</div></section>
+
+<!-- 12 CIERRE FINAL -->
+<section class="close"><div class="wrap">
+<span class="eyebrow">Una Navidad para recordar</span>
+<p class="big">Esta Navidad, el mejor regalo no viene envuelto. <em>Se vive en familia.</em></p>
+<p class="lead">Tus hijos van a crecer. Los años van a pasar y muchas cosas van a cambiar. Pero esos momentos en los que se sentaron juntos a jugar, crearon algo con sus propias manos, decoraron el árbol y compartieron una sonrisa pueden quedarse para siempre en sus recuerdos.</p>
+<p class="lead" style="margin-top:1rem">No dejes que diciembre sea solamente otro mes lleno de obligaciones. Convertí estos 25 días en una oportunidad para estar presentes, disfrutar y crear recuerdos juntos.</p>
+<p style="margin-top:1.4rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:.9rem;color:var(--gold)">The Christmas Experience · Mega Pack</p>
+<p class="lead" style="margin-top:.4rem"><b>25 días para compartir en familia.</b> 25 momentos para celebrar el amor, la ilusión y la magia de la Navidad.</p>
+<div class="closeprice">USD 25 · todo incluido en un único pago</div>
+<ul class="cl"><li>🎁 Pago único.</li><li>⚡ Entrega inmediata por email tras la confirmación del pago.</li><li>❤️ Sin suscripciones ni mensualidades.</li><li class="secure" hidden>🔒 Compra segura.</li></ul>
+<p class="cta-row"><a class="btn btn-red cta-big" href="#checkout" data-buy>Quiero crear recuerdos esta Navidad ❤️</a></p>
+</div></section>
+</main>
+
+<!-- 13 FOOTER -->
+<footer><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><div>Que esta Navidad cuente.</div><div id="legal" style="margin-top:8px"></div><div id="legal-links"></div><div style="margin-top:10px;opacity:.8">© WonderDays. Todos los derechos reservados. Producto digital, no se envía nada físico.</div></footer>
+
+<div class="sticky" id="sticky"><span>MegaPack · USD 25<small>Solo USD 1 por día</small></span><a class="btn btn-red" href="#checkout" data-buy>Lo quiero</a></div>
+
+<div id="order" class="modal" role="dialog" aria-modal="true" aria-labelledby="ot" hidden><div class="sheet">
+<button class="mx" type="button" aria-label="Cerrar">×</button>
+<span class="eyebrow">Tu pedido</span>
+<h3 id="ot">The Christmas Experience · Mega Pack</h3>
+<ul><li>Calendario de Adviento de 25 puertas</li><li>Guía para Padres y Guía de armado</li><li>25 Tarjetas de Aventura</li><li>Pasaporte de Aventuras y 25 insignias</li><li>Sobres de Misiones</li><li>Bonus: Libro para Colorear, Rompecabezas y playlist</li></ul>
+<div class="tot"><span>Un solo pago · sin suscripciones</span><b>USD 25</b></div>
+<small>Solo USD 1 por día de aventura. Entrega digital inmediata tras confirmar el pago. No se envía nada físico.</small>
+<a class="btn btn-red" id="go" href="#">Continuar al pago</a>
+<div id="go-note" role="status" hidden></div>
+</div></div>
+
+<div id="legalm" class="modal" role="dialog" aria-modal="true" aria-labelledby="lt" hidden><div class="sheet"><button class="mx" type="button" aria-label="Cerrar">×</button><h3 id="lt"></h3><div class="lbody" id="lbody"></div></div></div>
+
+<div id="lb" role="dialog" aria-modal="true" aria-label="Visor de imágenes"><span class="count"></span><button class="x" aria-label="Cerrar">×</button><button class="p" aria-label="Anterior">‹</button><img alt=""><button class="n" aria-label="Siguiente">›</button><div class="cap"></div></div>
+
+<button class="chat-fab" id="chat-fab" type="button" aria-label="Abrir WonderDays Chat" aria-expanded="false"><span class="av"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><i aria-hidden="true"></i></span><span class="tx"><b>WonderDays Chat</b><small>Preguntanos lo que quieras</small></span></button>
+<div class="chat-tip" id="chat-tip" hidden><button type="button" aria-label="Cerrar aviso">×</button><div class="tav"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><strong>WonderDays Chat</strong></div><b>¡Hola!</b> Te cuento qué incluye el MegaPack y te ayudo a comprar.</div>
+<section class="chat" id="chat" role="dialog" aria-label="WonderDays Chat" hidden>
+<div class="chat-h"><img class="chat-av" src="assets/chat-santa.webp" width="256" height="256" alt=""><div><b>WonderDays Chat</b><small>Asistente automático · respuestas al instante</small></div><button class="cx" type="button" aria-label="Cerrar el chat">×</button></div>
+<div class="chat-b" id="chat-b" aria-live="polite"></div>
+<div class="chips-q" id="chat-q"></div>
+<form class="chat-f" id="chat-form" autocomplete="off"><input id="chat-in" type="text" placeholder="Escribí tu pregunta…" aria-label="Escribí tu pregunta" maxlength="200"><button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></form>
+<div class="chat-note">Es un asistente automático, no una persona.</div>
+</section>
+<script>
+(function(){
+/* ===== Pegar aca el enlace de pago cuando exista ===== */
+var CHECKOUT_URL="";
+/* ===== Datos que completa el dueño. Aparecen en la página solo si están escritos ===== */
+var CONTACT="";      /* correo o enlace de contacto, por ejemplo: hola@tudominio.com */
+var REFUND="";       /* texto de devolución, por ejemplo: Tenés 14 días para pedir el reembolso escribiéndonos. */
+var SELLER="";       /* nombre del negocio, por ejemplo: WonderDays by Nombre S.A. */
+var PRICE_UNTIL="";  /* fecha de fin del precio de lanzamiento, por ejemplo: 7 de diciembre */
+var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return [].slice.call((r||document).querySelectorAll(s))};
+
+/* ===== Visor de imagenes ===== */
+var lb=$('#lb'),im=$('img',lb),cap=$('.cap',lb),cnt=$('.count',lb),list=[],i=0,last=null;
+function show(){var e=list[i];im.src=e.dataset.src;im.alt=e.alt;cap.textContent=e.dataset.cap||e.alt;cnt.textContent=(i+1)+' / '+list.length}
+function openLb(el){list=$$('[data-lb="'+el.dataset.lb+'"]');i=list.indexOf(el);last=el;show();lb.classList.add('open');document.body.style.overflow='hidden';$('.x',lb).focus()}
+function closeLb(){lb.classList.remove('open');document.body.style.overflow='';if(last)last.focus()}
+function go(d){i=(i+d+list.length)%list.length;show()}
+document.addEventListener('click',function(e){var t=e.target.closest('[data-lb]');if(t)openLb(t)});
+$('.x',lb).onclick=closeLb;$('.p',lb).onclick=function(){go(-1)};$('.n',lb).onclick=function(){go(1)};
+lb.addEventListener('click',function(e){if(e.target===lb)closeLb()});
+var sx=0;lb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX},{passive:true});
+lb.addEventListener('touchend',function(e){var d=e.changedTouches[0].clientX-sx;if(Math.abs(d)>50)go(d<0?1:-1)});
+
+/* ===== Pedido (segundo paso del embudo) ===== */
+var order=$('#order'),goBtn=$('#go'),goNote=$('#go-note'),lastBuy=null;
+function openOrder(from){lastBuy=from;order.hidden=false;document.body.style.overflow='hidden';goNote.hidden=true;$('.mx',order).focus()}
+function closeOrder(){order.hidden=true;document.body.style.overflow='';if(lastBuy)lastBuy.focus()}
+if(CHECKOUT_URL){goBtn.href=CHECKOUT_URL;goBtn.target='_blank';goBtn.rel='noopener noreferrer'}
+goBtn.addEventListener('click',function(e){if(!CHECKOUT_URL){e.preventDefault();goNote.textContent='Todavía no está habilitado el pago en esta página.';goNote.hidden=false}else closeOrder()});
+$('.mx',order).onclick=closeOrder;
+order.addEventListener('click',function(e){if(e.target===order)closeOrder()});
+$$('[data-buy]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();openOrder(a)})});
+document.addEventListener('keydown',function(e){
+ if(!order.hidden){if(e.key==='Escape')closeOrder();return}
+ if(lb.classList.contains('open')){if(e.key==='Escape')closeLb();if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1);return}
+ if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-lb]')){e.preventDefault();openLb(e.target)}
+});
+
+/* ===== Puertas del calendario ===== */
+var DAYS=["¡Transformemos la casa en Navidad!","El buzón mágico de Navidad","Una carta para Santa","Nuestra caja de recuerdos","El gran rompecabezas navideño","¡El entrenamiento de los duendes!","Una decoración hecha con amor","El desafío de las bolas de nieve","El taller de los regalos","¡El gran baile de los ayudantes!","Galletitas de Navidad","El gran taller de arte navideño","El reto de las fotos navideñas","Construyamos el taller de Santa","Un mensaje que hace feliz","Picnic bajo el árbol","¡Rescatemos a los renos!","El código secreto del Polo Norte","Exploradores de luces navideñas","La Navidad se escucha","Nuestra caja de recuerdos mágicos","El círculo de los agradecimientos","El taller secreto de regalos","La misión especial de Nochebuena","La gran celebración WonderDays"];
+var STAGES=["La Navidad llega a casa","Entrenamiento del Polo Norte","La fábrica de Navidad","Las grandes aventuras","La magia de estar juntos"];
+var IMG={1:1,2:1,3:1,5:1,12:1,18:1,25:1};
+var doors=$('#doors'),panel=$('#panel');
+if(doors){
+ DAYS.forEach(function(t,k){var n=k+1,b=document.createElement('button');b.type='button';b.className='door';b.setAttribute('aria-pressed','false');b.setAttribute('aria-label','Abrir la puerta del día '+n);b.innerHTML='<i>'+n+'</i>';b.addEventListener('click',function(){openDoor(n,b)});doors.appendChild(b)});
+ function pad(n){return n<10?'0'+n:''+n}
+ function openDoor(n,b){
+  $$('.door',doors).forEach(function(x){if(x!==b&&x.getAttribute('aria-pressed')==='true'){x.setAttribute('aria-pressed','false');x.classList.add('seen')}});
+  b.setAttribute('aria-pressed','true');b.classList.remove('seen');
+  var t=DAYS[n-1],st=STAGES[Math.floor((n-1)/5)],h='<div class="pd">Día '+n+' de 25 · Etapa '+(Math.floor((n-1)/5)+1)+'</div><h3>'+t+'</h3><p>'+st+'.</p>';
+  if(IMG[n]){h+='<div class="pc"><img src="assets/card-'+pad(n)+'-f.webp" width="640" height="960" alt="Día '+n+', frente: '+t+'" data-lb="doorcards" data-cap="Día '+n+' · '+t+' · frente" data-src="assets/card-'+pad(n)+'-f.webp"><img src="assets/card-'+pad(n)+'-b.webp" width="640" height="960" alt="Día '+n+', dorso: '+t+'" data-lb="doorcards" data-cap="Día '+n+' · '+t+' · dorso (la misión)" data-src="assets/card-'+pad(n)+'-b.webp"></div><p class="hand">Tocá una tarjeta para verla grande.</p>'}
+  else{h+='<p class="hand">La misión de este día está dentro del MegaPack. ¡Es una sorpresa!</p>'}
+  panel.innerHTML=h;panel.classList.remove('pop');void panel.offsetWidth;panel.classList.add('pop');
+ }
+}
+
+/* ===== Entrada al hacer scroll (visible por defecto; solo se arma lo que esta abajo) ===== */
+var vh=window.innerHeight||800,rvs=$$('.rv');
+if('IntersectionObserver' in window&&!reduce){
+ var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+ rvs.forEach(function(el){if(el.getBoundingClientRect().top>vh){el.classList.add('arm');io.observe(el)}});
+ setTimeout(function(){rvs.forEach(function(el){el.classList.add('in')})},7000);
+}
+
+/* ===== Contadores ===== */
+$$('[data-count]').forEach(function(el){
+ var end=+el.dataset.count,done=false;
+ function run(){if(done)return;done=true;if(reduce){return}var t0=performance.now(),d=1100;(function f(t){var p=Math.min(1,(t-t0)/d);el.textContent=Math.round(end*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f);else el.textContent=end})(t0)}
+ if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){if(es[0].isIntersecting){run();o.disconnect()}},{threshold:.6}).observe(el)}
+});
+
+/* ===== Barra de progreso, barra superior y compra fija ===== */
+var prog=$('.progress'),top=$('.topbar'),st=$('#sticky'),hero=$('.hero'),chk=$('#checkout'),tick=false;
+function onScroll(){
+ var y=window.scrollY,h=document.documentElement.scrollHeight-window.innerHeight;
+ prog.style.transform='scaleX('+(h>0?Math.min(1,y/h):0)+')';
+ top.classList.toggle('solid',y>40);
+ var c=chk.getBoundingClientRect();
+ st.classList.toggle('on',y>hero.offsetHeight*0.9&&!(c.top<window.innerHeight*0.7&&c.bottom>0));
+ document.body.classList.toggle('sb',st.classList.contains('on'));
+ document.body.classList.toggle('fabhide',window.innerWidth<=560&&y<hero.offsetHeight*0.45);
+ tick=false;
+}
+window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});onScroll();
+
+/* ===== Inclinacion 3D de la imagen principal ===== */
+var mock=$('.mock'),mi=mock&&$('.stage',mock);
+if(mock&&!reduce&&window.matchMedia('(hover:hover)').matches){
+ mock.addEventListener('pointermove',function(e){var r=mock.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;mi.style.transform='rotateY('+(x*7)+'deg) rotateX('+(-y*5)+'deg)'});
+ mock.addEventListener('pointerleave',function(){mi.style.transform=''});
+}
+
+/* ===== Nieve ===== */
+var cv=$('#snowc');
+if(cv&&!reduce){
+ var cx=cv.getContext('2d'),W=0,H=0,fl=[],run=true;
+ function size(){W=cv.width=hero.offsetWidth;H=cv.height=hero.offsetHeight}
+ size();window.addEventListener('resize',size);
+ for(var k=0;k<70;k++)fl.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.4+.6,s:Math.random()*.8+.25,d:Math.random()*Math.PI*2});
+ if('IntersectionObserver' in window)new IntersectionObserver(function(es){run=es[0].isIntersecting;if(run)loop()}).observe(hero);
+ function loop(){if(!run)return;cx.clearRect(0,0,W,H);cx.fillStyle='rgba(255,255,255,.85)';fl.forEach(function(f){f.y+=f.s;f.d+=.01;f.x+=Math.sin(f.d)*.4;if(f.y>H+4){f.y=-4;f.x=Math.random()*W}cx.beginPath();cx.arc(f.x,f.y,f.r,0,6.283);cx.fill()});requestAnimationFrame(loop)}
+ loop();
+}
+
+/* ===== Cuenta regresiva real hacia el 1 de diciembre ===== */
+var cd=$('#cd');
+if(cd){
+ var n=new Date(),y=n.getFullYear(),t0=new Date(y,n.getMonth(),n.getDate()),d1=new Date(y,11,1),days=Math.round((d1-t0)/86400000),txt='';
+ if(days>1)txt='Faltan '+days+' días para el 1 de diciembre';else if(days===1)txt='Mañana es 1 de diciembre';else if(n.getMonth()===11&&n.getDate()<=25)txt='Empezá hoy tu cuenta regresiva';
+ if(txt){cd.textContent=txt;cd.hidden=false}
+}
+
+/* ===== Asistente de compra (respuestas automaticas con datos de la pagina) ===== */
+var chat=$('#chat'),fab=$('#chat-fab'),tip=$('#chat-tip'),cb=$('#chat-b'),cq=$('#chat-q'),cform=$('#chat-form'),cin=$('#chat-in');
+var greeted=false,tipShown=false,lastTopic='';
+function norm(t){return (t||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9ñ ]/g,' ')}
+var KB={
+ incluye:'El MegaPack trae <b>9 piezas digitales</b> para imprimir: el calendario de Adviento de 25 puertas, 25 tarjetas de aventura (doble faz), la guía de armado, la guía para padres, el pasaporte, 25 insignias, un libro para colorear, un rompecabezas navideño y los sobres de misiones.',
+ precio:'Es un <b>pago único de USD 25</b>, sin suscripciones. Equivale a USD 1 por cada uno de los 25 días.',
+ edad:'Está pensado para chicos de <b>3 a 10 años</b>, con actividades para hacer en familia. Con los más chicos, un adulto lee la tarjeta y ayuda con la tijera; con los más grandes, pueden hacerlo casi solos.',
+ recibir:'Es <b>100% digital</b>: después de comprar recibís acceso inmediato a los archivos para descargarlos e imprimirlos en casa. No se envía nada físico.',
+ necesito:'Necesitás <b>una impresora, papel, cartulina, tijera y pegamento</b>. Los regalitos para las puertas del calendario (golosinas, stickers, notitas) los ponés vos.',
+ tiempo:'Armar el calendario lleva unos <b>90 minutos, una sola vez</b>, y la guía trae un diagrama para cada paso. Después, cada día se abre una puerta y se hace la misión del día; cada tarjeta indica cuánto dura.',
+ fisico:'No, no es un producto físico. Son archivos digitales que imprimís vos en casa.',
+ suscripcion:'No hay suscripción. Es un <b>único pago de USD 25</b>.',
+ reuso:'Sí, son archivos: podés volver a imprimirlos el año que viene. Es para uso familiar, no para reventa.',
+ empezar:'La fecha pensada para empezar es el <b>1 de diciembre</b>, para llegar a Navidad con las 25 puertas abiertas. Pero podés adaptar los tiempos a la rutina de tu familia.',
+ devol:'Por ahora esta página no publica una política de devolución, así que prefiero no prometerte nada que no esté escrito.',
+ pago:'',
+ contacto:'Soy un asistente automático y esta página no publica un contacto directo. Puedo ayudarte con lo que incluye, el precio, los tiempos y cómo comprar.',
+ gracias:'¡De nada! Si querés, ya te dejo el pedido listo.',
+ saludo:'¡Hola! Soy el asistente de WonderDays. Puedo contarte qué incluye, cuánto cuesta y ayudarte a comprar. ¿Por dónde empezamos?'
+};
+var RULES=[
+ ['precio',/(cuanto|precio|cuesta|costo|vale|dolar|usd|pagar cuanto|barato|caro)/],
+ ['incluye',/(incluye|trae|viene|contiene|que hay|que es|piezas|material|contenido|calendario|tarjeta|pasaporte|insignia|sobre|colorear|rompecabeza|guia)/],
+ ['edad',/(edad|años|anos|chico|nene|nena|hijo|hija|bebe|pequeno|grande|3 a 10|adolescente)/],
+ ['recibir',/(recib|descarg|entrega|envio|mail|correo|digital|acceso|llega)/],
+ ['necesito',/(necesito|hace falta|impresora|imprimir|papel|cartulina|tijera|pegamento|materiales)/],
+ ['tiempo',/(tiempo|tarda|demora|minutos|horas|armado|armar|dificil|facil|complicado)/],
+ ['fisico',/(fisico|caja|envian|enviar|domicilio|casa)/],
+ ['suscripcion',/(suscrip|mensual|recurrente|cobro|renov)/],
+ ['reuso',/(reutiliz|volver a imprimir|otro ano|proximo ano|reventa|compartir|usar mas de)/],
+ ['empezar',/(empez|diciembre|fecha|cuando|1 de|comienz)/],
+ ['devol',/(devol|reembols|garantia|arrepent|reclamo)/],
+ ['contacto',/(contacto|whatsapp|telefono|persona|humano|hablar con|soporte|ayuda de)/],
+ ['pago',/(comprar|compra|pagar|pago|quiero|checkout|tarjeta de credito|paypal|medios)/],
+ ['gracias',/(gracias|genial|perfecto|dale|ok|listo|buenisimo)/],
+ ['saludo',/(hola|buenas|buen dia|buenas tardes|hey)/]
+];
+function addMsg(html,who,extra){var d=document.createElement('div');d.className='msg '+who;d.innerHTML=html;if(extra){d.appendChild(extra)}cb.appendChild(d);cb.scrollTop=cb.scrollHeight;return d}
+function buyBtn(label){var b=document.createElement('button');b.type='button';b.className='go';b.textContent=label||'Ver mi pedido · USD 25';b.addEventListener('click',function(){closeChat();openOrder(fab)});return b}
+function setQ(list){cq.innerHTML='';list.forEach(function(q){var b=document.createElement('button');b.type='button';b.textContent=q[0];if(q[2])b.className='hot';b.addEventListener('click',function(){ask(q[0],q[1])});cq.appendChild(b)})}
+var MENU=[['¿Qué incluye?','incluye'],['¿Cuánto cuesta?','precio'],['¿Para qué edades?','edad'],['¿Cómo lo recibo?','recibir'],['¿Qué necesito para armarlo?','necesito'],['Quiero comprar','pago',1]];
+function reply(topic){
+ var wait=reduce?0:650,t=document.createElement('div');t.className='msg bot typing';t.innerHTML='<i></i><i></i><i></i>';cb.appendChild(t);cb.scrollTop=cb.scrollHeight;
+ setTimeout(function(){
+  t.remove();lastTopic=topic;
+  if(topic==='pago'){
+   if(CHECKOUT_URL){addMsg('¡Genial! Son <b>USD 25</b>, pago único y acceso digital inmediato. Te abro el resumen de tu pedido para que sigas al pago.','bot',buyBtn('Ver mi pedido · USD 25'))}
+   else{addMsg('¡Genial! Son <b>USD 25</b>, pago único. Te abro el resumen del pedido. Te aviso con claridad: <b>el pago todavía no está habilitado en esta página</b>, así que por ahora no vas a poder completarlo.','bot',buyBtn('Ver mi pedido · USD 25'))}
+   setQ([['¿Qué incluye?','incluye'],['¿Cuánto tarda el armado?','tiempo']]);return}
+  if(topic==='edad2'){addMsg('Perfecto: el MegaPack sirve para todas las edades de 3 a 10 años. Las tarjetas se pueden adaptar a cada chico, y si tenés varios, hacen la misión todos juntos.','bot');setQ([['¿Qué incluye?','incluye'],['Quiero comprar','pago',1]]);return}
+  if(topic==='ayuda'){addMsg('Te ayudo a elegir. <b>¿Qué edad tienen tus hijos?</b>','bot');setQ([['3 a 5 años','edad2'],['6 a 8 años','edad2'],['9 a 10 años','edad2'],['Tengo varios','edad2']]);return}
+  var h=KB[topic]||KB.contacto;
+  if(topic==='fallback'){h='No estoy seguro de haber entendido. Puedo responderte sobre <b>qué incluye, el precio, las edades, cómo se recibe, qué se necesita y cuánto tarda</b>. Elegí una opción:'}
+  var extra=null;if(topic==='precio'||topic==='incluye'||topic==='gracias'||topic==='suscripcion'){extra=buyBtn('Ver mi pedido · USD 25')}
+  addMsg(h,'bot',extra);
+  setQ(topic==='saludo'?MENU:[['Ayudame a elegir','ayuda'],['¿Qué incluye?','incluye'],['¿Cuánto cuesta?','precio'],['Quiero comprar','pago',1]].filter(function(q){return q[1]!==topic}));
+ },wait);
+}
+function ask(text,topic){addMsg(text.replace(/</g,'&lt;'),'me');if(!topic){var n=norm(text);topic='fallback';for(var k=0;k<RULES.length;k++){if(RULES[k][1].test(n)){topic=RULES[k][0];break}}}reply(topic)}
+function openChat(){tip.hidden=true;chat.hidden=false;fab.hidden=true;fab.setAttribute('aria-expanded','true');if(!greeted){greeted=true;addMsg('<span class="logobox"><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"></span>'+KB.saludo,'bot');setQ(MENU)}setTimeout(function(){cin.focus()},50)}
+function closeChat(){chat.hidden=true;fab.hidden=false;fab.setAttribute('aria-expanded','false')}
+fab.addEventListener('click',openChat);
+$('.cx',chat).addEventListener('click',closeChat);
+$('button',tip).addEventListener('click',function(){tip.hidden=true});
+tip.addEventListener('click',function(e){if(e.target.tagName!=='BUTTON')openChat()});
+cform.addEventListener('submit',function(e){e.preventDefault();var v=cin.value.trim();if(!v)return;cin.value='';ask(v)});
+chat.addEventListener('keydown',function(e){if(e.key==='Escape')closeChat()});
+$$('[data-chat]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();openChat()})});
+/* aviso de bienvenida, una sola vez por visita: a los 7 segundos o al pasar el hero */
+function showTip(){if(tipShown||!chat.hidden||!order.hidden||document.body.classList.contains('fabhide'))return;var seen=false;try{seen=sessionStorage.getItem('wd_tip')==='1'}catch(e){}if(seen){tipShown=true;return}tipShown=true;tip.hidden=false;try{sessionStorage.setItem('wd_tip','1')}catch(e){}setTimeout(function(){tip.hidden=true},14000)}
+setTimeout(showTip,7000);
+
+/* ===== Datos del dueño (solo aparecen si están escritos arriba) ===== */
+(function(){
+ var faq=$('#faq .wrap'),lg=$('#legal');
+ function addQ(q,a){var d=document.createElement('details'),s=document.createElement('summary'),p=document.createElement('p');s.textContent=q;p.textContent=a;d.appendChild(s);d.appendChild(p);faq.appendChild(d)}
+ if(REFUND){addQ('¿Y si no me convence?',REFUND);KB.devol=REFUND}
+ if(CONTACT){addQ('¿Cómo hago una consulta?','Escribinos a '+CONTACT+'.');KB.contacto='Podés escribirnos a '+CONTACT+'.'}
+ var bits=[];if(SELLER)bits.push('© '+SELLER);if(CONTACT)bits.push('Contacto: '+CONTACT);lg.textContent=bits.join(' · ');
+ if(PRICE_UNTIL){$$('.priceuntil').forEach(function(e){e.textContent='Precio de lanzamiento hasta el '+PRICE_UNTIL;e.hidden=false})}
+})();
+
+/* ===== versión 13 secciones: bloques que dependen de datos del dueño ===== */
+var PRIVACY="",TERMS="",PLAYLIST_URL="";   /* PRIVACY y TERMS: texto completo; PLAYLIST_URL: enlace de la playlist */
+(function(){
+ if(CHECKOUT_URL){$$('.secure').forEach(function(e){e.hidden=false})}
+ if(REFUND){var g=$('#garantia');if(g){g.hidden=false;var t=$('#garantia-txt');if(t)t.textContent=REFUND}}
+ if(PLAYLIST_URL){var a=$('#pl-link');if(a){a.href=PLAYLIST_URL;a.target='_blank';a.rel='noopener noreferrer';a.hidden=false}}
+ var lm=$('#legalm'),lt=$('#lt'),lbd=$('#lbody'),box=$('#legal-links');
+ function link(label,text){if(!text)return;var b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',function(){lt.textContent=label;lbd.textContent=text;lm.hidden=false;document.body.style.overflow='hidden'});box.appendChild(b)}
+ link('Política de privacidad',PRIVACY);link('Términos y condiciones',TERMS);link('Política de reembolso',REFUND);
+ function closeL(){lm.hidden=true;document.body.style.overflow=''}
+ $('.mx',lm).addEventListener('click',closeL);lm.addEventListener('click',function(e){if(e.target===lm)closeL()});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lm.hidden)closeL()});
+})();
+})();
+</script>
+</body></html>
