@@ -533,11 +533,23 @@ html.seen #intro{display:none}
 .chat-tip .tq button.hot{background:var(--berry);border-color:var(--berry);color:#fff}
 .chat-tip{max-width:min(310px,calc(100% - 32px))}
 @media(prefers-reduced-motion:reduce){#intro{display:none}.garland i,.orn,.snowy::after,.cta-big,.chat-fab .av img{animation:none}}
+
+/* ===== música navideña ===== */
+.musicbtn{position:fixed;left:var(--gx);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:45;display:flex;align-items:center;gap:8px;height:48px;padding:0 16px 0 12px;border:2px solid rgba(255,255,255,.55);border-radius:999px;background:rgba(11,51,38,.92);color:#fff;font:700 .9rem var(--f-body);cursor:pointer;backdrop-filter:blur(6px);box-shadow:0 8px 22px rgba(0,0,0,.35);transition:bottom .3s,background .2s}
+body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+.musicbtn svg{width:22px;height:22px;flex:none}
+.musicbtn .waves{transition:opacity .2s}
+.musicbtn[aria-pressed="false"] .waves{opacity:0}
+.musicbtn[aria-pressed="false"]{background:rgba(143,31,41,.92)}
+.musicbtn.ask::after{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid var(--gold);animation:ringp 1.8s ease-out infinite}
+@keyframes ringp{0%{opacity:.9;transform:scale(.95)}100%{opacity:0;transform:scale(1.15)}}
+#intro .hint{display:inline-block;margin-top:1.2rem;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:.5rem 1.1rem;font:700 .95rem var(--f-body);animation:introUp .8s ease 1.1s backwards}
+@media(prefers-reduced-motion:reduce){.musicbtn.ask::after{animation:none}}
 </style>
 </head><body>
 
 <script>try{if(sessionStorage.getItem('wd_intro')==='1')document.documentElement.classList.add('seen')}catch(e){}</script>
-<div id="intro" aria-hidden="true"><div class="in"><img class="lg" src="assets/logo-cream.webp" width="600" height="248" alt=""><p>¡Bienvenidos a la Navidad más mágica!</p><small>25 días para compartir en familia</small><div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+<div id="intro" aria-hidden="true"><div class="in"><img class="lg" src="assets/logo-cream.webp" width="600" height="248" alt=""><p>¡Bienvenidos a la Navidad más mágica!</p><small>25 días para compartir en familia</small><div><span class="hint">♪ Tocá para entrar con música navideña</span></div><div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
 <a class="skip" href="#adentro">Saltar al contenido</a>
 <div class="progress" aria-hidden="true"></div>
 <header class="topbar"><div class="wrap"><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><nav><a href="#adentro">Qué incluye</a><a href="#como">Cómo funciona</a><a href="#faq">Preguntas</a><a class="btn btn-red btn-sm" href="#checkout" data-buy>Comprar</a></nav></div></header>
@@ -737,8 +749,10 @@ html.seen #intro{display:none}
 </main>
 
 <!-- 13 FOOTER -->
-<footer><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><div>Que esta Navidad cuente.</div><div id="legal" style="margin-top:8px"></div><div id="legal-links"></div><div style="margin-top:10px;opacity:.8">© WonderDays. Todos los derechos reservados. Producto digital, no se envía nada físico.</div></footer>
+<footer><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><div>Que esta Navidad cuente.</div><div id="legal" style="margin-top:8px"></div><div id="legal-links"></div><div style="margin-top:10px;opacity:.8">© WonderDays. Todos los derechos reservados. Producto digital, no se envía nada físico.</div><div style="margin-top:6px;opacity:.65;font-size:.8rem">Música: «Jingle Bells», grabación CC0 de ChristmasSongs (OpenGameArt.org).</div></footer>
 
+
+<button id="music" class="musicbtn ask" type="button" aria-pressed="false" aria-label="Activar la música navideña"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5z"/><g class="waves"><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></g></svg><span>Música</span></button>
 <div class="sticky" id="sticky"><span>MegaPack · USD 25<small>Solo USD 1 por día</small></span><a class="btn btn-red" href="#checkout" data-buy>Lo quiero</a></div>
 
 <div id="order" class="modal" role="dialog" aria-modal="true" aria-labelledby="ot" hidden><div class="sheet">
@@ -1002,6 +1016,91 @@ var PRIVACY="",TERMS="",PLAYLIST_URL="";   /* PRIVACY y TERMS: texto completo; P
  $$('.chat-tip .tq button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var txt=b.textContent,topic=b.dataset.q;openChat();ask(txt,topic)})});
  /* título que aparece palabra por palabra */
  if(!reduce){var h=$('.hero h1');if(h&&!h.dataset.sp){h.dataset.sp='1';var words=h.textContent.trim().split(/\s+/);h.textContent='';words.forEach(function(w,i){var sp=document.createElement('span');sp.className='w';sp.style.animationDelay=((document.documentElement.classList.contains('seen')?0.1:2.0)+i*0.07)+'s';sp.textContent=w;h.appendChild(sp);if(i<words.length-1)h.appendChild(document.createTextNode(' '))})}}
+})();
+
+/* ===== Música navideña: se genera en el navegador (sin archivos ni derechos de grabación) ===== */
+(function(){
+ var btn=$('#music'),ctx=null,master=null,bus=null,timer=null,playing=false,queue=[],qi=0,loopT0=0,started=false;
+ var off=false;try{off=localStorage.getItem('wd_music')==='off'}catch(e){}
+ /* Grabación real de Jingle Bells (CC0, ChristmasSongs, OpenGameArt). Si falla, suena la versión generada */
+ var el=null,filePlaying=false,fileFailed=false,fadeT=null;
+ function fadeTo(v,ms,done){clearInterval(fadeT);if(!el){if(done)done();return}var from=el.volume,t0=Date.now();fadeT=setInterval(function(){var p=Math.min(1,(Date.now()-t0)/ms);el.volume=Math.max(0,Math.min(1,from+(v-from)*p));if(p>=1){clearInterval(fadeT);if(done)done()}},40)}
+ function startFile(){
+  if(!el){el=new Audio('assets/jingle-bells.mp3');el.loop=true;el.preload='auto';el.volume=0;el.addEventListener('error',function(){fileFailed=true;if(filePlaying){filePlaying=false;playing=false;start()}})}
+  var p=el.play();
+  if(p&&p.then){p.then(function(){filePlaying=true;playing=true;fadeTo(.55,2000);setUI()}).catch(function(err){if(err&&err.name!=='NotAllowedError'){fileFailed=true;start()}})}
+ }
+ var NOTE={C:0,D:2,E:4,F:5,G:7,A:9,B:11};
+ function hz(n,shift){var o=+n.charAt(1),m=NOTE[n.charAt(0)]+(o+1)*12+(shift||0);return 440*Math.pow(2,(m-69)/12)}
+ /* Jingle Bells (1857) y We Wish You a Merry Christmas (tradicional): composiciones de dominio público */
+ var JB=[['E4',1],['E4',1],['E4',2],['E4',1],['E4',1],['E4',2],['E4',1],['G4',1],['C4',1.5],['D4',.5],['E4',4],['F4',1],['F4',1],['F4',1.5],['F4',.5],['F4',1],['E4',1],['E4',1],['E4',.5],['E4',.5],['E4',1],['D4',1],['D4',1],['E4',1],['D4',2],['G4',2],
+  ['E4',1],['E4',1],['E4',2],['E4',1],['E4',1],['E4',2],['E4',1],['G4',1],['C4',1.5],['D4',.5],['E4',4],['F4',1],['F4',1],['F4',1.5],['F4',.5],['F4',1],['E4',1],['E4',1],['E4',.5],['E4',.5],['G4',1],['G4',1],['F4',1],['D4',1],['C4',4]];
+ var JBR=['C','C','C','C','F','F','C','G','C','C','C','C','F','C','G','C'];
+ var WW=[['G4',1],['C5',1],['C5',.5],['D5',.5],['C5',.5],['B4',.5],['A4',1],['A4',1],['A4',1],['D5',1],['D5',.5],['E5',.5],['D5',.5],['C5',.5],['B4',1],['G4',1],['G4',1],['E5',1],['E5',.5],['F5',.5],['E5',.5],['D5',.5],['C5',1],['A4',1],['G4',.5],['G4',.5],['A4',1],['D5',1],['B4',1],['C5',3]];
+ var WWR=['C','F','G','C','A','F','G','C'];
+ function bell(t,fr,dur,vol){
+  var o=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),g2=ctx.createGain();
+  o.type='sine';o.frequency.value=fr;o2.type='sine';o2.frequency.value=fr*2.76;g2.gain.value=.12;
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.012);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);o2.connect(g2);g2.connect(g);g.connect(bus);o.start(t);o2.start(t);o.stop(t+dur+.05);o2.stop(t+dur+.05)}
+ function pad(t,fr,dur,vol){
+  var o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=fr;
+  g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(vol,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g);g.connect(bus);o.start(t);o.stop(t+dur+.05)}
+ var noiseBuf=null;
+ function jingle(t,vol){
+  if(!noiseBuf){var len=Math.floor(ctx.sampleRate*.08),b=ctx.createBuffer(1,len,ctx.sampleRate),d=b.getChannelData(0);for(var i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);noiseBuf=b}
+  var src=ctx.createBufferSource(),f=ctx.createBiquadFilter(),g=ctx.createGain();src.buffer=noiseBuf;f.type='bandpass';f.frequency.value=7200;f.Q.value=1.2;
+  g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.0001,t+.08);src.connect(f);f.connect(g);g.connect(bus);src.start(t)}
+ function song(mel,roots,bpm,bar,pickup,t0){
+  var b=60/bpm,t=t0,ev=[],beat=0;
+  mel.forEach(function(n,i){ev.push({t:t,fr:hz(n[0],12),d:Math.min(n[1]*b*1.8,1.6),v:.16,k:'b'});t+=n[1]*b;beat+=n[1]});
+  var total=beat,bars=roots.length;
+  for(var k=0;k<bars;k++){var tb=t0+(pickup+k*bar)*b,r=roots[k];ev.push({t:tb,fr:hz(r+'2',0),d:bar*b,v:.12,k:'p'});ev.push({t:tb+b*(bar/2),fr:hz(r+'3',7),d:bar*b*.5,v:.07,k:'p'})}
+  for(var j=0;j<Math.ceil(total);j++){ev.push({t:t0+j*b,v:.035,k:'j'})}
+  return {ev:ev,end:t}}
+ function build(from){
+  var a=song(JB,JBR,120,4,0,from),w=song(WW,WWR,138,3,1,a.end+1.6);
+  return {ev:a.ev.concat(w.ev),end:w.end+1.8}}
+ function tick(){
+  if(!ctx||!playing)return;
+  var horizon=ctx.currentTime+.7;
+  while(qi<queue.length&&queue[qi].t<horizon){var e=queue[qi++];if(e.t<ctx.currentTime-.05)continue;if(e.k==='b')bell(e.t,e.fr,e.d,e.v);else if(e.k==='p')pad(e.t,e.fr,e.d,e.v);else jingle(e.t,e.v)}
+  if(qi>=queue.length){var b2=build(loopT0=Math.max(ctx.currentTime+.2,loopT0));queue=b2.ev.sort(function(x,y){return x.t-y.t});qi=0;loopT0=b2.end}
+ }
+ function setUI(){if(!btn)return;btn.setAttribute('aria-pressed',playing?'true':'false');btn.setAttribute('aria-label',playing?'Silenciar la música navideña':'Activar la música navideña');btn.classList.toggle('ask',!playing&&!off)}
+ function init(){
+  if(ctx)return true;
+  var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return false;
+  ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+  bus=ctx.createGain();bus.gain.value=1;bus.connect(master);
+  var dl=ctx.createDelay(1);dl.delayTime.value=.27;var fb=ctx.createGain();fb.gain.value=.32;var wet=ctx.createGain();wet.gain.value=.38;
+  bus.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(master);
+  return true}
+ function start(){
+  if(playing)return;
+  if(!fileFailed){startFile();return}
+  if(!init())return;
+  var go=function(){
+   if(playing)return;playing=true;
+   var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setValueAtTime(master.gain.value,now);master.gain.linearRampToValueAtTime(.9,now+2.2);
+   var b=build(loopT0=now+.25);queue=b.ev.sort(function(x,y){return x.t-y.t});qi=0;loopT0=b.end;
+   clearInterval(timer);timer=setInterval(tick,180);tick();setUI()};
+  if(ctx.state==='running')go();else ctx.resume().then(function(){if(ctx.state==='running')go()}).catch(function(){})}
+ function stop(){
+  if(filePlaying){filePlaying=false;playing=false;fadeTo(0,500,function(){if(el&&!filePlaying)el.pause()});setUI();return}
+  if(!ctx||!playing)return;playing=false;clearInterval(timer);
+  var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setValueAtTime(master.gain.value,now);master.gain.linearRampToValueAtTime(0,now+.5);
+  setTimeout(function(){if(!playing&&ctx&&ctx.state==='running')ctx.suspend()},650);setUI()}
+ if(btn){btn.addEventListener('click',function(e){e.stopPropagation();if(playing){off=true;try{localStorage.setItem('wd_music','off')}catch(x){}stop()}else{off=false;try{localStorage.removeItem('wd_music')}catch(x){}start()}})}
+ /* 1) intento de reproducción apenas se entra; 2) si el navegador la bloquea, arranca con el primer toque o clic */
+ function gesture(){if(off||playing)return;start();if(playing||(ctx&&ctx.state==='running')){['pointerdown','touchend','keydown','click'].forEach(function(t){document.removeEventListener(t,gesture,true)})}}
+ ['pointerdown','touchend','keydown','click'].forEach(function(t){document.addEventListener(t,gesture,true)});
+ if(!off){try{start()}catch(e){}}
+ setUI();
+ document.addEventListener('visibilitychange',function(){if(filePlaying&&el){if(document.hidden)el.pause();else el.play().catch(function(){})}if(!ctx)return;if(document.hidden){if(playing)ctx.suspend()}else if(playing){ctx.resume()}});
+ /* prueba interna: #audiotest renderiza 8 s sin altavoz y muestra el nivel */
+ if(location.hash==='#audiotest'){window.__wdAudioTest=function(){var OC=window.OfflineAudioContext||window.webkitOfflineAudioContext,oc=new OC(1,44100*8,44100),real=ctx,rm=master,rb=bus;ctx=oc;master=oc.createGain();master.gain.value=.55;master.connect(oc.destination);bus=oc.createGain();master&&bus.connect(master);var dl=oc.createDelay(1);dl.delayTime.value=.27;var fb=oc.createGain();fb.gain.value=.32;var wet=oc.createGain();wet.gain.value=.38;bus.connect(dl);dl.connect(fb);fb.connect(dl);dl.connect(wet);wet.connect(master);noiseBuf=null;var b=build(0);b.ev.forEach(function(e){if(e.t<8){if(e.k==='b')bell(e.t,e.fr,e.d,e.v);else if(e.k==='p')pad(e.t,e.fr,e.d,e.v);else jingle(e.t,e.v)}});return oc.startRendering().then(function(buf){var d=buf.getChannelData(0),pk=0,sum=0,nan=0;for(var i=0;i<d.length;i++){var x=d[i];if(x!==x)nan++;var a=Math.abs(x);if(a>pk)pk=a;sum+=x*x}ctx=real;master=rm;bus=rb;noiseBuf=null;return {peak:pk,rms:Math.sqrt(sum/d.length),nan:nan,events:b.ev.length}})}}
 })();
 })();
 </script>
