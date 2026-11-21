@@ -478,16 +478,65 @@ details p{padding:0 22px 18px;margin:0}
 .closeprice{display:inline-block;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.4);border-radius:999px;padding:.5rem 1.2rem;font:400 1.5rem var(--f-display);color:var(--gold);margin-top:1rem}
 .close ul.cl{list-style:none;padding:0;margin:1.2rem auto 0;display:grid;gap:6px;max-width:520px;text-align:left}
 .close ul.cl li{color:#fff3f3}
+
+/* ===== bienvenida navideña, luces y más animación ===== */
+#intro{position:fixed;inset:0;z-index:200;background:radial-gradient(120% 100% at 50% 20%,#1f7a58,#0f4a37 55%,#0a3226);display:grid;place-items:center;text-align:center;color:#fff;overflow:hidden;cursor:pointer;animation:introOut .6s ease 2.1s forwards}
+html.seen #intro{display:none}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
+#intro.off{opacity:0;visibility:hidden;transition:opacity .45s}
+#intro .in{position:relative;z-index:2;padding:0 24px}
+#intro .lg{width:min(360px,72vw);height:auto;margin:0 auto;animation:introPop .9s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes introPop{from{opacity:0;transform:scale(.6) rotate(-6deg)}to{opacity:1;transform:none}}
+#intro p{font:400 clamp(1.4rem,5vw,2.3rem)/1.3 var(--f-display);margin:1.2rem 0 .3rem;animation:introUp .8s ease .5s backwards}
+#intro small{font:600 1rem var(--f-body);color:#d6eadf;letter-spacing:.04em;animation:introUp .8s ease .8s backwards}
+@keyframes introUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+#intro .bulbs{display:flex;justify-content:center;gap:12px;margin-top:1.6rem}
+#intro .bulbs i{width:14px;height:20px;border-radius:50% 50% 45% 45%;animation:bulb 1.2s ease-in-out infinite}
+.garland{position:absolute;left:0;right:0;top:66px;height:46px;z-index:2;pointer-events:none;display:flex;justify-content:space-around;align-items:flex-start;padding:0 1%}
+.garland::before{content:"";position:absolute;left:-2%;right:-2%;top:-10px;height:34px;border-bottom:2px solid rgba(0,0,0,.4);border-radius:0 0 50% 50%/0 0 100% 100%}
+.garland i,#intro .bulbs i{display:block;width:13px;height:19px;border-radius:50% 50% 45% 45%;position:relative;top:14px;animation:bulb 1.4s ease-in-out infinite}
+.garland i:nth-child(4n+1),#intro .bulbs i:nth-child(4n+1){background:#ff4b55;box-shadow:0 0 14px 4px rgba(255,75,85,.7)}
+.garland i:nth-child(4n+2),#intro .bulbs i:nth-child(4n+2){background:#f6c453;box-shadow:0 0 14px 4px rgba(246,196,83,.75);animation-delay:.3s}
+.garland i:nth-child(4n+3),#intro .bulbs i:nth-child(4n+3){background:#5be3a1;box-shadow:0 0 14px 4px rgba(91,227,161,.65);animation-delay:.6s}
+.garland i:nth-child(4n),#intro .bulbs i:nth-child(4n){background:#7fc4ff;box-shadow:0 0 14px 4px rgba(127,196,255,.65);animation-delay:.9s}
+.garland i:nth-child(odd){top:20px}
+@keyframes bulb{0%,100%{opacity:1;filter:brightness(1.1)}50%{opacity:.35;filter:brightness(.7)}}
+@media(max-width:600px){.garland i:nth-child(n+13){display:none}.garland{justify-content:space-around}}
+.orn{position:absolute;z-index:1;border-radius:50%;pointer-events:none;box-shadow:inset -6px -8px 14px rgba(0,0,0,.28),inset 6px 6px 12px rgba(255,255,255,.35),0 8px 18px rgba(0,0,0,.35);animation:drift2 7s ease-in-out infinite}
+.orn::before{content:"";position:absolute;left:50%;top:-9px;width:12px;height:12px;margin-left:-6px;border-radius:3px 3px 0 0;background:linear-gradient(#f6c453,#c99a1e)}
+.orn.o1{width:46px;height:46px;left:4%;top:46%;background:radial-gradient(circle at 35% 30%,#ff7a82,#c8323c 60%,#8f1f29)}
+.orn.o2{width:34px;height:34px;left:92%;top:40%;background:radial-gradient(circle at 35% 30%,#ffe79a,#f6c453 60%,#b88a14);animation-delay:-2s}
+.orn.o3{width:40px;height:40px;left:90%;top:70%;background:radial-gradient(circle at 35% 30%,#7bd9a6,#1c6a4e 60%,#0b3326);animation-delay:-4s}
+.orn.o4{width:30px;height:30px;left:7%;top:76%;background:radial-gradient(circle at 35% 30%,#ffe79a,#f6c453 60%,#b88a14);animation-delay:-3s}
+@keyframes drift2{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-16px) rotate(6deg)}}
+@media(max-width:700px){.orn{display:none}}
+.hero h1 span.w{display:inline-block;animation:wordUp .7s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes wordUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.snowy{overflow:hidden}
+.snowy::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;background-image:radial-gradient(3px 3px at 20px 30px,rgba(255,255,255,.85),transparent),radial-gradient(2px 2px at 90px 120px,rgba(255,255,255,.8),transparent),radial-gradient(3px 3px at 150px 60px,rgba(255,255,255,.7),transparent),radial-gradient(2px 2px at 210px 190px,rgba(255,255,255,.8),transparent),radial-gradient(2px 2px at 60px 210px,rgba(255,255,255,.7),transparent);background-size:240px 240px;animation:snowfall 16s linear infinite}
+.snowy>.wrap{position:relative;z-index:1}
+@keyframes snowfall{to{background-position:0 240px}}
+.cta-big{animation:hop 3.4s ease-in-out infinite}
+@keyframes hop{0%,86%,100%{transform:none}90%{transform:translateY(-5px)}95%{transform:translateY(-2px)}}
+.chat-fab .av img{animation:wig 6s ease-in-out infinite;transform-origin:50% 90%}
+@keyframes wig{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-10deg)}94%{transform:rotate(9deg)}97%{transform:rotate(-5deg)}}
+.chat-tip .tq{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chat-tip .tq button{position:static;border:2px solid var(--pine);background:#fff;color:var(--pine);font:600 .8rem var(--f-body);padding:6px 10px;border-radius:999px;cursor:pointer;line-height:1.2}
+.chat-tip .tq button.hot{background:var(--berry);border-color:var(--berry);color:#fff}
+.chat-tip{max-width:min(310px,calc(100% - 32px))}
+@media(prefers-reduced-motion:reduce){#intro{display:none}.garland i,.orn,.snowy::after,.cta-big,.chat-fab .av img{animation:none}}
 </style>
 </head><body>
 
+<script>try{if(sessionStorage.getItem('wd_intro')==='1')document.documentElement.classList.add('seen')}catch(e){}</script>
+<div id="intro" aria-hidden="true"><div class="in"><img class="lg" src="assets/logo-cream.webp" width="600" height="248" alt=""><p>¡Bienvenidos a la Navidad más mágica!</p><small>25 días para compartir en familia</small><div class="bulbs"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
 <a class="skip" href="#adentro">Saltar al contenido</a>
 <div class="progress" aria-hidden="true"></div>
 <header class="topbar"><div class="wrap"><img src="assets/logo-cream.webp" width="600" height="248" alt="WonderDays"><nav><a href="#adentro">Qué incluye</a><a href="#como">Cómo funciona</a><a href="#faq">Preguntas</a><a class="btn btn-red btn-sm" href="#checkout" data-buy>Comprar</a></nav></div></header>
 <main id="top">
 
 <!-- 01 HERO -->
-<section class="hero"><div class="sky"></div><div class="aurora"></div><canvas id="snowc" aria-hidden="true"></canvas><div class="wrap">
+<section class="hero"><div class="sky"></div><div class="aurora"></div><canvas id="snowc" aria-hidden="true"></canvas><div class="garland" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="orn o1"></span><span class="orn o2"></span><span class="orn o3"></span><span class="orn o4"></span><div class="wrap">
 <span class="eyebrow">The Christmas Experience · Mega Pack</span>
 <h1>Esta Navidad, regalale a tu familia recuerdos que van a guardar en el corazón para siempre.</h1>
 <div class="mock"><div class="stage" role="img" aria-label="El MegaPack WonderDays: guía para padres, calendario de adviento con sus 25 puertas, libro para colorear, pasaporte, tarjetas de misión, sobre e insignias"><img class="s s-cb" src="assets/cb-cover-s.webp" width="360" height="509" alt="" decoding="async"><img class="s s-gd" src="assets/guide-cover-real-s.webp" width="360" height="508" alt="" decoding="async" fetchpriority="high"><img class="s s-cal" src="assets/adv-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-board" src="assets/adv-board-s.webp" width="760" height="692" alt="" decoding="async" fetchpriority="high"><img class="s s-pas" src="assets/pas-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-env" src="assets/env-2-s.webp" width="280" height="365" alt="" decoding="async"><img class="s s-c1" src="assets/card-05-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c2" src="assets/card-01-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c3" src="assets/card-12-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c4" src="assets/card-18-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c5" src="assets/card-25-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s b b1" src="assets/badge-01-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b2" src="assets/badge-06-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b3" src="assets/badge-10-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b4" src="assets/badge-14-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b5" src="assets/badge-20-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b6" src="assets/badge-23-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b7" src="assets/badge-17-s.webp" width="120" height="120" alt="" decoding="async"></div></div>
@@ -587,7 +636,7 @@ details p{padding:0 22px 18px;margin:0}
 </div></section>
 
 <!-- 06 LOS 25 DÍAS -->
-<section class="redsec"><div class="wrap">
+<section class="redsec snowy"><div class="wrap">
 <div class="center"><span class="eyebrow" style="color:#ffe9a8">Así se vive la experiencia</span>
 <h2 class="rv">Cada día, una nueva oportunidad para crear un recuerdo</h2>
 <p class="lead">Durante 25 días, tu familia encontrará nuevas propuestas para jugar, crear, conversar y disfrutar juntos. Algunas actividades serán tranquilas y emotivas. Otras, divertidas y llenas de energía. Todas tienen algo en común: están pensadas para compartir.</p></div>
@@ -622,7 +671,7 @@ details p{padding:0 22px 18px;margin:0}
 </div></section>
 
 <!-- 09 PRECIO Y CÓMO FUNCIONA -->
-<section class="offer" id="checkout"><div class="wrap center">
+<section class="offer snowy" id="checkout"><div class="wrap center">
 <span class="eyebrow">Una sola compra, toda una experiencia</span>
 <h2 class="rv">Una sola compra. 25 días de momentos inolvidables.</h2>
 <p class="lead" style="color:#ffe3e5;margin:0 auto">Todo lo que necesitás para transformar diciembre en una experiencia especial para compartir con tu familia.</p>
@@ -662,7 +711,7 @@ details p{padding:0 22px 18px;margin:0}
 </div></section>
 
 <!-- 12 CIERRE FINAL -->
-<section class="close"><div class="wrap">
+<section class="close snowy"><div class="wrap">
 <span class="eyebrow">Una Navidad para recordar</span>
 <p class="big">Esta Navidad, el mejor regalo no viene envuelto. <em>Se vive en familia.</em></p>
 <p class="lead">Tus hijos van a crecer. Los años van a pasar y muchas cosas van a cambiar. Pero esos momentos en los que se sentaron juntos a jugar, crearon algo con sus propias manos, decoraron el árbol y compartieron una sonrisa pueden quedarse para siempre en sus recuerdos.</p>
@@ -696,7 +745,7 @@ details p{padding:0 22px 18px;margin:0}
 <div id="lb" role="dialog" aria-modal="true" aria-label="Visor de imágenes"><span class="count"></span><button class="x" aria-label="Cerrar">×</button><button class="p" aria-label="Anterior">‹</button><img alt=""><button class="n" aria-label="Siguiente">›</button><div class="cap"></div></div>
 
 <button class="chat-fab" id="chat-fab" type="button" aria-label="Abrir WonderDays Chat" aria-expanded="false"><span class="av"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><i aria-hidden="true"></i></span><span class="tx"><b>WonderDays Chat</b><small>Preguntanos lo que quieras</small></span></button>
-<div class="chat-tip" id="chat-tip" hidden><button type="button" aria-label="Cerrar aviso">×</button><div class="tav"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><strong>WonderDays Chat</strong></div><b>¡Hola!</b> Te cuento qué incluye el MegaPack y te ayudo a comprar.</div>
+<div class="chat-tip" id="chat-tip" hidden><button type="button" aria-label="Cerrar aviso">×</button><div class="tav"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><strong>WonderDays Chat</strong></div><b>¡Hola y bienvenido a WonderDays!</b> Soy el asistente: te cuento qué incluye el MegaPack y te ayudo a comprar.<div class="tq"><button type="button" data-q="incluye">¿Qué incluye?</button><button type="button" data-q="precio">¿Cuánto cuesta?</button><button type="button" data-q="pago" class="hot">Quiero comprar</button></div></div>
 <section class="chat" id="chat" role="dialog" aria-label="WonderDays Chat" hidden>
 <div class="chat-h"><img class="chat-av" src="assets/chat-santa.webp" width="256" height="256" alt=""><div><b>WonderDays Chat</b><small>Asistente automático · respuestas al instante</small></div><button class="cx" type="button" aria-label="Cerrar el chat">×</button></div>
 <div class="chat-b" id="chat-b" aria-live="polite"></div>
@@ -785,7 +834,6 @@ function onScroll(){
  var c=chk.getBoundingClientRect();
  st.classList.toggle('on',y>hero.offsetHeight*0.9&&!(c.top<window.innerHeight*0.7&&c.bottom>0));
  document.body.classList.toggle('sb',st.classList.contains('on'));
- document.body.classList.toggle('fabhide',window.innerWidth<=560&&y<hero.offsetHeight*0.45);
  tick=false;
 }
 window.addEventListener('scroll',function(){if(!tick){tick=true;requestAnimationFrame(onScroll)}},{passive:true});onScroll();
@@ -912,6 +960,36 @@ var PRIVACY="",TERMS="",PLAYLIST_URL="";   /* PRIVACY y TERMS: texto completo; P
  function closeL(){lm.hidden=true;document.body.style.overflow=''}
  $('.mx',lm).addEventListener('click',closeL);lm.addEventListener('click',function(e){if(e.target===lm)closeL()});
  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lm.hidden)closeL()});
+})();
+
+/* ===== Entrada navideña y bienvenida automática del chat ===== */
+(function(){
+ var intro=$('#intro'),welcomed=false;
+ function seenGet(k){try{return sessionStorage.getItem(k)==='1'}catch(e){return false}}
+ function seenSet(k){try{sessionStorage.setItem(k,'1')}catch(e){}}
+ function welcome(){
+  if(welcomed)return;welcomed=true;tipShown=true;
+  if(seenGet('wd_welcome'))return;
+  setTimeout(function(){
+   if(!order.hidden||lb.classList.contains('open')||!chat.hidden)return;
+   seenSet('wd_welcome');
+   if(window.innerWidth>=900){openChat()}
+   else{tip.hidden=false;setTimeout(function(){tip.hidden=true},20000)}
+  },1300);
+ }
+ function endIntro(){
+  seenSet('wd_intro');
+  if(intro){intro.classList.add('off');setTimeout(function(){if(intro&&intro.parentNode){intro.parentNode.removeChild(intro)}},600)}
+  welcome();
+ }
+ if(intro&&!seenGet('wd_intro')&&!reduce){
+  intro.addEventListener('click',endIntro);
+  setTimeout(endIntro,2100);
+ }else{if(intro&&intro.parentNode)intro.parentNode.removeChild(intro);welcome()}
+ /* botones de respuesta rápida dentro del aviso de bienvenida */
+ $$('.chat-tip .tq button').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();var txt=b.textContent,topic=b.dataset.q;openChat();ask(txt,topic)})});
+ /* título que aparece palabra por palabra */
+ if(!reduce){var h=$('.hero h1');if(h&&!h.dataset.sp){h.dataset.sp='1';var words=h.textContent.trim().split(/\s+/);h.textContent='';words.forEach(function(w,i){var sp=document.createElement('span');sp.className='w';sp.style.animationDelay=((document.documentElement.classList.contains('seen')?0.1:2.0)+i*0.07)+'s';sp.textContent=w;h.appendChild(sp);if(i<words.length-1)h.appendChild(document.createTextNode(' '))})}}
 })();
 })();
 </script>
