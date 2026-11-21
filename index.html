@@ -427,6 +427,14 @@ details p{padding:0 22px 18px;margin:0}
 @media(max-width:560px){.stage .s-env{display:none}.hero-cta .btn{width:100%}}
 .lead-below{margin:2rem auto 0}.hero .lead.lead-below{margin:2rem auto 0}.hero-cta{margin-top:1.4rem}
 
+.pricebar{display:grid;gap:18px;grid-template-columns:1fr;align-items:center;justify-items:center;margin:2.2rem auto 0;max-width:860px;background:#fff;border:3px solid var(--berry);border-radius:30px;padding:24px 26px;box-shadow:0 14px 0 rgba(143,31,41,.18),0 24px 44px rgba(11,51,38,.15);text-align:center}
+@media(min-width:760px){.pricebar{grid-template-columns:1.1fr 1fr;text-align:left;justify-items:stretch}.pb-r{align-items:center}}
+.pb-k{font:700 .78rem var(--f-body);letter-spacing:.18em;text-transform:uppercase;color:var(--berry)}
+.pb-a{font:400 clamp(3rem,8vw,4.6rem)/1.15 var(--f-display);color:var(--berry)}
+.pb-s{color:var(--muted);font-size:.95rem}
+.pb-r{display:flex;flex-direction:column;gap:10px}
+.pb-n{font-size:.85rem;color:var(--muted);text-align:center}
+
 /* ===== versión 13 secciones ===== */
 .hero .eyebrow{max-width:92%}
 .hero h1{font-size:clamp(1.9rem,4.6vw,3.3rem)}
@@ -553,7 +561,7 @@ html.seen #intro{display:none}
 <p class="fine priceuntil" hidden style="margin:.5rem 0 0"></p>
 <p class="fine" style="margin-bottom:0">Entrega digital · Se imprime en casa · Solo USD 1 por día</p>
 </div>
-<p class="askline">¿Dudas? <button type="button" data-chat>Preguntale al asistente</button></p>
+<p class="askline">¿Dudas? <button type="button" data-chat>Chateá con Santa</button></p>
 <div class="chips"><span class="chip">Para chicos de 3 a 10 años</span><span class="chip" id="cd" hidden></span></div>
 </div>
 <svg class="wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path fill="#D2373F" d="M0 40 C 120 85 240 85 360 50 C 480 15 600 15 720 50 C 840 85 960 85 1080 50 C 1200 15 1320 15 1440 45 L1440 90 L0 90 Z"/></svg>
@@ -609,6 +617,10 @@ html.seen #intro{display:none}
 <p class="lead" style="margin-top:1rem">No necesitás pasar horas buscando actividades, inventando juegos o pensando qué hacer. Todo está organizado para que puedas preparar las propuestas y disfrutar de cada momento con tus hijos.</p>
 <div class="mock"><div class="stage" role="img" aria-label="El MegaPack WonderDays: guía para padres, calendario de adviento con sus 25 puertas, libro para colorear, pasaporte, tarjetas de misión, sobre e insignias"><img class="s s-cb" src="assets/cb-cover-s.webp" width="360" height="509" alt="" decoding="async"><img class="s s-gd" src="assets/guide-cover-real-s.webp" width="360" height="508" alt="" decoding="async" fetchpriority="high"><img class="s s-cal" src="assets/adv-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-board" src="assets/adv-board-s.webp" width="760" height="692" alt="" decoding="async" fetchpriority="high"><img class="s s-pas" src="assets/pas-cover-s.webp" width="360" height="465" alt="" decoding="async"><img class="s s-env" src="assets/env-2-s.webp" width="280" height="365" alt="" decoding="async"><img class="s s-c1" src="assets/card-05-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c2" src="assets/card-01-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c3" src="assets/card-12-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c4" src="assets/card-18-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s s-c5" src="assets/card-25-f-s.webp" width="280" height="420" alt="" decoding="async"><img class="s b b1" src="assets/badge-01-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b2" src="assets/badge-06-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b3" src="assets/badge-10-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b4" src="assets/badge-14-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b5" src="assets/badge-20-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b6" src="assets/badge-23-s.webp" width="120" height="120" alt="" decoding="async"><img class="s b b7" src="assets/badge-17-s.webp" width="120" height="120" alt="" decoding="async"></div></div>
 <p class="big2 rv">25 días para compartir. <em>Momentos para recordar toda la vida.</em></p>
+<div class="pricebar rv">
+<div class="pb-l"><span class="pb-k">Precio de lanzamiento</span><div class="pb-a">USD 25</div><span class="pb-s">Un solo pago · sin suscripciones · solo USD 1 por día</span></div>
+<div class="pb-r"><a class="btn btn-red cta-big" href="#checkout" data-buy>Quiero mi Mega Pack</a><span class="pb-n">Entrega digital inmediata tras confirmar el pago</span></div>
+</div>
 </div></section>
 
 <!-- 05 TODO LO QUE VAS A RECIBIR -->
@@ -744,14 +756,14 @@ html.seen #intro{display:none}
 
 <div id="lb" role="dialog" aria-modal="true" aria-label="Visor de imágenes"><span class="count"></span><button class="x" aria-label="Cerrar">×</button><button class="p" aria-label="Anterior">‹</button><img alt=""><button class="n" aria-label="Siguiente">›</button><div class="cap"></div></div>
 
-<button class="chat-fab" id="chat-fab" type="button" aria-label="Abrir WonderDays Chat" aria-expanded="false"><span class="av"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><i aria-hidden="true"></i></span><span class="tx"><b>WonderDays Chat</b><small>Preguntanos lo que quieras</small></span></button>
-<div class="chat-tip" id="chat-tip" hidden><button type="button" aria-label="Cerrar aviso">×</button><div class="tav"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><strong>WonderDays Chat</strong></div><b>¡Hola y bienvenido a WonderDays!</b> Soy el asistente: te cuento qué incluye el MegaPack y te ayudo a comprar.<div class="tq"><button type="button" data-q="incluye">¿Qué incluye?</button><button type="button" data-q="precio">¿Cuánto cuesta?</button><button type="button" data-q="pago" class="hot">Quiero comprar</button></div></div>
-<section class="chat" id="chat" role="dialog" aria-label="WonderDays Chat" hidden>
-<div class="chat-h"><img class="chat-av" src="assets/chat-santa.webp" width="256" height="256" alt=""><div><b>WonderDays Chat</b><small>Asistente automático · respuestas al instante</small></div><button class="cx" type="button" aria-label="Cerrar el chat">×</button></div>
+<button class="chat-fab" id="chat-fab" type="button" aria-label="Abrir el chat con Santa Claus" aria-expanded="false"><span class="av"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><i aria-hidden="true"></i></span><span class="tx"><b>Chateá con Santa</b><small>Preguntale lo que quieras</small></span></button>
+<div class="chat-tip" id="chat-tip" hidden><button type="button" aria-label="Cerrar aviso">×</button><div class="tav"><img src="assets/chat-santa.webp" width="256" height="256" alt=""><strong>Santa Claus</strong></div><b>¡Jo, jo, jo! ¡Bienvenido a WonderDays!</b> Soy Santa: te cuento qué incluye el MegaPack y te ayudo a comprar.<div class="tq"><button type="button" data-q="incluye">¿Qué incluye?</button><button type="button" data-q="precio">¿Cuánto cuesta?</button><button type="button" data-q="pago" class="hot">Quiero comprar</button></div></div>
+<section class="chat" id="chat" role="dialog" aria-label="Chat con Santa Claus" hidden>
+<div class="chat-h"><img class="chat-av" src="assets/chat-santa.webp" width="256" height="256" alt=""><div><b>Santa Claus</b><small>Asistente automático · respuestas al instante</small></div><button class="cx" type="button" aria-label="Cerrar el chat">×</button></div>
 <div class="chat-b" id="chat-b" aria-live="polite"></div>
 <div class="chips-q" id="chat-q"></div>
 <form class="chat-f" id="chat-form" autocomplete="off"><input id="chat-in" type="text" placeholder="Escribí tu pregunta…" aria-label="Escribí tu pregunta" maxlength="200"><button type="submit" aria-label="Enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></form>
-<div class="chat-note">Es un asistente automático, no una persona.</div>
+<div class="chat-note">Santa es un asistente automático, no una persona.</div>
 </section>
 <script>
 (function(){
@@ -882,9 +894,9 @@ var KB={
  empezar:'La fecha pensada para empezar es el <b>1 de diciembre</b>, para llegar a Navidad con las 25 puertas abiertas. Pero podés adaptar los tiempos a la rutina de tu familia.',
  devol:'Por ahora esta página no publica una política de devolución, así que prefiero no prometerte nada que no esté escrito.',
  pago:'',
- contacto:'Soy un asistente automático y esta página no publica un contacto directo. Puedo ayudarte con lo que incluye, el precio, los tiempos y cómo comprar.',
- gracias:'¡De nada! Si querés, ya te dejo el pedido listo.',
- saludo:'¡Hola! Soy el asistente de WonderDays. Puedo contarte qué incluye, cuánto cuesta y ayudarte a comprar. ¿Por dónde empezamos?'
+ contacto:'Soy Santa, pero un asistente automático, y esta página no publica un contacto directo. Puedo ayudarte con lo que incluye, el precio, los tiempos y cómo comprar.',
+ gracias:'¡Jo, jo, jo! ¡De nada! Si querés, ya te dejo el pedido listo.',
+ saludo:'¡Jo, jo, jo! ¡Bienvenido a WonderDays! Soy Santa y estoy acá para contarte qué incluye el MegaPack, cuánto cuesta y ayudarte a comprar. ¿Por dónde empezamos?'
 };
 var RULES=[
  ['precio',/(cuanto|precio|cuesta|costo|vale|dolar|usd|pagar cuanto|barato|caro)/],
@@ -912,13 +924,13 @@ function reply(topic){
  setTimeout(function(){
   t.remove();lastTopic=topic;
   if(topic==='pago'){
-   if(CHECKOUT_URL){addMsg('¡Genial! Son <b>USD 25</b>, pago único y acceso digital inmediato. Te abro el resumen de tu pedido para que sigas al pago.','bot',buyBtn('Ver mi pedido · USD 25'))}
-   else{addMsg('¡Genial! Son <b>USD 25</b>, pago único. Te abro el resumen del pedido. Te aviso con claridad: <b>el pago todavía no está habilitado en esta página</b>, así que por ahora no vas a poder completarlo.','bot',buyBtn('Ver mi pedido · USD 25'))}
+   if(CHECKOUT_URL){addMsg('¡Jo, jo, jo, genial! Son <b>USD 25</b>, pago único y acceso digital inmediato. Te abro el resumen de tu pedido para que sigas al pago.','bot',buyBtn('Ver mi pedido · USD 25'))}
+   else{addMsg('¡Jo, jo, jo, genial! Son <b>USD 25</b>, pago único. Te abro el resumen del pedido. Te aviso con claridad: <b>el pago todavía no está habilitado en esta página</b>, así que por ahora no vas a poder completarlo.','bot',buyBtn('Ver mi pedido · USD 25'))}
    setQ([['¿Qué incluye?','incluye'],['¿Cuánto tarda el armado?','tiempo']]);return}
   if(topic==='edad2'){addMsg('Perfecto: el MegaPack sirve para todas las edades de 3 a 10 años. Las tarjetas se pueden adaptar a cada chico, y si tenés varios, hacen la misión todos juntos.','bot');setQ([['¿Qué incluye?','incluye'],['Quiero comprar','pago',1]]);return}
   if(topic==='ayuda'){addMsg('Te ayudo a elegir. <b>¿Qué edad tienen tus hijos?</b>','bot');setQ([['3 a 5 años','edad2'],['6 a 8 años','edad2'],['9 a 10 años','edad2'],['Tengo varios','edad2']]);return}
   var h=KB[topic]||KB.contacto;
-  if(topic==='fallback'){h='No estoy seguro de haber entendido. Puedo responderte sobre <b>qué incluye, el precio, las edades, cómo se recibe, qué se necesita y cuánto tarda</b>. Elegí una opción:'}
+  if(topic==='fallback'){h='Jo, jo... no estoy seguro de haber entendido. Puedo responderte sobre <b>qué incluye, el precio, las edades, cómo se recibe, qué se necesita y cuánto tarda</b>. Elegí una opción:'}
   var extra=null;if(topic==='precio'||topic==='incluye'||topic==='gracias'||topic==='suscripcion'){extra=buyBtn('Ver mi pedido · USD 25')}
   addMsg(h,'bot',extra);
   setQ(topic==='saludo'?MENU:[['Ayudame a elegir','ayuda'],['¿Qué incluye?','incluye'],['¿Cuánto cuesta?','precio'],['Quiero comprar','pago',1]].filter(function(q){return q[1]!==topic}));
