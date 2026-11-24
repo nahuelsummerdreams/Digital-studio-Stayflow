@@ -447,6 +447,10 @@ details p{padding:0 22px 18px;margin:0}
 .ph img{width:100%;height:auto;display:block}
 .ph figcaption{position:absolute;left:12px;bottom:10px;font:600 .74rem var(--f-body);color:rgba(255,255,255,.92);text-shadow:0 1px 5px rgba(0,0,0,.8)}
 .ph{margin:0}
+.ban{max-width:980px;margin:1.5rem auto 0}.ban img{aspect-ratio:21/9;object-fit:cover;object-position:50% 40%}
+@media(max-width:640px){.ban img{aspect-ratio:4/3}}
+.ban .l{object-position:15% 40%}.ban .r{object-position:85% 40%}.ban .t{object-position:50% 12%}
+.pkone{margin:2rem auto 0;text-align:left;max-width:860px}
 .pk{list-style:none;padding:0;margin:0;display:grid;gap:14px}
 .pk li{background:#fff;border:2px solid var(--mist);border-radius:22px;padding:18px 20px;box-shadow:0 10px 26px rgba(11,51,38,.07)}
 .pk b{display:block;font:400 1.2rem var(--f-display);color:var(--night);margin-bottom:.25rem;line-height:1.35}
@@ -589,10 +593,9 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <li><b>❤️ Sin suscripciones</b>Sin mensualidades ni cargos recurrentes.</li>
 </ul>
 <div class="herocard">
-<div class="amt">USD 25<small>Un solo pago · sin suscripciones</small></div>
 <a class="btn btn-red cta-big" href="#checkout" data-buy>Quiero vivir esta experiencia</a>
 <p class="fine priceuntil" hidden style="margin:.5rem 0 0"></p>
-<p class="fine" style="margin-bottom:0">Entrega digital · Se imprime en casa · Solo USD 1 por día</p>
+<p class="fine" style="margin-bottom:0">Entrega digital · Se imprime en casa</p>
 </div>
 <p class="askline">¿Dudas? <button type="button" data-chat>Chateá con Santa</button></p>
 <div class="chips"><span class="chip">Para chicos de 3 a 10 años</span><span class="chip" id="cd" hidden></span></div>
@@ -611,9 +614,9 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <section><div class="wrap center">
 <span class="eyebrow">Lo que pasa en muchas familias</span>
 <h2 class="rv">¿Sentís que diciembre pasa volando y que cada vez cuesta más encontrar momentos para disfrutar en familia?</h2>
+<figure class="ph ban rv"><img src="assets/foto-dolor.webp" width="1000" height="679" alt="Una familia en el sillón, cada uno con su pantalla, junto al árbol de Navidad" class="t" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
 <p class="soft">Entre el trabajo, las responsabilidades, las compras y las pantallas, muchas veces los días pasan sin que podamos detenernos a compartir esos pequeños momentos que realmente importan.</p>
-<div class="twoc">
-<figure class="ph rv"><img src="assets/foto-dolor.webp" width="1000" height="679" alt="Una familia en el sillón, cada uno con su pantalla, junto al árbol de Navidad" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
+<div class="pkone">
 <ul class="pk">
 <li class="rv"><b>Demasiado tiempo frente a las pantallas</b><span>Los celulares, las tablets y la televisión terminan ocupando gran parte del tiempo libre de los chicos. Y muchas veces, aunque estemos todos en casa, no estamos compartiendo realmente.</span></li>
 <li class="rv d1"><b>Queremos compartir más, pero no siempre sabemos cómo</b><span>Tenemos ganas de hacer cosas juntos, pero muchas veces nos faltan ideas, tiempo y actividades para organizar.</span></li>
@@ -627,7 +630,8 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <section class="ice"><div class="wrap">
 <div class="center"><span class="eyebrow">Imaginá una Navidad diferente</span>
 <h2 class="rv">¿Y si este diciembre cada día tuviera algo especial para compartir?</h2></div>
-<div class="twoc rev">
+<figure class="ph ban rv"><img src="assets/foto-beneficio.webp" width="1000" height="747" alt="Una familia con los abuelos riendo y jugando juntos en la mesa, con el pasaporte y las tarjetas del Mega Pack" class="r" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
+<div class="pkone">
 <div><p class="soft" style="margin:0">Imaginá decorar el árbol en familia, descubrir una nueva actividad, preparar algo creativo, jugar, reírse y compartir esos pequeños momentos que terminan convirtiéndose en grandes recuerdos. Una Navidad donde lo más importante no sea lo que hay debajo del árbol, sino las personas que están alrededor.</p>
 <p style="margin:1.2rem 0 .2rem;font-weight:800;color:var(--night);letter-spacing:.04em;text-transform:uppercase;font-size:.85rem">Con The Christmas Experience podés:</p>
 <ul class="checks">
@@ -639,7 +643,6 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <li>Convertir pequeños instantes en recuerdos inolvidables.</li>
 </ul>
 <p class="quote">Porque los mejores regalos muchas veces no se compran. Se viven.</p></div>
-<figure class="ph rv"><img src="assets/foto-beneficio.webp" width="1000" height="747" alt="Una familia con los abuelos riendo y jugando juntos en la mesa, con el pasaporte y las tarjetas del MegaPack" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
 </div></div></section>
 
 <!-- 04 PRESENTACIÓN -->
@@ -697,11 +700,10 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <section><div class="wrap">
 <div class="center"><span class="eyebrow">Una experiencia para compartir con todos</span>
 <h2 class="rv">La magia de Navidad se disfruta mucho más cuando estamos juntos</h2></div>
-<div class="twoc">
+<div class="pkone">
 <div><p class="soft" style="margin:0">Podés disfrutar The Christmas Experience con:</p>
 <ul class="checks"><li>Mamá y papá.</li><li>Hermanos.</li><li>Primos.</li><li>Abuelos.</li><li>Toda la familia reunida.</li></ul>
 <p class="soft" style="margin-left:0">No necesitás grandes preparativos ni dedicarle horas todos los días. Lo importante es encontrar esos pequeños espacios para jugar, compartir y disfrutar.</p></div>
-<figure class="ph rv"><img src="assets/foto-generaciones.webp" width="800" height="980" alt="Abuela, madre y chicos riendo juntos durante un juego navideño" loading="lazy" decoding="async"><figcaption>Imagen ilustrativa</figcaption></figure>
 </div></div></section>
 
 <!-- 08 BONUS -->
@@ -881,7 +883,7 @@ function onScroll(){
  prog.style.transform='scaleX('+(h>0?Math.min(1,y/h):0)+')';
  top.classList.toggle('solid',y>40);
  var c=chk.getBoundingClientRect();
- st.classList.toggle('on',y>hero.offsetHeight*0.9&&!(c.top<window.innerHeight*0.7&&c.bottom>0));
+ var ad=document.getElementById('adentro');st.classList.toggle('on',ad&&y>ad.offsetTop+ad.offsetHeight*0.55&&!(c.top<window.innerHeight*0.7&&c.bottom>0));
  document.body.classList.toggle('sb',st.classList.contains('on'));
  tick=false;
 }
