@@ -2,7 +2,8 @@
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="claude:viewport-fit-sides" content="cover">
-<meta name="robots" content="noindex, nofollow"><title>WonderDays · MegaPack de la Experiencia Navideña</title>
+<meta name="robots" content="noindex, nofollow">
+<title>WonderDays · MegaPack de la Experiencia Navideña</title>
 <meta name="description" content="25 días de aventuras navideñas sin pantallas para toda la familia. Imprimilo, abrí una puerta por día y jueguen juntos.">
 <meta name="theme-color" content="#0B3326">
 <meta property="og:type" content="website">
@@ -434,6 +435,36 @@ details p{padding:0 22px 18px;margin:0}
 .pb-r{display:flex;flex-direction:column;gap:10px}
 .pb-n{font-size:.85rem;color:var(--muted);text-align:center}
 
+
+/* ===== juegos extra ===== */
+.gm{display:grid;gap:22px;grid-template-columns:1fr;margin:2rem auto 0;max-width:1060px;text-align:center}
+@media(min-width:760px){.gm{grid-template-columns:repeat(3,1fr)}}
+.gm .it{background:#fff;border-radius:26px;padding:16px 16px 22px;box-shadow:0 14px 34px rgba(10,50,38,.14);display:flex;flex-direction:column;align-items:center;gap:8px;border:2px solid #f0e2c8}
+.gm .it img{width:100%;max-width:300px;height:auto;aspect-ratio:850/1100;border-radius:14px;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.gm .it b{font:400 1.45rem/1.15 var(--f-display);color:var(--night);margin-top:.4rem}
+.gm .it .sub{color:var(--muted);font-size:.95rem;line-height:1.4}
+.gm .pr{display:flex;align-items:baseline;justify-content:center;gap:.6rem;margin-top:.3rem}
+.gm .pr s{color:var(--muted);font-size:1rem}
+.gm .pr strong{font:400 2.2rem/1 var(--f-display);color:var(--berry)}
+.gm .tagp{font:700 .72rem var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:#fff;background:var(--berry);border-radius:999px;padding:.25rem .7rem}
+.gm .gnote{font-size:.85rem;color:var(--berry);min-height:1.2em;margin:0}
+.gm.one{grid-template-columns:1fr!important;max-width:640px}
+.gm.one .it{text-align:center}
+.gm.one .it .trio{display:flex;gap:10px;justify-content:center;width:100%}.gm.one .it .trio img{width:31%;max-width:190px;aspect-ratio:850/1100}
+.gm.one .it .tx{display:flex;flex-direction:column;gap:8px;align-items:center}
+.gm.one .pr{justify-content:center}
+
+.ultra{max-width:980px;margin:2rem auto 0;background:linear-gradient(160deg,#0f3d2e,#14503E 55%,#0a3226);color:#fff;border-radius:30px;padding:26px 22px 30px;box-shadow:0 18px 44px rgba(10,50,38,.35);border:3px solid var(--gold);text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ultra .tagp{font:700 .72rem var(--f-body);letter-spacing:.14em;text-transform:uppercase;background:var(--gold);color:var(--night);border-radius:999px;padding:.3rem .8rem}
+.ultra h3{font:400 clamp(1.9rem,5vw,2.8rem)/1.1 var(--f-display);margin:.2rem 0 0;color:#fff}
+.ultra .hero-i{width:100%;max-width:640px;height:auto;aspect-ratio:2000/1400;border-radius:18px}
+.ultra .trio{display:flex;gap:10px;justify-content:center;width:100%}.ultra .trio img{width:26%;max-width:150px;height:auto;aspect-ratio:850/1100;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.ultra ul{list-style:none;margin:.4rem 0;padding:0;display:grid;gap:.35rem;text-align:left;max-width:520px;width:100%}
+.ultra li::before{content:"✓ ";color:var(--gold);font-weight:700}
+.ultra .pr{display:flex;align-items:baseline;justify-content:center;gap:.7rem}
+.ultra .pr s{opacity:.75;font-size:1.05rem}.ultra .pr strong{font:400 3rem/1 var(--f-display);color:var(--gold)}
+.ultra .gnote{min-height:1.2em;margin:0;font-size:.85rem;color:#ffe3e5}
+
 /* ===== versión 13 secciones ===== */
 .hero .eyebrow{max-width:92%}
 .hero h1{font-size:clamp(1.9rem,4.6vw,3.3rem)}
@@ -736,6 +767,31 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <ol class="steps5"><li>Elegís comprar The Christmas Experience.</li><li>Realizás el pago<span class="secure" hidden> de forma segura</span>.</li><li>Se confirma tu compra.</li><li>Recibís los materiales digitales por email.</li><li>¡Ya podés comenzar a preparar tu Navidad!</li></ol></div>
 </div></section>
 
+
+<!-- 09b JUEGOS EXTRA -->
+<section class="ice" id="games"><div class="wrap center">
+<span class="eyebrow">Para seguir jugando en familia</span>
+<h2 class="rv">Christmas Game Collection</h2>
+<p class="lead">Tres packs de juegos para imprimir y jugar en las noches de diciembre. Se compran por separado, solo si querés sumar más diversión. Están en inglés y vienen en tamaño Letter y A4.</p>
+<div class="gm">
+<div class="it rv"><span class="tagp">Oferta</span><img src="assets/game-pack1.webp" width="850" height="1100" alt="Portada de Christmas Card Games" loading="lazy" decoding="async"><b>Christmas Card Games</b><span class="sub">3 juegos de cartas: Color Match, Santa's Memory y Reindeer Challenge. Desde 5 años.</span><div class="pr"><s>USD 5.99</s><strong>USD 4.99</strong></div><a class="btn btn-red btn-sm" href="#games" data-game>Quiero este pack</a><p class="gnote" aria-live="polite"></p></div>
+<div class="it rv"><span class="tagp">Oferta</span><img src="assets/game-pack2.webp" width="850" height="1100" alt="Portada de Christmas Board Games" loading="lazy" decoding="async"><b>Christmas Board Games</b><span class="sub">3 juegos de tablero: Santa's Adventure, Reindeer Dash y Save Christmas (cooperativo). Desde 4 años.</span><div class="pr"><s>USD 5.99</s><strong>USD 4.99</strong></div><a class="btn btn-red btn-sm" href="#games" data-game>Quiero este pack</a><p class="gnote" aria-live="polite"></p></div>
+<div class="it rv"><span class="tagp">Oferta</span><img src="assets/game-pack3.webp" width="850" height="1100" alt="Portada de Christmas Mystery Games" loading="lazy" decoding="async"><b>Christmas Mystery Games</b><span class="sub">3 misterios para resolver en familia, con soluciones en un PDF aparte para los padres. Desde 6 años.</span><div class="pr"><s>USD 5.99</s><strong>USD 4.99</strong></div><a class="btn btn-red btn-sm" href="#games" data-game>Quiero este pack</a><p class="gnote" aria-live="polite"></p></div>
+</div>
+<div class="gm one">
+<div class="it rv"><span class="tagp">Mejor precio</span><div class="trio"><img src="assets/game-pack1.webp" width="850" height="1100" alt="Portada Card Games" loading="lazy" decoding="async"><img src="assets/game-pack2.webp" width="850" height="1100" alt="Portada Board Games" loading="lazy" decoding="async"><img src="assets/game-pack3.webp" width="850" height="1100" alt="Portada Mystery Games" loading="lazy" decoding="async"></div><div class="tx"><b>Colección completa · 9 juegos</b><span class="sub">Los tres packs juntos: cartas, tablero y misterio. Ahorrás respecto de comprarlos por separado.</span>
+<div class="pr"><s>USD 14.97</s><strong>USD 12.99</strong></div>
+<a class="btn btn-red btn-sm" href="#games" data-game>Quiero los 3 packs</a><p class="gnote" aria-live="polite"></p></div></div>
+</div>
+<div class="ultra rv"><span class="tagp">Todo incluido</span><h3>Ultra Mega Pack Navideño</h3>
+<img src="assets/hero-megapack.webp" width="2000" height="1400" alt="Ultra Mega Pack Navideño: todo el Mega Pack más los tres packs de juegos" class="hero-i" loading="lazy" decoding="async">
+<div class="trio"><img src="assets/game-pack1.webp" width="850" height="1100" alt="Card Games" loading="lazy" decoding="async"><img src="assets/game-pack2.webp" width="850" height="1100" alt="Board Games" loading="lazy" decoding="async"><img src="assets/game-pack3.webp" width="850" height="1100" alt="Mystery Games" loading="lazy" decoding="async"></div>
+<ul><li>The Christmas Experience · Mega Pack completo (USD 25)</li><li>Christmas Card Games (3 juegos)</li><li>Christmas Board Games (3 juegos)</li><li>Christmas Mystery Games (3 juegos)</li></ul>
+<div class="pr"><s>USD 39.97 por separado</s><strong>USD 30</strong></div>
+<a class="btn btn-red cta-big" href="#games" data-game>Quiero el Ultra Mega Pack</a><p class="gnote" aria-live="polite"></p></div>
+<p class="small" style="margin-top:1.2rem">Imágenes ilustrativas · Archivos digitales para imprimir en casa, no se envía nada físico.</p>
+</div></section>
+
 <!-- 10 GARANTÍA (aparece solo cuando se escribe la política real) -->
 <section class="gar" id="garantia" hidden><div class="wrap center">
 <span class="eyebrow">Comprá con tranquilidad</span>
@@ -915,6 +971,8 @@ if(cd){
  if(days>1)txt='Faltan '+days+' días para el 1 de diciembre';else if(days===1)txt='Mañana es 1 de diciembre';else if(n.getMonth()===11&&n.getDate()<=25)txt='Empezá hoy tu cuenta regresiva';
  if(txt){cd.textContent=txt;cd.hidden=false}
 }
+
+$$('[data-game]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var n=a.parentNode.querySelector('.gnote');if(n)n.textContent='Todavía no está habilitado el pago en esta página.'})});
 
 /* ===== Asistente de compra (respuestas automaticas con datos de la pagina) ===== */
 var chat=$('#chat'),fab=$('#chat-fab'),tip=$('#chat-tip'),cb=$('#chat-b'),cq=$('#chat-q'),cform=$('#chat-form'),cin=$('#chat-in');
