@@ -943,7 +943,7 @@ body.sb .musicbtn{bottom:calc(86px + env(safe-area-inset-bottom,0px))}
 <script>
 (function(){
 /* ===== Pegar aca el enlace de pago cuando exista ===== */
-var LINKS={mega:"",essential:""};
+var LINKS={mega:"https://wonderdays-megapack.impultienda.ar",essential:""};
 var CHECKOUT_URL=LINKS.mega;
 /* ===== Datos que completa el dueño. Aparecen en la página solo si están escritos ===== */
 var CONTACT="";      /* correo o enlace de contacto, por ejemplo: hola@tudominio.com */
@@ -1053,7 +1053,7 @@ if(cd){
  if(txt){cd.textContent=txt;cd.hidden=false}
 }
 
-$$('[data-game]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var u=LINKS[a.getAttribute('data-game')];if(u){window.open(u,'_blank','noopener');return}var n=a.parentNode.querySelector('.gnote');if(n)n.textContent='Checkout isn’t enabled on this page yet.'})});
+$$('[data-game]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();var u=LINKS[a.getAttribute('data-game')];if(u){window.open(u,'_blank','noopener');return}var n=a.parentNode.querySelector('.gnote')||document.querySelector('#esencial .gnote');if(n)n.textContent='Checkout isn’t enabled on this page yet.'})});
 
 $$('.flip').forEach(function(f){f.addEventListener('click',function(){f.classList.toggle('on')})});
 var dcn=document.getElementById('dcount'),dfl=document.getElementById('dfill');
